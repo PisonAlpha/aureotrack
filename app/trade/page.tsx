@@ -31,6 +31,9 @@ export default function Trade() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [livePrices, setLivePrices] = useState<Record<string, number>>({});
+  const [showTopUp, setShowTopUp] = useState(false);
+  const [topUpAmount, setTopUpAmount] = useState('');
+  const [toppingUp, setToppingUp] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('aureotrack_user');
@@ -147,8 +150,37 @@ export default function Trade() {
       setPlacing(false);
     }
   };
+  const handleTopUp = async () => {
+    if (!topUpAmount || parseFloat(topUpAmount) <= 0) {
+      setError('Enter a valid amount');
+      return;
+    }
 
-  const handleClosePosition = async (trade: any) => {
+    setToppingUp(true);
+    setError(null);
+
+    try {
+      const res = await fetch('/api/trade/topup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, amount: parseFloat(topUpAmount) }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      setSuccess('Added $' + topUpAmount + ' to your demo account!');
+      setTopUpAmount('');
+      setShowTopUp(false);
+      fetchAccount();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setToppingUp(false);
+    }
+  };
+
+ const handleClosePosition = async (trade: any) => {
     const livePrice = livePrices[trade.asset_symbol];
     if (!livePrice) {
       await fetchPrice(trade.asset_symbol);
@@ -207,6 +239,12 @@ export default function Trade() {
               <p className="text-xs text-gray-400">Demo Balance</p>
               <p className="font-bold text-gray-900">${account?.balance?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '...'}</p>
             </div>
+            <button
+              onClick={() => setShowTopUp(true)}
+              className="px-4 py-2 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors"
+            >
+              + Top Up
+            </button>
           </div>
         </div>
       </header>
@@ -429,6 +467,56 @@ export default function Trade() {
           </div>
         </div>
       </div>
+   {showTopUp && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
+            <h3 className="font-bold text-gray-900 text-lg mb-4">Top Up Demo Balance</h3>
+            <p className="text-sm text-gray-500 mb-4">Add virtual funds to your demo trading account. This is not real money.</p>
+
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm mb-4">{error}</div>
+            )}
+
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              {['1000', '10000', '50000'].map(amt => (
+                <button
+                  key={amt}
+                  onClick={() => setTopUpAmount(amt)}
+                  className={"py-2 rounded-xl text-sm font-medium transition-colors " + (
+                    topUpAmount === amt ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  )}
+                >
+                  +${parseInt(amt).toLocaleString()}
+                </button>
+              ))}
+            </div>
+
+            <input
+              type="number"
+              value={topUpAmount}
+              onChange={e => setTopUpAmount(e.target.value)}
+              placeholder="Or enter custom amount"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black mb-4"
+            />
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setShowTopUp(false); setError(null); }}
+                className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleTopUp}
+                disabled={toppingUp}
+                className="flex-1 py-3 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+              >
+                {toppingUp ? 'Adding...' : 'Add Funds'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
