@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, full_name } = await request.json();
+    const { email, password, full_name, starting_balance } = await request.json();
 
     if (!email || !password || !full_name) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
@@ -39,12 +39,14 @@ export async function POST(request: NextRequest) {
 
     if (error) throw error;
 
+    const initialBalance = starting_balance && starting_balance > 0 ? starting_balance : 100000;
+
     await supabaseAdmin
       .from('demo_accounts')
       .insert({
         user_id: newUser.id,
-        balance: 10000,
-        starting_balance: 10000,
+        balance: initialBalance,
+        starting_balance: initialBalance,
       });
 
     return NextResponse.json({

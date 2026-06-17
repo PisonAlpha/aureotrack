@@ -7,6 +7,8 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [startingBalance, setStartingBalance] = useState('100000');
+  const [customBalance, setCustomBalance] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,10 +30,14 @@ export default function Register() {
     setError(null);
 
     try {
+      const finalBalance = startingBalance === 'custom'
+        ? parseFloat(customBalance) || 100000
+        : parseFloat(startingBalance);
+
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, full_name: fullName }),
+        body: JSON.stringify({ email, password, full_name: fullName, starting_balance: finalBalance }),
       });
 
       const data = await response.json();
@@ -60,11 +66,11 @@ export default function Register() {
             Learn markets.<br />Trade smarter.
           </h2>
           <p className="text-gray-400 text-sm leading-relaxed mb-8">
-            Get $10,000 in virtual funds, real-time market data, and AI-powered insights — completely free.
+            Choose your starting balance, get real-time market data, and AI-powered insights — completely free.
           </p>
           <div className="space-y-3">
             {[
-              '✓ $10,000 demo trading balance',
+              '✓ Choose your own demo trading balance',
               '✓ Real-time crypto & macro data',
               '✓ AI market analysis',
               '✓ Portfolio tracking',
@@ -88,7 +94,7 @@ export default function Register() {
           </div>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Create your account</h1>
-          <p className="text-gray-500 text-sm mb-8">Start trading with $10,000 in virtual funds</p>
+          <p className="text-gray-500 text-sm mb-8">Choose your starting demo balance and start trading</p>
 
           {error && (
             <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm mb-6">
@@ -136,10 +142,41 @@ export default function Register() {
                 type="password"
                 value={confirm}
                 onChange={e => setConfirm(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleRegister()}
                 placeholder="Repeat your password"
                 className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black transition-all"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Starting demo balance</label>
+              <div className="grid grid-cols-3 gap-2 mb-2">
+                {[
+                  { label: '$10,000', value: '10000' },
+                  { label: '$100,000', value: '100000' },
+                  { label: 'Custom', value: 'custom' },
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setStartingBalance(opt.value)}
+                    className={"py-2.5 rounded-xl text-sm font-medium transition-colors " + (
+                      startingBalance === opt.value ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              {startingBalance === 'custom' && (
+                <input
+                  type="number"
+                  value={customBalance}
+                  onChange={e => setCustomBalance(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleRegister()}
+                  placeholder="Enter amount, e.g. 400"
+                  className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                />
+              )}
             </div>
 
             <button
