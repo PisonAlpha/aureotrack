@@ -10,8 +10,7 @@ export interface CommodityPrice {
 
 const COMMODITY_SYMBOLS: Record<string, string> = {
   'XAU/USD': 'Gold',
-  'XAG/USD': 'Silver',
-  'WTI/USD': 'Crude Oil',
+
 };
 
 export async function getCommodityPrices(): Promise<CommodityPrice[]> {
