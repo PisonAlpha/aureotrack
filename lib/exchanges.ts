@@ -50,12 +50,37 @@ async function getKucoinPrice(symbol: string): Promise<number | null> {
   }
 }
 
+async function getGateioPrice(symbol: string): Promise<number | null> {
+  try {
+    const res = await fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${symbol}_USDT`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const price = data?.[0]?.last;
+    return price ? parseFloat(price) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function getMexcPrice(symbol: string): Promise<number | null> {
+  try {
+    const res = await fetch(`https://api.mexc.com/api/v3/ticker/price?symbol=${symbol}USDT`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.price ? parseFloat(data.price) : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function getArbitrageData(symbol: string): Promise<ExchangePrice[]> {
-  const [binance, bybit, okx, kucoin] = await Promise.all([
+  const [binance, bybit, okx, kucoin, gateio, mexc] = await Promise.all([
     getBinancePrice(symbol),
     getBybitPrice(symbol),
     getOkxPrice(symbol),
     getKucoinPrice(symbol),
+    getGateioPrice(symbol),
+    getMexcPrice(symbol),
   ]);
 
   const results: ExchangePrice[] = [];
@@ -63,6 +88,8 @@ export async function getArbitrageData(symbol: string): Promise<ExchangePrice[]>
   if (bybit !== null) results.push({ exchange: 'Bybit', price: bybit });
   if (okx !== null) results.push({ exchange: 'OKX', price: okx });
   if (kucoin !== null) results.push({ exchange: 'KuCoin', price: kucoin });
+  if (gateio !== null) results.push({ exchange: 'Gate.io', price: gateio });
+  if (mexc !== null) results.push({ exchange: 'MEXC', price: mexc });
 
   return results;
 }
