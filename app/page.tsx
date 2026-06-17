@@ -77,7 +77,7 @@ export default function Home() {
             <button onClick={() => window.location.href = '/crypto'} className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Crypto</button>
             <button onClick={() => window.location.href = '/trade'} className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Trade</button>
             <button onClick={() => window.location.href = '/ai'} className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">AI Insights</button>
-            <button className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Portfolio</button>
+            <button onClick={() => window.location.href = '/portfolio'} className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Portfolio</button>
             <button className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Learn</button>
           </nav>
           {user ? (
