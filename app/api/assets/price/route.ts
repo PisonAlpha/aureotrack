@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTokenData } from '@/lib/coingecko';
-import { getCommodityPrices } from '@/lib/twelvedata';
+import { getCommodityPrices, getForexPrice } from '@/lib/twelvedata';
+
+const FOREX_PAIRS = ['EUR/USD', 'GBP/USD', 'USD/JPY'];
 
 const CRYPTO_MAP: Record<string, string> = {
   BTC: 'bitcoin',
@@ -53,6 +55,20 @@ export async function GET(request: NextRequest) {
         type: 'commodity',
         price: match.price,
         change_24h: match.percent_change_24h,
+      });
+    }
+
+    if (FOREX_PAIRS.includes(symbol)) {
+      const forex = await getForexPrice(symbol);
+      if (!forex) {
+        return NextResponse.json({ error: 'Price not found' }, { status: 404 });
+      }
+      return NextResponse.json({
+        success: true,
+        symbol: forex.symbol,
+        type: 'forex',
+        price: forex.price,
+        change_24h: forex.percent_change_24h,
       });
     }
 

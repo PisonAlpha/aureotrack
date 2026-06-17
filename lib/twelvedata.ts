@@ -56,6 +56,12 @@ function parseQuote(symbol: string, quote: any): CommodityPrice {
   };
 }
 
+const FOREX_NAMES: Record<string, string> = {
+  'EUR/USD': 'Euro / US Dollar',
+  'GBP/USD': 'British Pound / US Dollar',
+  'USD/JPY': 'US Dollar / Japanese Yen',
+};
+
 export async function getForexPrice(pair: string) {
   const apiKey = process.env.TWELVE_DATA_API_KEY;
   if (!apiKey) return null;
@@ -67,7 +73,13 @@ export async function getForexPrice(pair: string) {
     );
     if (!res.ok) throw new Error('Forex fetch failed');
     const data = await res.json();
-    return parseQuote(pair, data);
+    return {
+      symbol: pair,
+      name: FOREX_NAMES[pair] || pair,
+      price: parseFloat(data.close) || 0,
+      change_24h: parseFloat(data.change) || 0,
+      percent_change_24h: parseFloat(data.percent_change) || 0,
+    };
   } catch (error) {
     console.error('Forex error:', error);
     return null;
