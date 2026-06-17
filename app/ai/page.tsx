@@ -3,11 +3,19 @@
 import { useState, useEffect } from 'react';
 
 const ANALYZABLE_ASSETS = [
-  { id: 'bitcoin', symbol: 'BTC' },
-  { id: 'ethereum', symbol: 'ETH' },
-  { id: 'binancecoin', symbol: 'BNB' },
-  { id: 'solana', symbol: 'SOL' },
-];
+  { id: 'bitcoin', symbol: 'BTC', category: 'Crypto' },
+  { id: 'ethereum', symbol: 'ETH', category: 'Crypto' },
+  { id: 'binancecoin', symbol: 'BNB', category: 'Crypto' },
+  { id: 'solana', symbol: 'SOL', category: 'Crypto' },
+  { id: 'ripple', symbol: 'XRP', category: 'Crypto' },
+  { id: 'dogecoin', symbol: 'DOGE', category: 'Crypto' },
+  { id: 'cardano', symbol: 'ADA', category: 'Crypto' },
+  { id: 'tron', symbol: 'TRX', category: 'Crypto' },
+  { id: 'XAU', symbol: 'Gold', category: 'Commodity' },
+  { id: 'EUR/USD', symbol: 'EUR/USD', category: 'Forex' },
+  { id: 'GBP/USD', symbol: 'GBP/USD', category: 'Forex' },
+  { id: 'USD/JPY', symbol: 'USD/JPY', category: 'Forex' },
+];;
 
 export default function AIInsights() {
   const [selectedAsset, setSelectedAsset] = useState(ANALYZABLE_ASSETS[0]);
@@ -99,21 +107,26 @@ export default function AIInsights() {
         )}
 
         <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
-          <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-            <h2 className="font-semibold text-gray-900">AI Market Analyst</h2>
-            <div className="flex gap-2">
-              {ANALYZABLE_ASSETS.map(asset => (
-                <button
-                  key={asset.id}
-                  onClick={() => setSelectedAsset(asset)}
-                  className={"px-3 py-2 rounded-xl text-xs font-medium transition-colors " + (
-                    selectedAsset.id === asset.id ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  )}
-                >
-                  {asset.symbol}
-                </button>
-              ))}
-            </div>
+          <div className="mb-6">
+            <h2 className="font-semibold text-gray-900 mb-4">AI Market Analyst</h2>
+            {['Crypto', 'Commodity', 'Forex'].map(category => (
+              <div key={category} className="mb-3">
+                <p className="text-xs text-gray-400 mb-2">{category}</p>
+                <div className="flex gap-2 flex-wrap">
+                  {ANALYZABLE_ASSETS.filter(a => a.category === category).map(asset => (
+                    <button
+                      key={asset.id}
+                      onClick={() => setSelectedAsset(asset)}
+                      className={"px-3 py-2 rounded-xl text-xs font-medium transition-colors " + (
+                        selectedAsset.id === asset.id ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      )}
+                    >
+                      {asset.symbol}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
 
           {loadingAnalysis ? (
