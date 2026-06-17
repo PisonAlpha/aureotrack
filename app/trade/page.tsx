@@ -9,9 +9,7 @@ const TRADABLE_ASSETS = [
   { symbol: 'SOL', name: 'Solana', type: 'crypto' },
   { symbol: 'XRP', name: 'XRP', type: 'crypto' },
   { symbol: 'DOGE', name: 'Dogecoin', type: 'crypto' },
-  { symbol: 'GOLD', name: 'Gold', type: 'commodity' },
-  { symbol: 'SILVER', name: 'Silver', type: 'commodity' },
-  { symbol: 'OIL', name: 'Crude Oil', type: 'commodity' },
+ { symbol: 'GOLD', name: 'Gold', type: 'commodity' },
 ];
 
 export default function Trade() {
