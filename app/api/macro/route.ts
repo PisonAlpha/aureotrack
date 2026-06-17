@@ -1,9 +1,24 @@
 import { NextResponse } from 'next/server';
 import { getMacroAssetPrices } from '@/lib/coingecko';
+import { getCommodityPrices } from '@/lib/twelvedata';
 
 export async function GET() {
   try {
     const prices = await getMacroAssetPrices();
+    const commodities = await getCommodityPrices();
+
+    const commodityAssets = commodities.map(c => ({
+      id: c.symbol.toLowerCase(),
+      symbol: c.symbol,
+      name: c.name,
+      current_price: c.price,
+      price_change_percentage_24h: c.percent_change_24h,
+      price_change_percentage_7d_in_currency: undefined,
+      market_cap: 0,
+      total_volume: 0,
+    }));
+
+    const allAssets = [...prices, ...commodityAssets];
 
     let riskScore = 50;
     const btc = prices.find(p => p.id === 'bitcoin');
@@ -21,7 +36,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      assets: prices,
+      assets: allAssets,
       riskSentiment: {
         score: riskScore,
         label: sentiment,

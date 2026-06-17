@@ -13,7 +13,7 @@ export interface AssetPrice {
   low_24h: number;
 }
 
-const TRACKED_IDS = ['bitcoin', 'ethereum', 'binancecoin', 'solana'];
+const TRACKED_IDS = ['bitcoin', 'ethereum', 'binancecoin', 'solana', 'ripple', 'dogecoin', 'cardano', 'tron'];
 
 export async function getMacroAssetPrices(): Promise<AssetPrice[]> {
   try {
