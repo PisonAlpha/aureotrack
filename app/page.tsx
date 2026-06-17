@@ -74,7 +74,7 @@ export default function Home() {
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <button className="text-sm text-gray-900 font-medium bg-transparent border-0 cursor-pointer">Macro</button>
-            <button className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Crypto</button>
+            <button onClick={() => window.location.href = '/crypto'} className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Crypto</button>
             <button onClick={() => window.location.href = '/trade'} className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Trade</button>
             <button className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Portfolio</button>
             <button className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Learn</button>
