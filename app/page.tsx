@@ -17,12 +17,20 @@ export default function Home() {
   const [assets, setAssets] = useState<AssetPrice[]>([]);
   const [riskSentiment, setRiskSentiment] = useState<{ score: number; label: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     fetchMacroData();
     const interval = setInterval(fetchMacroData, 60000);
+    const stored = localStorage.getItem('aureotrack_user');
+    if (stored) setUser(JSON.parse(stored));
     return () => clearInterval(interval);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('aureotrack_user');
+    setUser(null);
+  };
 
   const fetchMacroData = async () => {
     try {
@@ -71,9 +79,23 @@ export default function Home() {
             <button className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Portfolio</button>
             <button className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Learn</button>
           </nav>
-          <button className="px-4 py-2 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors">
-            Sign up free
-          </button>
+          {user ? (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-600 hidden sm:block">{user.full_name}</span>
+              <button onClick={handleLogout} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors">
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <button onClick={() => window.location.href = '/login'} className="text-sm text-gray-600 hover:text-gray-900 bg-transparent border-0 cursor-pointer">
+                Login
+              </button>
+              <button onClick={() => window.location.href = '/register'} className="px-4 py-2 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors">
+                Sign up free
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
