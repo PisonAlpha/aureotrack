@@ -79,7 +79,7 @@ export default function Home() {
             <button onClick={() => window.location.href = '/ai'} className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">AI Insights</button>
             <button onClick={() => window.location.href = '/portfolio'} className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Portfolio</button>
             <button onClick={() => window.location.href = '/exchanges'} className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Exchanges</button>
-            <button className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Learn</button>
+            <button onClick={() => window.location.href = '/academy'} className="text-sm text-gray-500 hover:text-gray-900 bg-transparent border-0 cursor-pointer">Learn</button>
           </nav>
           {user ? (
             <div className="flex items-center gap-3">
