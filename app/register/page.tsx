@@ -56,9 +56,7 @@ export default function Register() {
     <main className="min-h-screen bg-white flex">
       <div className="hidden lg:flex lg:w-1/2 bg-black flex-col justify-between p-12">
         <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-transparent border-0 cursor-pointer p-0">
-          <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center">
-            <span className="text-black text-sm font-bold">AT</span>
-          </div>
+          <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-9 h-9 rounded-lg object-cover" />
           <span className="font-bold text-white text-lg">AureoTrack</span>
         </button>
         <div>

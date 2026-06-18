@@ -186,9 +186,7 @@ export default function Academy() {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-transparent border-0 cursor-pointer p-0">
-            <div className="w-9 h-9 bg-black rounded-lg flex items-center justify-center">
-              <span className="text-white text-sm font-bold">AT</span>
-            </div>
+            <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-9 h-9 rounded-lg object-cover" />
             <span className="font-bold text-gray-900 text-lg">AureoTrack</span>
           </button>
         </div>
