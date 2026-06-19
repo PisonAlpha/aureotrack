@@ -15,16 +15,11 @@ interface Asset {
 }
 
 const NAV_LINKS = [
-  { label: 'Markets', href: '/' },
   { label: 'Intelligence', href: '/markets' },
-  { label: 'Trade', href: '/trade' },
-  { label: 'Crypto', href: '/crypto' },
-  { label: 'Portfolio', href: '/portfolio' },
-  { label: 'Exchanges', href: '/exchanges' },
-  { label: 'AI Insights', href: '/ai' },
-  { label: 'Academy', href: '/academy' },
-  { label: 'Leaderboard', href: '/leaderboard' },
-  { label: 'Challenges', href: '/challenges' },
+  { label: 'AureoTrade', href: '/trade' },
+  { label: 'AureoAcademy', href: '/academy' },
+  { label: 'AureoAI', href: '/ai' },
+  { label: 'AureoCommunity', href: '/community' },
 ];
 
 export default function Home() {
