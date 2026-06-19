@@ -1,100 +1,216 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const COURSES = [
+const SCHOOLS = [
   {
-    category: 'Trading Basics',
-    description: 'Learn the fundamentals of markets, orders, and how trading works.',
+    id: 'Beginner',
+    title: 'Beginner School',
+    description: 'Start here. Learn the foundations of financial markets from scratch.',
+    icon: '🎓',
+    color: 'bg-blue-50 border-blue-200',
+    headerColor: 'bg-blue-600',
+    badge: 'Level 1',
     banner: '/academy/trading-basics.svg',
-    color: 'from-yellow-900/30 to-black',
-    lessons: [
-      'What is Trading and How Markets Work',
-      'Understanding Spot vs Futures Trading',
-      'Order Types: Market, Limit, and Stop Orders',
-      'How to Read a Price Chart',
-    ],
   },
   {
-    category: 'Technical Analysis',
-    description: 'Master chart patterns, indicators, and price action strategies.',
+    id: 'Forex',
+    title: 'Forex Academy',
+    description: 'Master currency trading from beginner to advanced smart money concepts.',
+    icon: '💱',
+    color: 'bg-green-50 border-green-200',
+    headerColor: 'bg-green-600',
+    badge: 'Level 2',
     banner: '/academy/technical-analysis.svg',
-    color: 'from-green-900/30 to-black',
-    lessons: [
-      'Introduction to Candlestick Charts',
-      'Support and Resistance Levels',
-      'Understanding RSI and Moving Averages',
-      'Identifying Trend Lines and Chart Patterns',
-    ],
   },
   {
-    category: 'Risk Management',
-    description: 'Protect your capital with smart position sizing and stop losses.',
+    id: 'Crypto',
+    title: 'Crypto Academy',
+    description: 'Blockchain, DeFi, on-chain analysis, and advanced crypto trading.',
+    icon: '₿',
+    color: 'bg-orange-50 border-orange-200',
+    headerColor: 'bg-orange-500',
+    badge: 'Level 2',
+    banner: '/academy/trading-basics.svg',
+  },
+  {
+    id: 'Technical Analysis',
+    title: 'Technical Analysis Academy',
+    description: 'Candlesticks, chart patterns, indicators, and price action mastery.',
+    icon: '📊',
+    color: 'bg-purple-50 border-purple-200',
+    headerColor: 'bg-purple-600',
+    badge: 'Level 3',
+    banner: '/academy/technical-analysis.svg',
+  },
+  {
+    id: 'Risk Management',
+    title: 'Risk Management Academy',
+    description: 'Position sizing, stop losses, R:R ratio, and portfolio protection.',
+    icon: '🛡️',
+    color: 'bg-red-50 border-red-200',
+    headerColor: 'bg-red-600',
+    badge: 'Level 3',
     banner: '/academy/risk-management.svg',
-    color: 'from-blue-900/30 to-black',
-    lessons: [
-      'Position Sizing and Risk Per Trade',
-      'How Stop Loss and Take Profit Work',
-      'Understanding Leverage and Liquidation',
-      'The Risk-Reward Ratio Explained',
-    ],
   },
   {
-    category: 'Market Psychology',
-    description: 'Develop the mindset and discipline of a consistently profitable trader.',
+    id: 'Psychology',
+    title: 'Trading Psychology Academy',
+    description: 'Fear, greed, FOMO, discipline, and emotional mastery.',
+    icon: '🧠',
+    color: 'bg-yellow-50 border-yellow-200',
+    headerColor: 'bg-yellow-600',
+    badge: 'Level 4',
     banner: '/academy/market-psychology.svg',
-    color: 'from-purple-900/30 to-black',
-    lessons: [
-      'Controlling Fear and Greed in Trading',
-      'Why Most Traders Lose Money',
-      'Building Trading Discipline and Patience',
-      'Understanding Market Sentiment and FOMO',
-    ],
   },
-];
-
-const STAFF = [
-  { name: 'Glean Moore', role: 'Founder & Head of Education', image: '/academy/photos/staff-stage.jpeg' },
-];
-
-const STUDENTS = [
-  { name: 'Asia Chapter Students', quote: 'AureoAcademy is changing how we approach global markets and financial education.', image: '/academy/photos/asia-chapter.jpeg' },
-  { name: 'Africa Chapter Students', quote: 'From Africa to the world — AureoAcademy gave us the tools to trade and build wealth.', image: '/academy/photos/africa-chapter.jpeg' },
-  { name: 'Global Community', quote: 'The energy at every AureoTrack event is incredible. This is more than education.', image: '/academy/photos/students-group.jpeg' },
 ];
 
 export default function Academy() {
-  const [selectedLesson, setSelectedLesson] = useState<{ topic: string; category: string } | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'schools' | 'certifications' | 'community' | 'mentor'>('schools');
+  const [selectedSchool, setSelectedSchool] = useState<any>(null);
+  const [selectedLesson, setSelectedLesson] = useState<any>(null);
+  const [courses, setCourses] = useState<any[]>([]);
   const [lesson, setLesson] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loadingLesson, setLoadingLesson] = useState(false);
+  const [certifications, setCertifications] = useState<any[]>([]);
+  const [mentorData, setMentorData] = useState<any>(null);
+  const [loadingMentor, setLoadingMentor] = useState(false);
+  const [communityPosts, setCommunityPosts] = useState<any[]>([]);
+  const [communityRoom, setCommunityRoom] = useState('Crypto');
+  const [postContent, setPostContent] = useState('');
+  const [posting, setPosting] = useState(false);
   const [selectedQuizOption, setSelectedQuizOption] = useState<number | null>(null);
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [showAssistant, setShowAssistant] = useState(false);
   const [chatMessages, setChatMessages] = useState<{ role: string; content: string }[]>([]);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
-  const [expandedCourse, setExpandedCourse] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [certEarned, setCertEarned] = useState<any>(null);
 
-  const handleSelectLesson = async (topic: string, category: string) => {
-    setSelectedLesson({ topic, category });
+  const ROOMS = ['Forex', 'Crypto', 'Gold', 'Technical Analysis', 'Market News'];
+
+  useEffect(() => {
+    const stored = localStorage.getItem('aureotrack_user');
+    if (stored) setUser(JSON.parse(stored));
+  }, []);
+
+  useEffect(() => {
+    if (selectedSchool && user) fetchCourses(selectedSchool.id);
+  }, [selectedSchool, user]);
+
+  useEffect(() => {
+    if (activeTab === 'certifications' && user) fetchCertifications();
+    if (activeTab === 'community') fetchCommunity(communityRoom);
+    if (activeTab === 'mentor' && user) fetchMentor();
+  }, [activeTab, user]);
+
+  useEffect(() => {
+    if (activeTab === 'community') fetchCommunity(communityRoom);
+  }, [communityRoom]);
+
+  const fetchCourses = async (school: string) => {
+    try {
+      const url = user ? `/api/academy/progress?userId=${user.id}&school=${encodeURIComponent(school)}` : `/api/academy/progress?userId=none&school=${encodeURIComponent(school)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.success) setCourses(data.courses);
+    } catch {}
+  };
+
+  const fetchCertifications = async () => {
+    try {
+      const res = await fetch(`/api/academy/certifications?userId=${user.id}`);
+      const data = await res.json();
+      if (data.success) setCertifications(data.certifications);
+    } catch {}
+  };
+
+  const fetchMentor = async () => {
+    setLoadingMentor(true);
+    try {
+      const res = await fetch(`/api/academy/mentor?userId=${user.id}`);
+      const data = await res.json();
+      if (data.success) setMentorData(data);
+    } catch {} finally {
+      setLoadingMentor(false);
+    }
+  };
+
+  const fetchCommunity = async (room: string) => {
+    try {
+      const res = await fetch(`/api/community?room=${encodeURIComponent(room)}`);
+      const data = await res.json();
+      if (data.success) setCommunityPosts(data.posts);
+    } catch {}
+  };
+
+  const handleSelectLesson = async (course: any) => {
+    setSelectedLesson(course);
     setLesson(null);
     setSelectedQuizOption(null);
-    setLoading(true);
-    setError(null);
-
+    setQuizSubmitted(false);
+    setCertEarned(null);
+    setLoadingLesson(true);
     try {
       const res = await fetch('/api/academy/lesson', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic, category }),
+        body: JSON.stringify({ topic: course.title, category: course.school }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setLesson(data.lesson);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      if (data.success) setLesson(data.lesson);
+    } catch {} finally {
+      setLoadingLesson(false);
+    }
+  };
+
+  const handleMarkComplete = async () => {
+    if (!user || !selectedLesson) return;
+    await fetch('/api/academy/progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: user.id, courseId: selectedLesson.id }),
+    });
+    fetchCourses(selectedSchool.id);
+  };
+
+  const handleQuizSubmit = async (optionIndex: number) => {
+    if (quizSubmitted || !lesson?.quizQuestion) return;
+    setSelectedQuizOption(optionIndex);
+    setQuizSubmitted(true);
+    const isCorrect = optionIndex === lesson.quizQuestion.correctIndex;
+    const score = isCorrect ? 1 : 0;
+
+    if (user && selectedLesson) {
+      const res = await fetch('/api/academy/quiz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, courseId: selectedLesson.id, score, total: 1 }),
+      });
+      const data = await res.json();
+      if (data.certEarned) setCertEarned(data.certEarned);
+      fetchCourses(selectedSchool.id);
+    }
+  };
+
+  const handlePost = async () => {
+    if (!user || !postContent.trim()) return;
+    setPosting(true);
+    try {
+      const res = await fetch('/api/community', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, room: communityRoom, content: postContent }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPostContent('');
+        fetchCommunity(communityRoom);
+      }
+    } catch {} finally {
+      setPosting(false);
     }
   };
 
@@ -112,147 +228,171 @@ export default function Academy() {
         body: JSON.stringify({ question: chatInput, history: chatMessages }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setChatMessages([...newMessages, { role: 'assistant', content: data.answer }]);
-    } catch {
-      setChatMessages([...newMessages, { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' }]);
-    } finally {
+      if (data.success) setChatMessages([...newMessages, { role: 'assistant', content: data.answer }]);
+    } catch {} finally {
       setChatLoading(false);
     }
   };
 
-  if (selectedLesson) {
-    const course = COURSES.find(c => c.category === selectedLesson.category);
+  if (selectedLesson && lesson) {
     return (
       <main className="min-h-screen bg-gray-50">
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-            <button onClick={() => setSelectedLesson(null)} className="text-sm text-gray-600 hover:text-gray-900 bg-transparent border-0 cursor-pointer flex items-center gap-2">
-              ← Back to AureoAcademy
+        <header className="bg-black text-white sticky top-0 z-50">
+          <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <button onClick={() => { setSelectedLesson(null); setLesson(null); }} className="text-sm text-gray-300 hover:text-white bg-transparent border-0 cursor-pointer">
+              ← Back to {selectedSchool?.title}
             </button>
-            <button onClick={() => window.location.href = '/'} className="flex items-center gap-2 bg-transparent border-0 cursor-pointer p-0">
-              <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-8 h-8 rounded-lg object-cover" />
-              <span className="font-bold text-gray-900">AureoAcademy</span>
-            </button>
+            <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-8 h-8 rounded-lg object-cover" />
           </div>
         </header>
 
-        {course && (
-          <div className="w-full h-48 overflow-hidden">
-            <img src={course.banner} alt={course.category} className="w-full h-full object-cover" />
-          </div>
-        )}
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          {certEarned && (
+            <div className="bg-yellow-50 border border-yellow-300 rounded-2xl p-6 mb-6 text-center">
+              <p className="text-3xl mb-2">🏆</p>
+              <h3 className="font-bold text-yellow-800 text-lg">Certificate Earned!</h3>
+              <p className="text-yellow-700 text-sm">You completed the {certEarned.school} school</p>
+              <p className="text-yellow-600 text-xs mt-1">Certificate ID: {certEarned.certificate_id}</p>
+            </div>
+          )}
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-          {loading && (
-            <div className="text-center py-20">
-              <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-              <p className="text-gray-500 text-sm">Generating lesson content...</p>
+          <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-6">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs text-gray-400 uppercase tracking-wide">{selectedLesson.school}</span>
+              <span className="text-xs text-gray-300">·</span>
+              <span className={"text-xs px-2 py-0.5 rounded-full " + (selectedLesson.level === 'Beginner' ? 'bg-blue-100 text-blue-700' : selectedLesson.level === 'Intermediate' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700')}>
+                {selectedLesson.level}
+              </span>
+              {selectedLesson.completed && <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">✓ Completed</span>}
             </div>
-          )}
-          {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">{error}</div>
-          )}
-          {lesson && (
-            <div className="bg-white border border-gray-200 rounded-2xl p-8">
-              <p className="text-xs text-gray-400 mb-2 uppercase tracking-wide">{selectedLesson.category}</p>
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">{lesson.title}</h1>
-              <p className="text-gray-600 mb-8 leading-relaxed">{lesson.introduction}</p>
-              <div className="space-y-6 mb-8">
-                {lesson.sections.map((section: any, i: number) => (
-                  <div key={i}>
-                    <h3 className="font-semibold text-gray-900 mb-2">{section.heading}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">{section.content}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
-                <p className="text-sm font-semibold text-amber-800 mb-3">Key Takeaways</p>
-                <ul className="space-y-2">
-                  {lesson.keyTakeaways.map((t: string, i: number) => (
-                    <li key={i} className="text-sm text-amber-900 flex items-start gap-2">
-                      <span className="text-amber-600 font-bold">✓</span> {t}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              {lesson.quizQuestion && (
-                <div className="border border-gray-200 rounded-xl p-5">
-                  <p className="text-sm font-semibold text-gray-900 mb-4">Quick Check: {lesson.quizQuestion.question}</p>
-                  <div className="space-y-2">
-                    {lesson.quizQuestion.options.map((opt: string, i: number) => (
-                      <button
-                        key={i}
-                        onClick={() => setSelectedQuizOption(i)}
-                        className={"w-full text-left px-4 py-3 rounded-xl text-sm border transition-colors " + (
-                          selectedQuizOption === null ? 'border-gray-200 hover:bg-gray-50' :
-                          i === lesson.quizQuestion.correctIndex ? 'border-green-300 bg-green-50 text-green-700' :
-                          i === selectedQuizOption ? 'border-red-300 bg-red-50 text-red-700' : 'border-gray-200 opacity-50'
-                        )}
-                      >
-                        {opt}
-                      </button>
-                    ))}
-                  </div>
-                  {selectedQuizOption !== null && (
-                    <p className="text-sm mt-3 font-medium">
-                      {selectedQuizOption === lesson.quizQuestion.correctIndex ? '✓ Correct! Well done.' : '✗ Not quite — review the lesson above.'}
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {showAssistant && (
-          <div className="fixed bottom-6 right-6 w-full max-w-sm bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 flex flex-col" style={{ height: '500px' }}>
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <div className="flex items-center gap-2">
-                <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-6 h-6 rounded object-cover" />
-                <p className="font-semibold text-gray-900 text-sm">AI Learning Assistant</p>
-              </div>
-              <button onClick={() => setShowAssistant(false)} className="text-gray-400 hover:text-gray-600 bg-transparent border-0 cursor-pointer">✕</button>
-            </div>
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
-              {chatMessages.length === 0 && (
-                <p className="text-sm text-gray-400">Ask me anything about trading — "What is RSI?" or "Explain leverage risk"</p>
-              )}
-              {chatMessages.map((msg, i) => (
-                <div key={i} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
-                  <span className={"inline-block px-3 py-2 rounded-xl text-sm max-w-[85%] " + (msg.role === 'user' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700')}>
-                    {msg.content}
-                  </span>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">{lesson.title}</h1>
+            <p className="text-gray-600 mb-8 leading-relaxed">{lesson.introduction}</p>
+            <div className="space-y-6 mb-8">
+              {lesson.sections.map((section: any, i: number) => (
+                <div key={i}>
+                  <h3 className="font-semibold text-gray-900 mb-2">{section.heading}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{section.content}</p>
                 </div>
               ))}
-              {chatLoading && (
-                <div className="text-left">
-                  <span className="inline-block px-3 py-2 rounded-xl text-sm bg-gray-100 text-gray-400">Thinking...</span>
-                </div>
-              )}
             </div>
-            <div className="p-4 border-t border-gray-200 flex gap-2">
-              <input
-                type="text"
-                value={chatInput}
-                onChange={e => setChatInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleAskAssistant()}
-                placeholder="Ask a question..."
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
-              />
-              <button onClick={handleAskAssistant} disabled={chatLoading} className="px-4 py-2 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50">
-                Send
-              </button>
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-6">
+              <p className="text-sm font-semibold text-amber-800 mb-3">Key Takeaways</p>
+              <ul className="space-y-2">
+                {lesson.keyTakeaways.map((t: string, i: number) => (
+                  <li key={i} className="text-sm text-amber-900 flex items-start gap-2">
+                    <span className="text-amber-600 font-bold">✓</span> {t}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
-        )}
-        <button
-          onClick={() => setShowAssistant(!showAssistant)}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-black text-white rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-gray-800 transition-colors z-40"
-          style={{ display: showAssistant ? 'none' : 'flex' }}
-        >
-          💬
-        </button>
+
+          {lesson.quizQuestion && (
+            <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
+              <h3 className="font-semibold text-gray-900 mb-4">Quiz: {lesson.quizQuestion.question}</h3>
+              <div className="space-y-2">
+                {lesson.quizQuestion.options.map((opt: string, i: number) => (
+                  <button
+                    key={i}
+                    onClick={() => handleQuizSubmit(i)}
+                    disabled={quizSubmitted}
+                    className={"w-full text-left px-4 py-3 rounded-xl text-sm border transition-colors " + (
+                      !quizSubmitted ? 'border-gray-200 hover:bg-gray-50 cursor-pointer' :
+                      i === lesson.quizQuestion.correctIndex ? 'border-green-300 bg-green-50 text-green-700' :
+                      i === selectedQuizOption ? 'border-red-300 bg-red-50 text-red-700' : 'border-gray-200 opacity-50'
+                    )}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+              {quizSubmitted && (
+                <p className={"text-sm mt-3 font-medium " + (selectedQuizOption === lesson.quizQuestion.correctIndex ? 'text-green-600' : 'text-red-600')}>
+                  {selectedQuizOption === lesson.quizQuestion.correctIndex ? '✓ Correct! Lesson marked as complete.' : '✗ Incorrect. Review the lesson and try again.'}
+                </p>
+              )}
+            </div>
+          )}
+
+          {user && (
+            <button onClick={handleMarkComplete} className="w-full py-3 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors">
+              Mark as Complete
+            </button>
+          )}
+        </div>
+      </main>
+    );
+  }
+
+  if (selectedSchool) {
+    const schoolCourses = courses;
+    const levels = [...new Set(schoolCourses.map(c => c.level))];
+    const completed = schoolCourses.filter(c => c.completed).length;
+    const progress = schoolCourses.length > 0 ? (completed / schoolCourses.length) * 100 : 0;
+
+    return (
+      <main className="min-h-screen bg-gray-50">
+        <header className="bg-black text-white sticky top-0 z-50">
+          <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+            <button onClick={() => setSelectedSchool(null)} className="text-sm text-gray-300 hover:text-white bg-transparent border-0 cursor-pointer">
+              ← Back to AureoAcademy
+            </button>
+            <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-8 h-8 rounded-lg object-cover" />
+          </div>
+        </header>
+
+        <div className="h-48 overflow-hidden">
+          <img src={selectedSchool.banner} alt={selectedSchool.title} className="w-full h-full object-cover" />
+        </div>
+
+        <div className="max-w-5xl mx-auto px-4 py-8">
+          <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
+            <div>
+              <span className="text-2xl mr-2">{selectedSchool.icon}</span>
+              <h1 className="text-2xl font-bold text-gray-900 inline">{selectedSchool.title}</h1>
+              <p className="text-gray-500 text-sm mt-2">{selectedSchool.description}</p>
+            </div>
+            <span className="px-3 py-1 bg-black text-white rounded-full text-xs font-medium">{selectedSchool.badge}</span>
+          </div>
+
+          {user && (
+            <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-600">Your Progress</span>
+                <span className="font-medium text-gray-900">{completed}/{schoolCourses.length} lessons</span>
+              </div>
+              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-full bg-black rounded-full transition-all" style={{ width: progress + '%' }} />
+              </div>
+            </div>
+          )}
+
+          {levels.map(level => (
+            <div key={level} className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <span className={"px-3 py-1 rounded-full text-xs font-medium " + (level === 'Beginner' ? 'bg-blue-100 text-blue-700' : level === 'Intermediate' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700')}>
+                  {level}
+                </span>
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {schoolCourses.filter(c => c.level === level).map(course => (
+                  <button
+                    key={course.id}
+                    onClick={() => handleSelectLesson(course)}
+                    className={"text-left px-5 py-4 bg-white border rounded-xl hover:border-gray-400 transition-colors " + (course.completed ? 'border-green-300' : 'border-gray-200')}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="text-sm font-medium text-gray-900">{course.title}</p>
+                      {course.completed && <span className="text-green-500 text-xs">✓</span>}
+                    </div>
+                    <p className="text-xs text-gray-400">{course.description || 'AI-generated lesson · Includes quiz'}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </main>
     );
   }
@@ -260,46 +400,39 @@ export default function Academy() {
   return (
     <main className="min-h-screen bg-gray-50">
       <header className="bg-black text-white sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-transparent border-0 cursor-pointer p-0">
             <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-9 h-9 rounded-lg object-cover" />
             <span className="font-bold text-white text-lg">AureoAcademy</span>
           </button>
-          <nav className="hidden md:flex items-center gap-6">
-            {COURSES.map(c => (
-              <button key={c.category} onClick={() => setExpandedCourse(c.category)} className="text-sm text-gray-300 hover:text-white bg-transparent border-0 cursor-pointer">{c.category}</button>
+          <div className="hidden md:flex items-center gap-6">
+            {['schools', 'certifications', 'community', 'mentor'].map(tab => (
+              <button key={tab} onClick={() => setActiveTab(tab as any)} className={"text-sm capitalize bg-transparent border-0 cursor-pointer " + (activeTab === tab ? 'text-yellow-400 font-medium' : 'text-gray-300 hover:text-white')}>
+                {tab === 'mentor' ? 'AI Mentor' : tab}
+              </button>
             ))}
-          </nav>
+          </div>
           <button onClick={() => setShowAssistant(true)} className="px-4 py-2 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
             Ask AI
           </button>
         </div>
       </header>
 
-      <div className="bg-black text-white py-20 px-4">
+      <div className="bg-black text-white py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-16 h-16 rounded-2xl mx-auto mb-6 object-cover" />
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">AureoAcademy</h1>
-          <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">Free world-class trading education. Learn at your own pace, backed by AI-powered lessons and quizzes.</p>
+          <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">World-class trading education across 6 specialized schools. Learn, practice, get certified.</p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <button onClick={() => setExpandedCourse('Trading Basics')} className="px-6 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
-              Start Learning
-            </button>
-            <button onClick={() => setShowAssistant(true)} className="px-6 py-3 border border-gray-600 text-white rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">
-              Ask AI Assistant
-            </button>
+            <button onClick={() => setActiveTab('schools')} className="px-6 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">Start Learning</button>
+            <button onClick={() => setActiveTab('certifications')} className="px-6 py-3 border border-gray-600 text-white rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">View Certifications</button>
           </div>
         </div>
       </div>
 
-      <div className="bg-white border-b border-gray-200 py-8 px-4">
+      <div className="bg-white border-b border-gray-200 py-6 px-4">
         <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
-          {[
-            { label: 'Free Lessons', value: '16+' },
-            { label: 'Categories', value: '4' },
-            { label: 'AI-Powered', value: '100%' },
-            { label: 'Quiz Per Lesson', value: '✓' },
-          ].map(stat => (
+          {[{ label: 'Schools', value: '6' }, { label: 'Lessons', value: '60+' }, { label: 'Certificates', value: '6' }, { label: 'AI-Powered', value: '100%' }].map(stat => (
             <div key={stat.label}>
               <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
               <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
@@ -308,44 +441,177 @@ export default function Academy() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Browse Courses</h2>
-        <div className="space-y-6">
-          {COURSES.map(course => (
-            <div key={course.category} className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-              <div className="h-48 overflow-hidden cursor-pointer" onClick={() => setExpandedCourse(expandedCourse === course.category ? null : course.category)}>
-                <img src={course.banner} alt={course.category} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-bold text-gray-900 text-lg">{course.category}</h3>
-                  <span className="text-xs text-gray-400">{course.lessons.length} lessons</span>
-                </div>
-                <p className="text-sm text-gray-500 mb-4">{course.description}</p>
-                <button
-                  onClick={() => setExpandedCourse(expandedCourse === course.category ? null : course.category)}
-                  className="text-sm font-medium text-black hover:underline bg-transparent border-0 cursor-pointer"
-                >
-                  {expandedCourse === course.category ? '▲ Hide lessons' : '▼ View lessons'}
-                </button>
-                {expandedCourse === course.category && (
-                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {course.lessons.map(lesson => (
-                      <button
-                        key={lesson}
-                        onClick={() => handleSelectLesson(lesson, course.category)}
-                        className="text-left px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:border-gray-400 hover:bg-gray-100 transition-colors"
-                      >
-                        <p className="text-sm font-medium text-gray-900">{lesson}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">AI-generated · Includes quiz</p>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 py-10">
+        <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+          {['schools', 'certifications', 'community', 'mentor'].map(tab => (
+            <button key={tab} onClick={() => setActiveTab(tab as any)} className={"px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-colors " + (activeTab === tab ? 'bg-black text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50')}>
+              {tab === 'mentor' ? '🤖 AI Mentor' : tab === 'schools' ? '📚 Schools' : tab === 'certifications' ? '🏆 Certifications' : '💬 Community'}
+            </button>
           ))}
         </div>
+
+        {activeTab === 'schools' && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {SCHOOLS.map(school => (
+              <button key={school.id} onClick={() => setSelectedSchool(school)} className={"text-left bg-white border rounded-2xl overflow-hidden hover:shadow-md transition-shadow " + school.color}>
+                <div className="h-36 overflow-hidden">
+                  <img src={school.banner} alt={school.title} className="w-full h-full object-cover" />
+                </div>
+                <div className="p-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xl">{school.icon}</span>
+                    <span className="text-xs px-2 py-0.5 bg-black text-white rounded-full">{school.badge}</span>
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-1">{school.title}</h3>
+                  <p className="text-sm text-gray-500">{school.description}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'certifications' && (
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Your Certifications</h2>
+            {!user ? (
+              <div className="text-center py-20 bg-white border border-gray-200 rounded-2xl">
+                <p className="text-gray-400 mb-4">Login to track your certifications</p>
+                <button onClick={() => window.location.href = '/login'} className="px-6 py-3 bg-black text-white rounded-xl text-sm font-medium">Login</button>
+              </div>
+            ) : certifications.length === 0 ? (
+              <div className="text-center py-20 bg-white border border-gray-200 rounded-2xl">
+                <p className="text-4xl mb-3">🎓</p>
+                <p className="text-gray-500 mb-2">No certificates yet</p>
+                <p className="text-gray-400 text-sm">Complete all lessons in a school to earn your certificate</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {certifications.map((cert, i) => (
+                  <div key={i} className="bg-white border border-yellow-300 rounded-2xl p-6 text-center">
+                    <p className="text-4xl mb-3">🏆</p>
+                    <h3 className="font-bold text-gray-900 text-lg">{cert.school} Certificate</h3>
+                    <p className="text-sm text-gray-500 mb-3">{cert.level}</p>
+                    <p className="text-xs text-gray-400 font-mono">{cert.certificate_id}</p>
+                    <p className="text-xs text-gray-400 mt-1">Issued {new Date(cert.issued_at).toLocaleDateString()}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'community' && (
+          <div>
+            <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+              {ROOMS.map(room => (
+                <button key={room} onClick={() => setCommunityRoom(room)} className={"px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-colors " + (communityRoom === room ? 'bg-black text-white' : 'bg-white border border-gray-200 text-gray-600')}>
+                  {room}
+                </button>
+              ))}
+            </div>
+
+            {user && (
+              <div className="bg-white border border-gray-200 rounded-2xl p-4 mb-6">
+                <textarea
+                  value={postContent}
+                  onChange={e => setPostContent(e.target.value)}
+                  placeholder={`Share a market insight in #${communityRoom}...`}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black resize-none"
+                  rows={3}
+                />
+                <div className="flex justify-end mt-2">
+                  <button onClick={handlePost} disabled={posting || !postContent.trim()} className="px-5 py-2 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50">
+                    {posting ? 'Posting...' : 'Post'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {communityPosts.length === 0 ? (
+                <div className="text-center py-16 bg-white border border-gray-200 rounded-2xl">
+                  <p className="text-gray-400">No posts yet in #{communityRoom}. Be the first!</p>
+                </div>
+              ) : communityPosts.map((post, i) => (
+                <div key={i} className="bg-white border border-gray-200 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">{post.users?.full_name?.[0] || 'A'}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{post.users?.full_name || 'Anonymous'}</p>
+                      <p className="text-xs text-gray-400">{new Date(post.created_at).toLocaleString()}</p>
+                    </div>
+                    {post.is_analyst && <span className="ml-auto px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">Analyst</span>}
+                  </div>
+                  <p className="text-sm text-gray-700">{post.content}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'mentor' && (
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">AI Mentor</h2>
+            <p className="text-gray-500 text-sm mb-6">Your personalized learning guide based on your progress and trading performance.</p>
+            {!user ? (
+              <div className="text-center py-20 bg-white border border-gray-200 rounded-2xl">
+                <p className="text-gray-400 mb-4">Login to get personalized AI mentoring</p>
+                <button onClick={() => window.location.href = '/login'} className="px-6 py-3 bg-black text-white rounded-xl text-sm font-medium">Login</button>
+              </div>
+            ) : loadingMentor ? (
+              <div className="text-center py-20">
+                <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-gray-500 text-sm">AI Mentor is analyzing your profile...</p>
+              </div>
+            ) : mentorData ? (
+              <div className="space-y-5">
+                <div className="bg-white border border-gray-200 rounded-2xl p-6">
+                  <p className="text-sm font-semibold text-gray-900 mb-2">Overall Assessment</p>
+                  <p className="text-gray-600 text-sm leading-relaxed">{mentorData.recommendation.assessment}</p>
+                  <p className="text-yellow-600 text-sm mt-3 italic">{mentorData.recommendation.motivationalMessage}</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div className="bg-green-50 border border-green-200 rounded-2xl p-5">
+                    <p className="text-sm font-semibold text-green-800 mb-3">Strengths</p>
+                    <ul className="space-y-2">
+                      {mentorData.recommendation.strengths.map((s: string, i: number) => (
+                        <li key={i} className="text-sm text-green-700 flex items-start gap-2"><span>✓</span>{s}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="bg-red-50 border border-red-200 rounded-2xl p-5">
+                    <p className="text-sm font-semibold text-red-800 mb-3">Areas to Improve</p>
+                    <ul className="space-y-2">
+                      {mentorData.recommendation.weaknesses.map((w: string, i: number) => (
+                        <li key={i} className="text-sm text-red-700 flex items-start gap-2"><span>→</span>{w}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                <div className="bg-white border border-gray-200 rounded-2xl p-6">
+                  <p className="text-sm font-semibold text-gray-900 mb-3">Next Steps</p>
+                  <ul className="space-y-2">
+                    {mentorData.recommendation.nextSteps.map((step: string, i: number) => (
+                      <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
+                        <span className="w-5 h-5 bg-black text-white rounded-full flex items-center justify-center text-xs flex-shrink-0">{i + 1}</span>
+                        {step}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-5">
+                  <p className="text-sm font-semibold text-yellow-800 mb-1">Recommended Next School</p>
+                  <p className="text-yellow-700">{mentorData.recommendation.recommendedSchool}</p>
+                  <button onClick={() => { const school = SCHOOLS.find(s => s.id === mentorData.recommendation.recommendedSchool); if (school) { setSelectedSchool(school); setActiveTab('schools'); }}} className="mt-3 px-4 py-2 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors">
+                    Go to School →
+                  </button>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        )}
       </div>
 
       <div className="bg-black text-white py-16 px-4">
@@ -358,12 +624,8 @@ export default function Academy() {
             <div>
               <p className="text-yellow-500 text-sm font-medium mb-2 uppercase tracking-wide">Founder & Head of Education</p>
               <h3 className="text-2xl font-bold text-white mb-3">Glean Moore</h3>
-              <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                Glean Moore is the visionary behind AureoTrack Academy — a global trading education platform designed to empower individuals across Asia, Africa, and beyond to understand markets, build wealth, and achieve financial independence.
-              </p>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Through live events, AI-powered lessons, and a growing global community, Glean and the AureoTrack team are building the next generation of informed, confident traders.
-              </p>
+              <p className="text-gray-400 text-sm leading-relaxed mb-4">Glean Moore is the visionary behind AureoTrack Academy — a global trading education platform designed to empower individuals across Asia, Africa, and beyond.</p>
+              <p className="text-gray-400 text-sm leading-relaxed">Through live events, AI-powered lessons, and a growing global community, Glean and the AureoTrack team are building the next generation of informed, confident traders.</p>
             </div>
           </div>
         </div>
@@ -371,8 +633,7 @@ export default function Academy() {
 
       <div className="bg-gray-900 py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-white text-center mb-3">Live Events & Community</h2>
-          <p className="text-gray-400 text-center text-sm mb-10">AureoTrack brings students and traders together across the globe</p>
+          <h2 className="text-2xl font-bold text-white text-center mb-10">Live Events & Community</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="rounded-2xl overflow-hidden h-64">
               <img src="/academy/photos/live-event.jpeg" alt="AureoTrack Live Event" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
@@ -383,10 +644,10 @@ export default function Academy() {
           </div>
         </div>
       </div>
-     <div className="bg-gray-50 py-16 px-4">
+
+      <div className="bg-gray-50 py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-3">Global Chapters</h2>
-          <p className="text-gray-500 text-center text-sm mb-10">AureoAcademy is present across Asia, Africa, and growing worldwide</p>
+          <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">Global Chapters</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {[
               { title: 'Asia Chapter', image: '/academy/photos/asia-chapter.jpeg', desc: 'Empowering traders across Southeast Asia and beyond with world-class financial education.' },
@@ -409,7 +670,7 @@ export default function Academy() {
       <div className="bg-black text-white py-16 px-4 text-center">
         <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-12 h-12 rounded-xl mx-auto mb-4 object-cover" />
         <h2 className="text-2xl font-bold mb-2">Start your trading journey today</h2>
-        <p className="text-gray-400 mb-6">Free lessons, AI quizzes, and an AI assistant — all in one place.</p>
+        <p className="text-gray-400 mb-6">6 schools, 60+ lessons, AI quizzes, certifications — all free.</p>
         <button onClick={() => window.location.href = '/register'} className="px-8 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
           Create Free Account
         </button>
@@ -426,7 +687,7 @@ export default function Academy() {
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {chatMessages.length === 0 && (
-              <p className="text-sm text-gray-400">Ask me anything about trading — "What is RSI?" or "Explain leverage risk"</p>
+              <p className="text-sm text-gray-400">Ask me anything — "What is a liquidity sweep?" or "Explain DeFi"</p>
             )}
             {chatMessages.map((msg, i) => (
               <div key={i} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
@@ -435,32 +696,15 @@ export default function Academy() {
                 </span>
               </div>
             ))}
-            {chatLoading && (
-              <div className="text-left">
-                <span className="inline-block px-3 py-2 rounded-xl text-sm bg-gray-100 text-gray-400">Thinking...</span>
-              </div>
-            )}
+            {chatLoading && <div className="text-left"><span className="inline-block px-3 py-2 rounded-xl text-sm bg-gray-100 text-gray-400">Thinking...</span></div>}
           </div>
           <div className="p-4 border-t border-gray-200 flex gap-2">
-            <input
-              type="text"
-              value={chatInput}
-              onChange={e => setChatInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleAskAssistant()}
-              placeholder="Ask a question..."
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
-            />
-            <button onClick={handleAskAssistant} disabled={chatLoading} className="px-4 py-2 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50">
-              Send
-            </button>
+            <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAskAssistant()} placeholder="Ask a question..." className="flex-1 px-3 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black" />
+            <button onClick={handleAskAssistant} disabled={chatLoading} className="px-4 py-2 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50">Send</button>
           </div>
         </div>
       )}
-      <button
-        onClick={() => setShowAssistant(!showAssistant)}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-black text-white rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-gray-800 transition-colors z-40"
-        style={{ display: showAssistant ? 'none' : 'flex' }}
-      >
+      <button onClick={() => setShowAssistant(!showAssistant)} className="fixed bottom-6 right-6 w-14 h-14 bg-black text-white rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-gray-800 transition-colors z-40" style={{ display: showAssistant ? 'none' : 'flex' }}>
         💬
       </button>
     </main>
