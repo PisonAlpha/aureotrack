@@ -16,6 +16,7 @@ interface Asset {
 
 const NAV_LINKS = [
   { label: 'Markets', href: '/' },
+  { label: 'Intelligence', href: '/markets' },
   { label: 'Trade', href: '/trade' },
   { label: 'Crypto', href: '/crypto' },
   { label: 'Portfolio', href: '/portfolio' },
