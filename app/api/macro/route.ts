@@ -4,8 +4,10 @@ import { getCommodityPrices } from '@/lib/twelvedata';
 
 export async function GET() {
   try {
-    const prices = await getMacroAssetPrices();
-    const commodities = await getCommodityPrices();
+    const [prices, commodities] = await Promise.all([
+      getMacroAssetPrices(),
+      getCommodityPrices(),
+    ]);
 
     const commodityAssets = commodities.map(c => ({
       id: c.symbol.toLowerCase(),
@@ -16,12 +18,16 @@ export async function GET() {
       price_change_percentage_7d_in_currency: undefined,
       market_cap: 0,
       total_volume: 0,
+      high_24h: 0,
+      low_24h: 0,
+      type: 'commodity',
     }));
 
-    const allAssets = [...prices, ...commodityAssets];
+    const cryptoAssets = prices.map(p => ({ ...p, type: 'crypto' }));
+    const allAssets = [...cryptoAssets, ...commodityAssets];
 
-    let riskScore = 50;
     const btc = prices.find(p => p.id === 'bitcoin');
+    let riskScore = 50;
     if (btc) {
       if (btc.price_change_percentage_24h > 3) riskScore += 20;
       else if (btc.price_change_percentage_24h > 0) riskScore += 10;
@@ -29,18 +35,18 @@ export async function GET() {
       else if (btc.price_change_percentage_24h < 0) riskScore -= 10;
     }
     riskScore = Math.max(0, Math.min(100, riskScore));
+    const sentiment = riskScore >= 65 ? 'Risk On' : riskScore <= 35 ? 'Risk Off' : 'Neutral';
 
-    let sentiment = 'Neutral';
-    if (riskScore >= 65) sentiment = 'Risk On';
-    else if (riskScore <= 35) sentiment = 'Risk Off';
+    const totalMarketCap = prices.reduce((sum, p) => sum + (p.market_cap || 0), 0);
+    const totalVolume = prices.reduce((sum, p) => sum + (p.total_volume || 0), 0);
+    const gainers = prices.filter(p => p.price_change_percentage_24h > 0).length;
+    const losers = prices.filter(p => p.price_change_percentage_24h < 0).length;
 
     return NextResponse.json({
       success: true,
       assets: allAssets,
-      riskSentiment: {
-        score: riskScore,
-        label: sentiment,
-      },
+      marketStats: { totalMarketCap, totalVolume, gainers, losers },
+      riskSentiment: { score: riskScore, label: sentiment },
       updatedAt: new Date().toISOString(),
     });
   } catch (error) {
