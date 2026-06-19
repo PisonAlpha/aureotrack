@@ -54,15 +54,13 @@ const COURSES = [
 ];
 
 const STAFF = [
-  { name: 'Coming Soon', role: 'Head of Education', image: null },
-  { name: 'Coming Soon', role: 'Senior Analyst', image: null },
-  { name: 'Coming Soon', role: 'Trading Coach', image: null },
+  { name: 'Glean Moore', role: 'Founder & Head of Education', image: '/academy/photos/staff-stage.jpeg' },
 ];
 
 const STUDENTS = [
-  { name: 'Coming Soon', quote: 'AureoAcademy changed how I think about markets.', image: null },
-  { name: 'Coming Soon', quote: 'The best free trading education I have found online.', image: null },
-  { name: 'Coming Soon', quote: 'Risk management lessons saved my portfolio.', image: null },
+  { name: 'Asia Chapter Students', quote: 'AureoAcademy is changing how we approach global markets and financial education.', image: '/academy/photos/asia-chapter.jpeg' },
+  { name: 'Africa Chapter Students', quote: 'From Africa to the world — AureoAcademy gave us the tools to trade and build wealth.', image: '/academy/photos/africa-chapter.jpeg' },
+  { name: 'Global Community', quote: 'The energy at every AureoTrack event is incredible. This is more than education.', image: '/academy/photos/students-group.jpeg' },
 ];
 
 export default function Academy() {
@@ -352,41 +350,55 @@ export default function Academy() {
 
       <div className="bg-black text-white py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-center mb-10">Meet Our Team</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {STAFF.map((member, i) => (
-              <div key={i} className="text-center">
-                <div className="w-24 h-24 rounded-full bg-gray-800 mx-auto mb-4 flex items-center justify-center border-2 border-yellow-500">
-                  {member.image ? (
-                    <img src={member.image} alt={member.name} className="w-full h-full rounded-full object-cover" />
-                  ) : (
-                    <span className="text-gray-500 text-xs">Photo coming</span>
-                  )}
-                </div>
-                <p className="font-semibold text-white">{member.name}</p>
-                <p className="text-sm text-gray-400">{member.role}</p>
-              </div>
-            ))}
+          <h2 className="text-2xl font-bold text-center mb-10">Meet Our Founder</h2>
+          <div className="flex flex-col sm:flex-row items-center gap-8 bg-gray-900 rounded-2xl p-8">
+            <div className="w-full sm:w-1/2 h-72 rounded-2xl overflow-hidden flex-shrink-0">
+              <img src="/academy/photos/staff-stage.jpeg" alt="Glean Moore" className="w-full h-full object-cover object-top" />
+            </div>
+            <div>
+              <p className="text-yellow-500 text-sm font-medium mb-2 uppercase tracking-wide">Founder & Head of Education</p>
+              <h3 className="text-2xl font-bold text-white mb-3">Glean Moore</h3>
+              <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                Glean Moore is the visionary behind AureoTrack Academy — a global trading education platform designed to empower individuals across Asia, Africa, and beyond to understand markets, build wealth, and achieve financial independence.
+              </p>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Through live events, AI-powered lessons, and a growing global community, Glean and the AureoTrack team are building the next generation of informed, confident traders.
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-gray-50 py-16 px-4">
+      <div className="bg-gray-900 py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">What Our Students Say</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {STUDENTS.map((student, i) => (
-              <div key={i} className="bg-white border border-gray-200 rounded-2xl p-6">
-                <p className="text-gray-600 text-sm mb-4 italic">"{student.quote}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200">
-                    {student.image ? (
-                      <img src={student.image} alt={student.name} className="w-full h-full rounded-full object-cover" />
-                    ) : (
-                      <span className="text-gray-400 text-xs">📷</span>
-                    )}
-                  </div>
-                  <p className="font-medium text-gray-900 text-sm">{student.name}</p>
+          <h2 className="text-2xl font-bold text-white text-center mb-3">Live Events & Community</h2>
+          <p className="text-gray-400 text-center text-sm mb-10">AureoTrack brings students and traders together across the globe</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="rounded-2xl overflow-hidden h-64">
+              <img src="/academy/photos/live-event.jpeg" alt="AureoTrack Live Event" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div className="rounded-2xl overflow-hidden h-64">
+              <img src="/academy/photos/students-group.jpeg" alt="AureoTrack Students" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+          </div>
+        </div>
+      </div>
+     <div className="bg-gray-50 py-16 px-4">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl font-bold text-gray-900 text-center mb-3">Global Chapters</h2>
+          <p className="text-gray-500 text-center text-sm mb-10">AureoAcademy is present across Asia, Africa, and growing worldwide</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {[
+              { title: 'Asia Chapter', image: '/academy/photos/asia-chapter.jpeg', desc: 'Empowering traders across Southeast Asia and beyond with world-class financial education.' },
+              { title: 'Africa Chapter', image: '/academy/photos/africa-chapter.jpeg', desc: 'Building Africa\'s next generation of financially literate traders and investors.' },
+            ].map((chapter, i) => (
+              <div key={i} className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+                <div className="h-52 overflow-hidden">
+                  <img src={chapter.image} alt={chapter.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-bold text-gray-900 mb-2">{chapter.title}</h3>
+                  <p className="text-sm text-gray-500">{chapter.desc}</p>
                 </div>
               </div>
             ))}
