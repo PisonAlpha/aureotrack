@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getArbitrageData } from '@/lib/exchanges';
+import { getArbitrageData, TRADABLE_SYMBOLS } from '@/lib/exchanges';
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,14 +18,20 @@ export async function GET(request: NextRequest) {
     const spreadAmount = highest.price - lowest.price;
     const spreadPercent = (spreadAmount / lowest.price) * 100;
 
+    const cexPrices = sorted.filter(p => p.type === 'CEX');
+    const dexPrices = sorted.filter(p => p.type === 'DEX');
+
     return NextResponse.json({
       success: true,
       symbol,
       prices: sorted,
+      cexPrices,
+      dexPrices,
       lowest,
       highest,
       spreadAmount,
       spreadPercent,
+      availableSymbols: TRADABLE_SYMBOLS,
     });
   } catch (error) {
     console.error('Arbitrage scan error:', error);
