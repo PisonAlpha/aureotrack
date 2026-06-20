@@ -30,7 +30,7 @@ export default function Home() {
   const [user, setUser] = useState<any>(null);
   const [sortBy, setSortBy] = useState<'market_cap' | 'price_change_percentage_24h' | 'total_volume'>('market_cap');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
-  const [filter, setFilter] = useState<'all' | 'crypto' | 'commodity'>('all');
+  const [filter, setFilter] = useState<'all' | 'crypto' | 'commodity' | 'forex'>('all');
   const [search, setSearch] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -75,8 +75,9 @@ export default function Home() {
       return sortDir === 'desc' ? bVal - aVal : aVal - bVal;
     });
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number, type?: string) => {
     if (!price) return '$0';
+    if (type === 'forex') return price.toFixed(4);
     if (price >= 1000) return '$' + price.toLocaleString(undefined, { maximumFractionDigits: 0 });
     if (price >= 1) return '$' + price.toFixed(2);
     return '$' + price.toFixed(6);
@@ -187,8 +188,8 @@ export default function Home() {
               className="w-full pl-9 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white/30"
             />
           </div>
-          <div className="flex gap-2">
-            {(['all', 'crypto', 'commodity'] as const).map(f => (
+          <div className="flex gap-2 flex-wrap">
+            {(['all', 'crypto', 'commodity', 'forex'] as const).map(f => (
               <button key={f} onClick={() => setFilter(f)} className={"px-4 py-2 rounded-xl text-sm font-medium transition-colors capitalize " + (filter === f ? 'bg-white text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10')}>
                 {f}
               </button>
@@ -240,7 +241,7 @@ export default function Home() {
                         </div>
                       </td>
                       <td className="px-4 py-4 text-right">
-                        <span className="text-sm font-medium text-white">{formatPrice(asset.current_price)}</span>
+                        <span className="text-sm font-medium text-white">{formatPrice(asset.current_price, asset.type)}</span>
                       </td>
                       <td className="px-4 py-4 text-right">
                         <span className={"text-sm font-medium " + (asset.price_change_percentage_24h >= 0 ? 'text-green-400' : 'text-red-400')}>
