@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Nav from '../components/Nav';
+import TradingViewChart from '../components/TradingViewChart';
 
 const TRADABLE_ASSETS = [
   { symbol: 'BTC', name: 'Bitcoin', type: 'crypto', tvSymbol: 'BINANCE:BTCUSDT' },
@@ -49,7 +51,8 @@ export default function Trade() {
   const [showTopUp, setShowTopUp] = useState(false);
   const [topUpAmount, setTopUpAmount] = useState('');
   const [toppingUp, setToppingUp] = useState(false);
-
+  const [assetSearch, setAssetSearch] = useState('');
+  const [showAssetDropdown, setShowAssetDropdown] = useState(false);
   useEffect(() => {
     const stored = localStorage.getItem('aureotrack_user');
     if (stored) setUser(JSON.parse(stored));
@@ -223,44 +226,41 @@ export default function Trade() {
   };
   if (!checkedAuth) return null;
 
-  if (!user) {
+ if (!user) {
     return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div className="bg-white border border-gray-200 rounded-2xl p-8 text-center max-w-md">
+      <main className="min-h-screen bg-[#0d0d0d] text-white flex items-center justify-center px-4">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center max-w-md">
           <div className="text-4xl mb-3">🔒</div>
-          <h3 className="font-semibold text-gray-900 text-lg mb-2">Login Required</h3>
-          <p className="text-gray-500 text-sm mb-6">Create a free account to access the demo trading terminal with $10,000 in virtual funds.</p>
+          <h3 className="font-semibold text-white text-lg mb-2">Login Required</h3>
+          <p className="text-gray-400 text-sm mb-6">Create a free account to access the demo trading terminal with $100,000 in virtual funds.</p>
           <div className="flex gap-3 justify-center">
-            <button onClick={() => window.location.href = '/login'} className="px-6 py-3 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors">Login</button>
-            <button onClick={() => window.location.href = '/register'} className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors">Sign up free</button>
+            <button onClick={() => window.location.href = '/login'} className="px-6 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">Login</button>
+            <button onClick={() => window.location.href = '/register'} className="px-6 py-3 border border-white/20 text-gray-300 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">Sign up free</button>
           </div>
         </div>
       </main>
     );
   }
 
-  return (
-    <main className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-transparent border-0 cursor-pointer p-0">
-            <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-9 h-9 rounded-lg object-cover" />
-            <span className="font-bold text-gray-900 text-lg">AureoTrack</span>
-          </button>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-xs text-gray-400">Demo Balance</p>
-              <p className="font-bold text-gray-900">${account?.balance?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '...'}</p>
+ return (
+    <main className="min-h-screen bg-[#0d0d0d] text-white">
+      <Nav active="AureoTrade" />
+      <div className="bg-[#111111] border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="text-right ml-auto flex items-center gap-4">
+            <div>
+              <p className="text-xs text-gray-500">Demo Balance</p>
+              <p className="font-bold text-white">${account?.balance?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '...'}</p>
             </div>
             <button
               onClick={() => setShowTopUp(true)}
-              className="px-4 py-2 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors"
+              className="px-4 py-2 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors"
             >
               + Top Up
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {stats && (
@@ -290,29 +290,56 @@ export default function Trade() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white border border-gray-200 rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-6">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                 <div>
-                  <h2 className="font-bold text-gray-900 text-lg">{selectedAsset.symbol}/USD</h2>
-                  <p className="text-sm text-gray-400">{selectedAsset.name}</p>
+                  <h2 className="font-bold text-white text-lg">{selectedAsset.symbol}{selectedAsset.type === 'forex' ? '' : '/USD'}</h2>
+                  <p className="text-sm text-gray-500">{selectedAsset.name}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-gray-900">
-                    {currentPrice ? '$' + currentPrice.toLocaleString(undefined, { maximumFractionDigits: currentPrice > 100 ? 0 : 2 }) : '...'}
+                  <p className="text-2xl font-bold text-white">
+                    {currentPrice ? '$' + currentPrice.toLocaleString(undefined, { maximumFractionDigits: currentPrice > 100 ? 0 : currentPrice < 1 ? 6 : 2 }) : '...'}
                   </p>
-                  <p className={priceChange >= 0 ? 'text-green-600 text-sm font-medium' : 'text-red-600 text-sm font-medium'}>
+                  <p className={priceChange >= 0 ? 'text-green-400 text-sm font-medium' : 'text-red-400 text-sm font-medium'}>
                     {priceChange >= 0 ? '+' : ''}{priceChange?.toFixed(2)}% 24h
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-4">
-                {TRADABLE_ASSETS.map(asset => (
+              <div className="relative mb-4">
+                <input
+                  type="text"
+                  value={assetSearch}
+                  onChange={e => setAssetSearch(e.target.value)}
+                  onFocus={() => setShowAssetDropdown(true)}
+                  placeholder="Search any trading pair (BTC, ETH, EURUSD...)"
+                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500/50"
+                />
+                {showAssetDropdown && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl max-h-64 overflow-y-auto z-20">
+                    {TRADABLE_ASSETS.filter(a =>
+                      !assetSearch || a.symbol.toLowerCase().includes(assetSearch.toLowerCase()) || a.name.toLowerCase().includes(assetSearch.toLowerCase())
+                    ).map(asset => (
+                      <button
+                        key={asset.symbol}
+                        onClick={() => { setSelectedAsset(asset); setShowAssetDropdown(false); setAssetSearch(''); }}
+                        className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors flex items-center justify-between"
+                      >
+                        <span>{asset.symbol} <span className="text-gray-600 text-xs">— {asset.name}</span></span>
+                        <span className="text-xs text-gray-600 uppercase">{asset.type}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
+                {TRADABLE_ASSETS.slice(0, 10).map(asset => (
                   <button
                     key={asset.symbol}
                     onClick={() => setSelectedAsset(asset)}
-                    className={"px-3 py-2 rounded-xl text-xs font-medium transition-colors " + (
-                      selectedAsset.symbol === asset.symbol ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    className={"px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors " + (
+                      selectedAsset.symbol === asset.symbol ? 'bg-yellow-500 text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10'
                     )}
                   >
                     {asset.symbol}
@@ -320,8 +347,8 @@ export default function Trade() {
                 ))}
               </div>
 
-              <div className="bg-gray-50 rounded-xl h-64 flex items-center justify-center border border-gray-100">
-                <p className="text-gray-400 text-sm">📈 Live chart coming soon — TradingView integration</p>
+              <div className="rounded-xl overflow-hidden border border-white/10">
+                <TradingViewChart symbol={selectedAsset.tvSymbol} />
               </div>
             </div>
 
