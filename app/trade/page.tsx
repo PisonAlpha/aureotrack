@@ -53,6 +53,7 @@ export default function Trade() {
   const [toppingUp, setToppingUp] = useState(false);
   const [assetSearch, setAssetSearch] = useState('');
   const [showAssetDropdown, setShowAssetDropdown] = useState(false);
+
   useEffect(() => {
     const stored = localStorage.getItem('aureotrack_user');
     if (stored) setUser(JSON.parse(stored));
@@ -168,6 +169,7 @@ export default function Trade() {
       setPlacing(false);
     }
   };
+
   const handleTopUp = async () => {
     if (!topUpAmount || parseFloat(topUpAmount) <= 0) {
       setError('Enter a valid amount');
@@ -198,7 +200,7 @@ export default function Trade() {
     }
   };
 
- const handleClosePosition = async (trade: any) => {
+  const handleClosePosition = async (trade: any) => {
     const livePrice = livePrices[trade.asset_symbol];
     if (!livePrice) {
       await fetchPrice(trade.asset_symbol);
@@ -224,9 +226,10 @@ export default function Trade() {
       setError(err.message);
     }
   };
+
   if (!checkedAuth) return null;
 
- if (!user) {
+  if (!user) {
     return (
       <main className="min-h-screen bg-[#0d0d0d] text-white flex items-center justify-center px-4">
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center max-w-md">
@@ -242,7 +245,7 @@ export default function Trade() {
     );
   }
 
- return (
+  return (
     <main className="min-h-screen bg-[#0d0d0d] text-white">
       <Nav active="AureoTrade" />
       <div className="bg-[#111111] border-b border-white/10">
@@ -265,23 +268,23 @@ export default function Trade() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {stats && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white border border-gray-200 rounded-xl p-4">
-              <p className="text-xs text-gray-400 mb-1">Total Return</p>
-              <p className={"text-xl font-bold " + (stats.totalReturn >= 0 ? 'text-green-600' : 'text-red-600')}>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+              <p className="text-xs text-gray-500 mb-1">Total Return</p>
+              <p className={"text-xl font-bold " + (stats.totalReturn >= 0 ? 'text-green-400' : 'text-red-400')}>
                 {stats.totalReturn >= 0 ? '+' : ''}{stats.totalReturn.toFixed(2)}%
               </p>
             </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-4">
-              <p className="text-xs text-gray-400 mb-1">Win Rate</p>
-              <p className="text-xl font-bold text-gray-900">{stats.winRate.toFixed(1)}%</p>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+              <p className="text-xs text-gray-500 mb-1">Win Rate</p>
+              <p className="text-xl font-bold text-white">{stats.winRate.toFixed(1)}%</p>
             </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-4">
-              <p className="text-xs text-gray-400 mb-1">Total Trades</p>
-              <p className="text-xl font-bold text-gray-900">{stats.totalTrades}</p>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+              <p className="text-xs text-gray-500 mb-1">Total Trades</p>
+              <p className="text-xl font-bold text-white">{stats.totalTrades}</p>
             </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-4">
-              <p className="text-xs text-gray-400 mb-1">Total P&L</p>
-              <p className={"text-xl font-bold " + (stats.totalPnl >= 0 ? 'text-green-600' : 'text-red-600')}>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+              <p className="text-xs text-gray-500 mb-1">Total P&L</p>
+              <p className={"text-xl font-bold " + (stats.totalPnl >= 0 ? 'text-green-400' : 'text-red-400')}>
                 {stats.totalPnl >= 0 ? '+' : ''}${stats.totalPnl.toFixed(2)}
               </p>
             </div>
@@ -352,42 +355,42 @@ export default function Trade() {
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-2xl p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Open Positions ({openTrades.length})</h3>
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+              <h3 className="font-semibold text-white mb-4">Open Positions ({openTrades.length})</h3>
               {openTrades.length === 0 ? (
-                <p className="text-gray-400 text-sm text-center py-8">No open positions</p>
+                <p className="text-gray-500 text-sm text-center py-8">No open positions</p>
               ) : (
                 <div className="space-y-3">
                   {openTrades.map(trade => {
                     const pnl = calculatePnl(trade);
                     return (
-                      <div key={trade.id} className="border border-gray-200 rounded-xl p-4">
+                      <div key={trade.id} className="border border-white/10 rounded-xl p-4">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold text-gray-900">{trade.asset_symbol}</span>
-                            <span className={"px-2 py-0.5 rounded-full text-xs font-medium " + (trade.side === 'long' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')}>
+                            <span className="font-semibold text-white">{trade.asset_symbol}</span>
+                            <span className={"px-2 py-0.5 rounded-full text-xs font-medium " + (trade.side === 'long' ? 'bg-green-400/10 text-green-400' : 'bg-red-400/10 text-red-400')}>
                               {trade.side === 'long' ? 'LONG' : 'SHORT'} {trade.leverage}x
                             </span>
                           </div>
                           <button
                             onClick={() => handleClosePosition(trade)}
-                            className="px-3 py-1.5 bg-gray-900 text-white rounded-lg text-xs font-medium hover:bg-gray-700 transition-colors"
+                            className="px-3 py-1.5 bg-white/10 text-white rounded-lg text-xs font-medium hover:bg-white/20 transition-colors"
                           >
                             Close
                           </button>
                         </div>
                         <div className="grid grid-cols-3 gap-3 text-sm">
                           <div>
-                            <p className="text-gray-400 text-xs">Entry</p>
-                            <p className="font-medium text-gray-900">${trade.entry_price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                            <p className="text-gray-500 text-xs">Entry</p>
+                            <p className="font-medium text-white">${trade.entry_price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
                           </div>
                           <div>
-                            <p className="text-gray-400 text-xs">Quantity</p>
-                            <p className="font-medium text-gray-900">{trade.quantity}</p>
+                            <p className="text-gray-500 text-xs">Quantity</p>
+                            <p className="font-medium text-white">{trade.quantity}</p>
                           </div>
                           <div>
-                            <p className="text-gray-400 text-xs">Unrealized P&L</p>
-                            <p className={"font-bold " + (pnl === null ? 'text-gray-400' : pnl >= 0 ? 'text-green-600' : 'text-red-600')}>
+                            <p className="text-gray-500 text-xs">Unrealized P&L</p>
+                            <p className={"font-bold " + (pnl === null ? 'text-gray-500' : pnl >= 0 ? 'text-green-400' : 'text-red-400')}>
                               {pnl === null ? '...' : (pnl >= 0 ? '+' : '') + '$' + pnl.toFixed(2)}
                             </p>
                           </div>
@@ -401,40 +404,40 @@ export default function Trade() {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white border border-gray-200 rounded-2xl p-6">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 sticky top-20">
               <div className="flex gap-2 mb-6">
                 <button
                   onClick={() => setTradeMode('spot')}
-                  className={"flex-1 py-2 rounded-xl text-sm font-medium transition-colors " + (tradeMode === 'spot' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600')}
+                  className={"flex-1 py-2 rounded-xl text-sm font-medium transition-colors " + (tradeMode === 'spot' ? 'bg-yellow-500 text-black' : 'bg-white/5 text-gray-400 border border-white/10')}
                 >
                   Spot
                 </button>
                 <button
                   onClick={() => setTradeMode('futures')}
-                  className={"flex-1 py-2 rounded-xl text-sm font-medium transition-colors " + (tradeMode === 'futures' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600')}
+                  className={"flex-1 py-2 rounded-xl text-sm font-medium transition-colors " + (tradeMode === 'futures' ? 'bg-yellow-500 text-black' : 'bg-white/5 text-gray-400 border border-white/10')}
                 >
                   Futures
                 </button>
               </div>
 
               {error && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm mb-4">{error}</div>
+                <div className="p-3 bg-red-400/10 border border-red-400/20 rounded-xl text-red-400 text-sm mb-4">{error}</div>
               )}
               {success && (
-                <div className="p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm mb-4">{success}</div>
+                <div className="p-3 bg-green-400/10 border border-green-400/20 rounded-xl text-green-400 text-sm mb-4">{success}</div>
               )}
 
               {tradeMode === 'futures' && (
                 <div className="grid grid-cols-2 gap-2 mb-4">
                   <button
                     onClick={() => setSide('long')}
-                    className={"py-2.5 rounded-xl text-sm font-semibold transition-colors " + (side === 'long' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600')}
+                    className={"py-2.5 rounded-xl text-sm font-semibold transition-colors " + (side === 'long' ? 'bg-green-500 text-black' : 'bg-white/5 text-gray-400 border border-white/10')}
                   >
                     Long
                   </button>
                   <button
                     onClick={() => setSide('short')}
-                    className={"py-2.5 rounded-xl text-sm font-semibold transition-colors " + (side === 'short' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600')}
+                    className={"py-2.5 rounded-xl text-sm font-semibold transition-colors " + (side === 'short' ? 'bg-red-500 text-white' : 'bg-white/5 text-gray-400 border border-white/10')}
                   >
                     Short
                   </button>
@@ -442,16 +445,16 @@ export default function Trade() {
               )}
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Quantity</label>
                 <input
                   type="number"
                   value={quantity}
                   onChange={e => setQuantity(e.target.value)}
                   placeholder="0.00"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500/50"
                 />
                 {currentPrice && quantity && (
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     ≈ ${(parseFloat(quantity) * currentPrice).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                   </p>
                 )}
@@ -459,37 +462,37 @@ export default function Trade() {
 
               {tradeMode === 'futures' && (
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Leverage: {leverage}x</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">Leverage: {leverage}x</label>
                   <input
                     type="range"
                     min="1"
                     max="20"
                     value={leverage}
                     onChange={e => setLeverage(parseInt(e.target.value))}
-                    className="w-full"
+                    className="w-full accent-yellow-500"
                   />
                 </div>
               )}
 
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Stop Loss</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">Stop Loss</label>
                   <input
                     type="number"
                     value={stopLoss}
                     onChange={e => setStopLoss(e.target.value)}
                     placeholder="Optional"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500/50"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Take Profit</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">Take Profit</label>
                   <input
                     type="number"
                     value={takeProfit}
                     onChange={e => setTakeProfit(e.target.value)}
                     placeholder="Optional"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500/50"
                   />
                 </div>
               </div>
@@ -498,7 +501,7 @@ export default function Trade() {
                 onClick={handlePlaceTrade}
                 disabled={placing}
                 className={"w-full py-3.5 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 " + (
-                  tradeMode === 'futures' && side === 'short' ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-green-600 text-white hover:bg-green-700'
+                  tradeMode === 'futures' && side === 'short' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-green-500 text-black hover:bg-green-400'
                 )}
               >
                 {placing ? 'Placing order...' : tradeMode === 'spot' ? 'Buy ' + selectedAsset.symbol : (side === 'long' ? 'Open Long' : 'Open Short')}
@@ -507,14 +510,15 @@ export default function Trade() {
           </div>
         </div>
       </div>
-   {showTopUp && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="font-bold text-gray-900 text-lg mb-4">Top Up Demo Balance</h3>
-            <p className="text-sm text-gray-500 mb-4">Add virtual funds to your demo trading account. This is not real money.</p>
+
+      {showTopUp && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4">
+          <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 w-full max-w-sm">
+            <h3 className="font-bold text-white text-lg mb-4">Top Up Demo Balance</h3>
+            <p className="text-sm text-gray-400 mb-4">Add virtual funds to your demo trading account. This is not real money.</p>
 
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm mb-4">{error}</div>
+              <div className="p-3 bg-red-400/10 border border-red-400/20 rounded-xl text-red-400 text-sm mb-4">{error}</div>
             )}
 
             <div className="grid grid-cols-3 gap-2 mb-4">
@@ -523,7 +527,7 @@ export default function Trade() {
                   key={amt}
                   onClick={() => setTopUpAmount(amt)}
                   className={"py-2 rounded-xl text-sm font-medium transition-colors " + (
-                    topUpAmount === amt ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    topUpAmount === amt ? 'bg-yellow-500 text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10'
                   )}
                 >
                   +${parseInt(amt).toLocaleString()}
@@ -536,20 +540,20 @@ export default function Trade() {
               value={topUpAmount}
               onChange={e => setTopUpAmount(e.target.value)}
               placeholder="Or enter custom amount"
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black mb-4"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 mb-4"
             />
 
             <div className="flex gap-3">
               <button
                 onClick={() => { setShowTopUp(false); setError(null); }}
-                className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors"
+                className="flex-1 py-3 border border-white/20 text-gray-300 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleTopUp}
                 disabled={toppingUp}
-                className="flex-1 py-3 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+                className="flex-1 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors disabled:opacity-50"
               >
                 {toppingUp ? 'Adding...' : 'Add Funds'}
               </button>
