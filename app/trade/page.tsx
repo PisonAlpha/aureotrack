@@ -64,15 +64,15 @@ export default function Trade() {
     if (user) fetchAccount();
   }, [user]);
 
-  useEffect(() => {
+ useEffect(() => {
     fetchPrice(selectedAsset.symbol);
-    const interval = setInterval(() => fetchPrice(selectedAsset.symbol), 15000);
+    const interval = setInterval(() => fetchPrice(selectedAsset.symbol), 5000);
     return () => clearInterval(interval);
   }, [selectedAsset]);
 
-  useEffect(() => {
+ useEffect(() => {
     if (openTrades.length > 0) {
-      const interval = setInterval(updateLivePrices, 15000);
+      const interval = setInterval(updateLivePrices, 5000);
       updateLivePrices();
       return () => clearInterval(interval);
     }
