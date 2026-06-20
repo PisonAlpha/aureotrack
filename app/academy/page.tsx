@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Nav from '../components/Nav';
 
 const SCHOOLS = [
   {
@@ -8,8 +9,6 @@ const SCHOOLS = [
     title: 'Beginner School',
     description: 'Start here. Learn the foundations of financial markets from scratch.',
     icon: '🎓',
-    color: 'bg-blue-50 border-blue-200',
-    headerColor: 'bg-blue-600',
     badge: 'Level 1',
     banner: '/academy/trading-basics.svg',
   },
@@ -18,8 +17,6 @@ const SCHOOLS = [
     title: 'Forex Academy',
     description: 'Master currency trading from beginner to advanced smart money concepts.',
     icon: '💱',
-    color: 'bg-green-50 border-green-200',
-    headerColor: 'bg-green-600',
     badge: 'Level 2',
     banner: '/academy/technical-analysis.svg',
   },
@@ -28,8 +25,6 @@ const SCHOOLS = [
     title: 'Crypto Academy',
     description: 'Blockchain, DeFi, on-chain analysis, and advanced crypto trading.',
     icon: '₿',
-    color: 'bg-orange-50 border-orange-200',
-    headerColor: 'bg-orange-500',
     badge: 'Level 2',
     banner: '/academy/trading-basics.svg',
   },
@@ -38,8 +33,6 @@ const SCHOOLS = [
     title: 'Technical Analysis Academy',
     description: 'Candlesticks, chart patterns, indicators, and price action mastery.',
     icon: '📊',
-    color: 'bg-purple-50 border-purple-200',
-    headerColor: 'bg-purple-600',
     badge: 'Level 3',
     banner: '/academy/technical-analysis.svg',
   },
@@ -48,8 +41,6 @@ const SCHOOLS = [
     title: 'Risk Management Academy',
     description: 'Position sizing, stop losses, R:R ratio, and portfolio protection.',
     icon: '🛡️',
-    color: 'bg-red-50 border-red-200',
-    headerColor: 'bg-red-600',
     badge: 'Level 3',
     banner: '/academy/risk-management.svg',
   },
@@ -58,8 +49,6 @@ const SCHOOLS = [
     title: 'Trading Psychology Academy',
     description: 'Fear, greed, FOMO, discipline, and emotional mastery.',
     icon: '🧠',
-    color: 'bg-yellow-50 border-yellow-200',
-    headerColor: 'bg-yellow-600',
     badge: 'Level 4',
     banner: '/academy/market-psychology.svg',
   },
@@ -236,10 +225,10 @@ export default function Academy() {
 
   if (selectedLesson && lesson) {
     return (
-      <main className="min-h-screen bg-gray-50">
-        <header className="bg-black text-white sticky top-0 z-50">
+      <main className="min-h-screen bg-[#0d0d0d] text-white">
+        <header className="bg-[#0a0a0a] border-b border-white/10 sticky top-0 z-50">
           <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-            <button onClick={() => { setSelectedLesson(null); setLesson(null); }} className="text-sm text-gray-300 hover:text-white bg-transparent border-0 cursor-pointer">
+            <button onClick={() => { setSelectedLesson(null); setLesson(null); }} className="text-sm text-gray-400 hover:text-white bg-transparent border-0 cursor-pointer">
               ← Back to {selectedSchool?.title}
             </button>
             <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-8 h-8 rounded-lg object-cover" />
@@ -248,39 +237,39 @@ export default function Academy() {
 
         <div className="max-w-4xl mx-auto px-4 py-8">
           {certEarned && (
-            <div className="bg-yellow-50 border border-yellow-300 rounded-2xl p-6 mb-6 text-center">
+            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-6 mb-6 text-center">
               <p className="text-3xl mb-2">🏆</p>
-              <h3 className="font-bold text-yellow-800 text-lg">Certificate Earned!</h3>
-              <p className="text-yellow-700 text-sm">You completed the {certEarned.school} school</p>
-              <p className="text-yellow-600 text-xs mt-1">Certificate ID: {certEarned.certificate_id}</p>
+              <h3 className="font-bold text-yellow-400 text-lg">Certificate Earned!</h3>
+              <p className="text-yellow-300 text-sm">You completed the {certEarned.school} school</p>
+              <p className="text-yellow-500/70 text-xs mt-1">Certificate ID: {certEarned.certificate_id}</p>
             </div>
           )}
 
-          <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-6">
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-8 mb-6">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs text-gray-400 uppercase tracking-wide">{selectedLesson.school}</span>
-              <span className="text-xs text-gray-300">·</span>
-              <span className={"text-xs px-2 py-0.5 rounded-full " + (selectedLesson.level === 'Beginner' ? 'bg-blue-100 text-blue-700' : selectedLesson.level === 'Intermediate' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700')}>
+              <span className="text-xs text-gray-500 uppercase tracking-wide">{selectedLesson.school}</span>
+              <span className="text-xs text-gray-700">·</span>
+              <span className={"text-xs px-2 py-0.5 rounded-full " + (selectedLesson.level === 'Beginner' ? 'bg-blue-400/10 text-blue-400' : selectedLesson.level === 'Intermediate' ? 'bg-yellow-400/10 text-yellow-400' : 'bg-red-400/10 text-red-400')}>
                 {selectedLesson.level}
               </span>
-              {selectedLesson.completed && <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">✓ Completed</span>}
+              {selectedLesson.completed && <span className="text-xs px-2 py-0.5 rounded-full bg-green-400/10 text-green-400">✓ Completed</span>}
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">{lesson.title}</h1>
-            <p className="text-gray-600 mb-8 leading-relaxed">{lesson.introduction}</p>
+            <h1 className="text-2xl font-bold text-white mb-4">{lesson.title}</h1>
+            <p className="text-gray-400 mb-8 leading-relaxed">{lesson.introduction}</p>
             <div className="space-y-6 mb-8">
               {lesson.sections.map((section: any, i: number) => (
                 <div key={i}>
-                  <h3 className="font-semibold text-gray-900 mb-2">{section.heading}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">{section.content}</p>
+                  <h3 className="font-semibold text-white mb-2">{section.heading}</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">{section.content}</p>
                 </div>
               ))}
             </div>
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-6">
-              <p className="text-sm font-semibold text-amber-800 mb-3">Key Takeaways</p>
+            <div className="bg-yellow-500/5 border border-yellow-500/20 rounded-xl p-5 mb-6">
+              <p className="text-sm font-semibold text-yellow-400 mb-3">Key Takeaways</p>
               <ul className="space-y-2">
                 {lesson.keyTakeaways.map((t: string, i: number) => (
-                  <li key={i} className="text-sm text-amber-900 flex items-start gap-2">
-                    <span className="text-amber-600 font-bold">✓</span> {t}
+                  <li key={i} className="text-sm text-gray-300 flex items-start gap-2">
+                    <span className="text-yellow-500 font-bold">✓</span> {t}
                   </li>
                 ))}
               </ul>
@@ -288,8 +277,8 @@ export default function Academy() {
           </div>
 
           {lesson.quizQuestion && (
-            <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Quiz: {lesson.quizQuestion.question}</h3>
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
+              <h3 className="font-semibold text-white mb-4">Quiz: {lesson.quizQuestion.question}</h3>
               <div className="space-y-2">
                 {lesson.quizQuestion.options.map((opt: string, i: number) => (
                   <button
@@ -297,9 +286,9 @@ export default function Academy() {
                     onClick={() => handleQuizSubmit(i)}
                     disabled={quizSubmitted}
                     className={"w-full text-left px-4 py-3 rounded-xl text-sm border transition-colors " + (
-                      !quizSubmitted ? 'border-gray-200 hover:bg-gray-50 cursor-pointer' :
-                      i === lesson.quizQuestion.correctIndex ? 'border-green-300 bg-green-50 text-green-700' :
-                      i === selectedQuizOption ? 'border-red-300 bg-red-50 text-red-700' : 'border-gray-200 opacity-50'
+                      !quizSubmitted ? 'border-white/10 hover:bg-white/5 cursor-pointer text-gray-300' :
+                      i === lesson.quizQuestion.correctIndex ? 'border-green-400/30 bg-green-400/10 text-green-400' :
+                      i === selectedQuizOption ? 'border-red-400/30 bg-red-400/10 text-red-400' : 'border-white/10 opacity-50 text-gray-400'
                     )}
                   >
                     {opt}
@@ -307,7 +296,7 @@ export default function Academy() {
                 ))}
               </div>
               {quizSubmitted && (
-                <p className={"text-sm mt-3 font-medium " + (selectedQuizOption === lesson.quizQuestion.correctIndex ? 'text-green-600' : 'text-red-600')}>
+                <p className={"text-sm mt-3 font-medium " + (selectedQuizOption === lesson.quizQuestion.correctIndex ? 'text-green-400' : 'text-red-400')}>
                   {selectedQuizOption === lesson.quizQuestion.correctIndex ? '✓ Correct! Lesson marked as complete.' : '✗ Incorrect. Review the lesson and try again.'}
                 </p>
               )}
@@ -315,7 +304,7 @@ export default function Academy() {
           )}
 
           {user && (
-            <button onClick={handleMarkComplete} className="w-full py-3 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors">
+            <button onClick={handleMarkComplete} className="w-full py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
               Mark as Complete
             </button>
           )}
@@ -331,10 +320,10 @@ export default function Academy() {
     const progress = schoolCourses.length > 0 ? (completed / schoolCourses.length) * 100 : 0;
 
     return (
-      <main className="min-h-screen bg-gray-50">
-        <header className="bg-black text-white sticky top-0 z-50">
+      <main className="min-h-screen bg-[#0d0d0d] text-white">
+        <header className="bg-[#0a0a0a] border-b border-white/10 sticky top-0 z-50">
           <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-            <button onClick={() => setSelectedSchool(null)} className="text-sm text-gray-300 hover:text-white bg-transparent border-0 cursor-pointer">
+            <button onClick={() => setSelectedSchool(null)} className="text-sm text-gray-400 hover:text-white bg-transparent border-0 cursor-pointer">
               ← Back to AureoAcademy
             </button>
             <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-8 h-8 rounded-lg object-cover" />
@@ -349,20 +338,20 @@ export default function Academy() {
           <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
             <div>
               <span className="text-2xl mr-2">{selectedSchool.icon}</span>
-              <h1 className="text-2xl font-bold text-gray-900 inline">{selectedSchool.title}</h1>
+              <h1 className="text-2xl font-bold text-white inline">{selectedSchool.title}</h1>
               <p className="text-gray-500 text-sm mt-2">{selectedSchool.description}</p>
             </div>
-            <span className="px-3 py-1 bg-black text-white rounded-full text-xs font-medium">{selectedSchool.badge}</span>
+            <span className="px-3 py-1 bg-yellow-500 text-black rounded-full text-xs font-medium">{selectedSchool.badge}</span>
           </div>
 
           {user && (
-            <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-gray-600">Your Progress</span>
-                <span className="font-medium text-gray-900">{completed}/{schoolCourses.length} lessons</span>
+                <span className="text-gray-400">Your Progress</span>
+                <span className="font-medium text-white">{completed}/{schoolCourses.length} lessons</span>
               </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full bg-black rounded-full transition-all" style={{ width: progress + '%' }} />
+              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                <div className="h-full bg-yellow-500 rounded-full transition-all" style={{ width: progress + '%' }} />
               </div>
             </div>
           )}
@@ -370,23 +359,23 @@ export default function Academy() {
           {levels.map(level => (
             <div key={level} className="mb-8">
               <div className="flex items-center gap-3 mb-4">
-                <span className={"px-3 py-1 rounded-full text-xs font-medium " + (level === 'Beginner' ? 'bg-blue-100 text-blue-700' : level === 'Intermediate' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700')}>
+                <span className={"px-3 py-1 rounded-full text-xs font-medium " + (level === 'Beginner' ? 'bg-blue-400/10 text-blue-400' : level === 'Intermediate' ? 'bg-yellow-400/10 text-yellow-400' : 'bg-red-400/10 text-red-400')}>
                   {level}
                 </span>
-                <div className="flex-1 h-px bg-gray-200" />
+                <div className="flex-1 h-px bg-white/10" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {schoolCourses.filter(c => c.level === level).map(course => (
                   <button
                     key={course.id}
                     onClick={() => handleSelectLesson(course)}
-                    className={"text-left px-5 py-4 bg-white border rounded-xl hover:border-gray-400 transition-colors " + (course.completed ? 'border-green-300' : 'border-gray-200')}
+                    className={"text-left px-5 py-4 bg-white/5 border rounded-xl hover:border-white/30 hover:bg-white/8 transition-colors " + (course.completed ? 'border-green-400/30' : 'border-white/10')}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <p className="text-sm font-medium text-gray-900">{course.title}</p>
-                      {course.completed && <span className="text-green-500 text-xs">✓</span>}
+                      <p className="text-sm font-medium text-white">{course.title}</p>
+                      {course.completed && <span className="text-green-400 text-xs">✓</span>}
                     </div>
-                    <p className="text-xs text-gray-400">{course.description || 'AI-generated lesson · Includes quiz'}</p>
+                    <p className="text-xs text-gray-500">{course.description || 'AI-generated lesson · Includes quiz'}</p>
                   </button>
                 ))}
               </div>
@@ -398,43 +387,26 @@ export default function Academy() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <header className="bg-black text-white sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-transparent border-0 cursor-pointer p-0">
-            <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-9 h-9 rounded-lg object-cover" />
-            <span className="font-bold text-white text-lg">AureoAcademy</span>
-          </button>
-          <div className="hidden md:flex items-center gap-6">
-            {['schools', 'certifications', 'community', 'mentor'].map(tab => (
-              <button key={tab} onClick={() => setActiveTab(tab as any)} className={"text-sm capitalize bg-transparent border-0 cursor-pointer " + (activeTab === tab ? 'text-yellow-400 font-medium' : 'text-gray-300 hover:text-white')}>
-                {tab === 'mentor' ? 'AI Mentor' : tab}
-              </button>
-            ))}
-          </div>
-          <button onClick={() => setShowAssistant(true)} className="px-4 py-2 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
-            Ask AI
-          </button>
-        </div>
-      </header>
+    <main className="min-h-screen bg-[#0d0d0d] text-white">
+      <Nav active="AureoAcademy" />
 
-      <div className="bg-black text-white py-16 px-4">
+      <div className="bg-black border-b border-white/10 py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-16 h-16 rounded-2xl mx-auto mb-6 object-cover" />
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4">AureoAcademy</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-white">AureoAcademy</h1>
           <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">World-class trading education across 6 specialized schools. Learn, practice, get certified.</p>
           <div className="flex gap-4 justify-center flex-wrap">
             <button onClick={() => setActiveTab('schools')} className="px-6 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">Start Learning</button>
-            <button onClick={() => setActiveTab('certifications')} className="px-6 py-3 border border-gray-600 text-white rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">View Certifications</button>
+            <button onClick={() => setActiveTab('certifications')} className="px-6 py-3 border border-white/20 text-white rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">View Certifications</button>
           </div>
         </div>
       </div>
 
-      <div className="bg-white border-b border-gray-200 py-6 px-4">
+      <div className="bg-[#111111] border-b border-white/10 py-6 px-4">
         <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
           {[{ label: 'Schools', value: '6' }, { label: 'Lessons', value: '60+' }, { label: 'Certificates', value: '6' }, { label: 'AI-Powered', value: '100%' }].map(stat => (
             <div key={stat.label}>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+              <p className="text-2xl font-bold text-white">{stat.value}</p>
               <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
             </div>
           ))}
@@ -444,7 +416,7 @@ export default function Academy() {
       <div className="max-w-7xl mx-auto px-4 py-10">
         <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
           {['schools', 'certifications', 'community', 'mentor'].map(tab => (
-            <button key={tab} onClick={() => setActiveTab(tab as any)} className={"px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-colors " + (activeTab === tab ? 'bg-black text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50')}>
+            <button key={tab} onClick={() => setActiveTab(tab as any)} className={"px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-colors " + (activeTab === tab ? 'bg-yellow-500 text-black' : 'bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10')}>
               {tab === 'mentor' ? '🤖 AI Mentor' : tab === 'schools' ? '📚 Schools' : tab === 'certifications' ? '🏆 Certifications' : '💬 Community'}
             </button>
           ))}
@@ -453,16 +425,16 @@ export default function Academy() {
         {activeTab === 'schools' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {SCHOOLS.map(school => (
-              <button key={school.id} onClick={() => setSelectedSchool(school)} className={"text-left bg-white border rounded-2xl overflow-hidden hover:shadow-md transition-shadow " + school.color}>
+              <button key={school.id} onClick={() => setSelectedSchool(school)} className="text-left bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-white/30 hover:bg-white/8 transition-all">
                 <div className="h-36 overflow-hidden">
                   <img src={school.banner} alt={school.title} className="w-full h-full object-cover" />
                 </div>
                 <div className="p-5">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xl">{school.icon}</span>
-                    <span className="text-xs px-2 py-0.5 bg-black text-white rounded-full">{school.badge}</span>
+                    <span className="text-xs px-2 py-0.5 bg-yellow-500 text-black rounded-full font-medium">{school.badge}</span>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-1">{school.title}</h3>
+                  <h3 className="font-bold text-white mb-1">{school.title}</h3>
                   <p className="text-sm text-gray-500">{school.description}</p>
                 </div>
               </button>
@@ -472,27 +444,27 @@ export default function Academy() {
 
         {activeTab === 'certifications' && (
           <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Your Certifications</h2>
+            <h2 className="text-xl font-bold text-white mb-6">Your Certifications</h2>
             {!user ? (
-              <div className="text-center py-20 bg-white border border-gray-200 rounded-2xl">
-                <p className="text-gray-400 mb-4">Login to track your certifications</p>
-                <button onClick={() => window.location.href = '/login'} className="px-6 py-3 bg-black text-white rounded-xl text-sm font-medium">Login</button>
+              <div className="text-center py-20 bg-white/5 border border-white/10 rounded-2xl">
+                <p className="text-gray-500 mb-4">Login to track your certifications</p>
+                <button onClick={() => window.location.href = '/login'} className="px-6 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold">Login</button>
               </div>
             ) : certifications.length === 0 ? (
-              <div className="text-center py-20 bg-white border border-gray-200 rounded-2xl">
+              <div className="text-center py-20 bg-white/5 border border-white/10 rounded-2xl">
                 <p className="text-4xl mb-3">🎓</p>
-                <p className="text-gray-500 mb-2">No certificates yet</p>
-                <p className="text-gray-400 text-sm">Complete all lessons in a school to earn your certificate</p>
+                <p className="text-gray-400 mb-2">No certificates yet</p>
+                <p className="text-gray-600 text-sm">Complete all lessons in a school to earn your certificate</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {certifications.map((cert, i) => (
-                  <div key={i} className="bg-white border border-yellow-300 rounded-2xl p-6 text-center">
+                  <div key={i} className="bg-white/5 border border-yellow-500/30 rounded-2xl p-6 text-center">
                     <p className="text-4xl mb-3">🏆</p>
-                    <h3 className="font-bold text-gray-900 text-lg">{cert.school} Certificate</h3>
+                    <h3 className="font-bold text-white text-lg">{cert.school} Certificate</h3>
                     <p className="text-sm text-gray-500 mb-3">{cert.level}</p>
-                    <p className="text-xs text-gray-400 font-mono">{cert.certificate_id}</p>
-                    <p className="text-xs text-gray-400 mt-1">Issued {new Date(cert.issued_at).toLocaleDateString()}</p>
+                    <p className="text-xs text-gray-600 font-mono">{cert.certificate_id}</p>
+                    <p className="text-xs text-gray-600 mt-1">Issued {new Date(cert.issued_at).toLocaleDateString()}</p>
                   </div>
                 ))}
               </div>
@@ -504,23 +476,23 @@ export default function Academy() {
           <div>
             <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
               {ROOMS.map(room => (
-                <button key={room} onClick={() => setCommunityRoom(room)} className={"px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-colors " + (communityRoom === room ? 'bg-black text-white' : 'bg-white border border-gray-200 text-gray-600')}>
+                <button key={room} onClick={() => setCommunityRoom(room)} className={"px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-colors " + (communityRoom === room ? 'bg-yellow-500 text-black' : 'bg-white/5 border border-white/10 text-gray-400 hover:text-white')}>
                   {room}
                 </button>
               ))}
             </div>
 
             {user && (
-              <div className="bg-white border border-gray-200 rounded-2xl p-4 mb-6">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
                 <textarea
                   value={postContent}
                   onChange={e => setPostContent(e.target.value)}
                   placeholder={`Share a market insight in #${communityRoom}...`}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black resize-none"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 resize-none"
                   rows={3}
                 />
                 <div className="flex justify-end mt-2">
-                  <button onClick={handlePost} disabled={posting || !postContent.trim()} className="px-5 py-2 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50">
+                  <button onClick={handlePost} disabled={posting || !postContent.trim()} className="px-5 py-2 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors disabled:opacity-50">
                     {posting ? 'Posting...' : 'Post'}
                   </button>
                 </div>
@@ -529,22 +501,22 @@ export default function Academy() {
 
             <div className="space-y-3">
               {communityPosts.length === 0 ? (
-                <div className="text-center py-16 bg-white border border-gray-200 rounded-2xl">
-                  <p className="text-gray-400">No posts yet in #{communityRoom}. Be the first!</p>
+                <div className="text-center py-16 bg-white/5 border border-white/10 rounded-2xl">
+                  <p className="text-gray-500">No posts yet in #{communityRoom}. Be the first!</p>
                 </div>
               ) : communityPosts.map((post, i) => (
-                <div key={i} className="bg-white border border-gray-200 rounded-xl p-4">
+                <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">{post.users?.full_name?.[0] || 'A'}</span>
+                    <div className="w-8 h-8 bg-yellow-500/20 border border-yellow-500/30 rounded-full flex items-center justify-center">
+                      <span className="text-yellow-400 text-xs font-bold">{post.users?.full_name?.[0] || 'A'}</span>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{post.users?.full_name || 'Anonymous'}</p>
-                      <p className="text-xs text-gray-400">{new Date(post.created_at).toLocaleString()}</p>
+                      <p className="text-sm font-medium text-white">{post.users?.full_name || 'Anonymous'}</p>
+                      <p className="text-xs text-gray-600">{new Date(post.created_at).toLocaleString()}</p>
                     </div>
-                    {post.is_analyst && <span className="ml-auto px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">Analyst</span>}
+                    {post.is_analyst && <span className="ml-auto px-2 py-0.5 bg-yellow-400/10 text-yellow-400 rounded-full text-xs font-medium border border-yellow-400/20">Analyst</span>}
                   </div>
-                  <p className="text-sm text-gray-700">{post.content}</p>
+                  <p className="text-sm text-gray-300">{post.content}</p>
                 </div>
               ))}
             </div>
@@ -553,58 +525,58 @@ export default function Academy() {
 
         {activeTab === 'mentor' && (
           <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">AI Mentor</h2>
+            <h2 className="text-xl font-bold text-white mb-2">AI Mentor</h2>
             <p className="text-gray-500 text-sm mb-6">Your personalized learning guide based on your progress and trading performance.</p>
             {!user ? (
-              <div className="text-center py-20 bg-white border border-gray-200 rounded-2xl">
-                <p className="text-gray-400 mb-4">Login to get personalized AI mentoring</p>
-                <button onClick={() => window.location.href = '/login'} className="px-6 py-3 bg-black text-white rounded-xl text-sm font-medium">Login</button>
+              <div className="text-center py-20 bg-white/5 border border-white/10 rounded-2xl">
+                <p className="text-gray-500 mb-4">Login to get personalized AI mentoring</p>
+                <button onClick={() => window.location.href = '/login'} className="px-6 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold">Login</button>
               </div>
             ) : loadingMentor ? (
               <div className="text-center py-20">
-                <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <div className="w-8 h-8 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                 <p className="text-gray-500 text-sm">AI Mentor is analyzing your profile...</p>
               </div>
             ) : mentorData ? (
               <div className="space-y-5">
-                <div className="bg-white border border-gray-200 rounded-2xl p-6">
-                  <p className="text-sm font-semibold text-gray-900 mb-2">Overall Assessment</p>
-                  <p className="text-gray-600 text-sm leading-relaxed">{mentorData.recommendation.assessment}</p>
-                  <p className="text-yellow-600 text-sm mt-3 italic">{mentorData.recommendation.motivationalMessage}</p>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                  <p className="text-sm font-semibold text-white mb-2">Overall Assessment</p>
+                  <p className="text-gray-400 text-sm leading-relaxed">{mentorData.recommendation.assessment}</p>
+                  <p className="text-yellow-400 text-sm mt-3 italic">{mentorData.recommendation.motivationalMessage}</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div className="bg-green-50 border border-green-200 rounded-2xl p-5">
-                    <p className="text-sm font-semibold text-green-800 mb-3">Strengths</p>
+                  <div className="bg-green-400/5 border border-green-400/20 rounded-2xl p-5">
+                    <p className="text-sm font-semibold text-green-400 mb-3">Strengths</p>
                     <ul className="space-y-2">
                       {mentorData.recommendation.strengths.map((s: string, i: number) => (
-                        <li key={i} className="text-sm text-green-700 flex items-start gap-2"><span>✓</span>{s}</li>
+                        <li key={i} className="text-sm text-green-300 flex items-start gap-2"><span>✓</span>{s}</li>
                       ))}
                     </ul>
                   </div>
-                  <div className="bg-red-50 border border-red-200 rounded-2xl p-5">
-                    <p className="text-sm font-semibold text-red-800 mb-3">Areas to Improve</p>
+                  <div className="bg-red-400/5 border border-red-400/20 rounded-2xl p-5">
+                    <p className="text-sm font-semibold text-red-400 mb-3">Areas to Improve</p>
                     <ul className="space-y-2">
                       {mentorData.recommendation.weaknesses.map((w: string, i: number) => (
-                        <li key={i} className="text-sm text-red-700 flex items-start gap-2"><span>→</span>{w}</li>
+                        <li key={i} className="text-sm text-red-300 flex items-start gap-2"><span>→</span>{w}</li>
                       ))}
                     </ul>
                   </div>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-2xl p-6">
-                  <p className="text-sm font-semibold text-gray-900 mb-3">Next Steps</p>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                  <p className="text-sm font-semibold text-white mb-3">Next Steps</p>
                   <ul className="space-y-2">
                     {mentorData.recommendation.nextSteps.map((step: string, i: number) => (
-                      <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
-                        <span className="w-5 h-5 bg-black text-white rounded-full flex items-center justify-center text-xs flex-shrink-0">{i + 1}</span>
+                      <li key={i} className="text-sm text-gray-300 flex items-start gap-2">
+                        <span className="w-5 h-5 bg-yellow-500 text-black rounded-full flex items-center justify-center text-xs flex-shrink-0 font-bold">{i + 1}</span>
                         {step}
                       </li>
                     ))}
                   </ul>
                 </div>
-                <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-5">
-                  <p className="text-sm font-semibold text-yellow-800 mb-1">Recommended Next School</p>
-                  <p className="text-yellow-700">{mentorData.recommendation.recommendedSchool}</p>
-                  <button onClick={() => { const school = SCHOOLS.find(s => s.id === mentorData.recommendation.recommendedSchool); if (school) { setSelectedSchool(school); setActiveTab('schools'); }}} className="mt-3 px-4 py-2 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors">
+                <div className="bg-yellow-500/5 border border-yellow-500/20 rounded-2xl p-5">
+                  <p className="text-sm font-semibold text-yellow-400 mb-1">Recommended Next School</p>
+                  <p className="text-yellow-300">{mentorData.recommendation.recommendedSchool}</p>
+                  <button onClick={() => { const school = SCHOOLS.find(s => s.id === mentorData.recommendation.recommendedSchool); if (school) { setSelectedSchool(school); setActiveTab('schools'); }}} className="mt-3 px-4 py-2 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
                     Go to School →
                   </button>
                 </div>
@@ -614,10 +586,10 @@ export default function Academy() {
         )}
       </div>
 
-      <div className="bg-black text-white py-16 px-4">
+      <div className="bg-black border-t border-white/10 py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-center mb-10">Meet Our Founder</h2>
-          <div className="flex flex-col sm:flex-row items-center gap-8 bg-gray-900 rounded-2xl p-8">
+          <h2 className="text-2xl font-bold text-center mb-10 text-white">Meet Our Founder</h2>
+          <div className="flex flex-col sm:flex-row items-center gap-8 bg-white/5 border border-white/10 rounded-2xl p-8">
             <div className="w-full sm:w-1/2 h-72 rounded-2xl overflow-hidden flex-shrink-0">
               <img src="/academy/photos/staff-stage.jpeg" alt="Glean Moore" className="w-full h-full object-cover object-top" />
             </div>
@@ -631,34 +603,34 @@ export default function Academy() {
         </div>
       </div>
 
-      <div className="bg-gray-900 py-16 px-4">
+      <div className="bg-[#0d0d0d] py-16 px-4">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl font-bold text-white text-center mb-10">Live Events & Community</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="rounded-2xl overflow-hidden h-64">
+            <div className="rounded-2xl overflow-hidden h-64 border border-white/10">
               <img src="/academy/photos/live-event.jpeg" alt="AureoTrack Live Event" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
             </div>
-            <div className="rounded-2xl overflow-hidden h-64">
+            <div className="rounded-2xl overflow-hidden h-64 border border-white/10">
               <img src="/academy/photos/students-group.jpeg" alt="AureoTrack Students" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-gray-50 py-16 px-4">
+      <div className="bg-[#111111] border-t border-white/10 py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">Global Chapters</h2>
+          <h2 className="text-2xl font-bold text-white text-center mb-10">Global Chapters</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {[
               { title: 'Asia Chapter', image: '/academy/photos/asia-chapter.jpeg', desc: 'Empowering traders across Southeast Asia and beyond with world-class financial education.' },
               { title: 'Africa Chapter', image: '/academy/photos/africa-chapter.jpeg', desc: 'Building Africa\'s next generation of financially literate traders and investors.' },
             ].map((chapter, i) => (
-              <div key={i} className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+              <div key={i} className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
                 <div className="h-52 overflow-hidden">
                   <img src={chapter.image} alt={chapter.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
                 </div>
                 <div className="p-5">
-                  <h3 className="font-bold text-gray-900 mb-2">{chapter.title}</h3>
+                  <h3 className="font-bold text-white mb-2">{chapter.title}</h3>
                   <p className="text-sm text-gray-500">{chapter.desc}</p>
                 </div>
               </div>
@@ -667,9 +639,9 @@ export default function Academy() {
         </div>
       </div>
 
-      <div className="bg-black text-white py-16 px-4 text-center">
+      <div className="bg-black border-t border-white/10 py-16 px-4 text-center">
         <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-12 h-12 rounded-xl mx-auto mb-4 object-cover" />
-        <h2 className="text-2xl font-bold mb-2">Start your trading journey today</h2>
+        <h2 className="text-2xl font-bold mb-2 text-white">Start your trading journey today</h2>
         <p className="text-gray-400 mb-6">6 schools, 60+ lessons, AI quizzes, certifications — all free.</p>
         <button onClick={() => window.location.href = '/register'} className="px-8 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
           Create Free Account
@@ -677,36 +649,33 @@ export default function Academy() {
       </div>
 
       {showAssistant && (
-        <div className="fixed bottom-6 right-6 w-full max-w-sm bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 flex flex-col" style={{ height: '500px' }}>
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div className="fixed bottom-24 right-6 w-full max-w-sm bg-[#1a1a1a] border border-white/10 rounded-2xl shadow-2xl z-50 flex flex-col" style={{ height: '500px' }}>
+          <div className="flex items-center justify-between p-4 border-b border-white/10">
             <div className="flex items-center gap-2">
               <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-6 h-6 rounded object-cover" />
-              <p className="font-semibold text-gray-900 text-sm">AI Learning Assistant</p>
+              <p className="font-semibold text-white text-sm">AI Learning Assistant</p>
             </div>
-            <button onClick={() => setShowAssistant(false)} className="text-gray-400 hover:text-gray-600 bg-transparent border-0 cursor-pointer">✕</button>
+            <button onClick={() => setShowAssistant(false)} className="text-gray-500 hover:text-white bg-transparent border-0 cursor-pointer">✕</button>
           </div>
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#111111]">
             {chatMessages.length === 0 && (
-              <p className="text-sm text-gray-400">Ask me anything — "What is a liquidity sweep?" or "Explain DeFi"</p>
+              <p className="text-sm text-gray-500">Ask me anything — "What is a liquidity sweep?" or "Explain DeFi"</p>
             )}
             {chatMessages.map((msg, i) => (
               <div key={i} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
-                <span className={"inline-block px-3 py-2 rounded-xl text-sm max-w-[85%] " + (msg.role === 'user' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700')}>
+                <span className={"inline-block px-3 py-2 rounded-xl text-sm max-w-[85%] " + (msg.role === 'user' ? 'bg-yellow-500 text-black font-medium' : 'bg-white/10 text-gray-200')}>
                   {msg.content}
                 </span>
               </div>
             ))}
-            {chatLoading && <div className="text-left"><span className="inline-block px-3 py-2 rounded-xl text-sm bg-gray-100 text-gray-400">Thinking...</span></div>}
+            {chatLoading && <div className="text-left"><span className="inline-block px-3 py-2 rounded-xl text-sm bg-white/10 text-gray-400">Thinking...</span></div>}
           </div>
-          <div className="p-4 border-t border-gray-200 flex gap-2">
-            <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAskAssistant()} placeholder="Ask a question..." className="flex-1 px-3 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black" />
-            <button onClick={handleAskAssistant} disabled={chatLoading} className="px-4 py-2 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50">Send</button>
+          <div className="p-4 border-t border-white/10 flex gap-2">
+            <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAskAssistant()} placeholder="Ask a question..." className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500/50" />
+            <button onClick={handleAskAssistant} disabled={chatLoading} className="px-4 py-2 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors disabled:opacity-50">Send</button>
           </div>
         </div>
       )}
-      <button onClick={() => setShowAssistant(!showAssistant)} className="fixed bottom-6 right-6 w-14 h-14 bg-black text-white rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-gray-800 transition-colors z-40" style={{ display: showAssistant ? 'none' : 'flex' }}>
-        💬
-      </button>
     </main>
   );
 }
