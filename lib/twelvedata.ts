@@ -60,6 +60,11 @@ const FOREX_NAMES: Record<string, string> = {
   'EUR/USD': 'Euro / US Dollar',
   'GBP/USD': 'British Pound / US Dollar',
   'USD/JPY': 'US Dollar / Japanese Yen',
+  'AUD/USD': 'Australian Dollar / US Dollar',
+  'USD/CAD': 'US Dollar / Canadian Dollar',
+  'USD/CHF': 'US Dollar / Swiss Franc',
+  'NZD/USD': 'New Zealand Dollar / US Dollar',
+  'USD/CNY': 'US Dollar / Chinese Yuan',
 };
 
 export async function getForexPrice(pair: string) {

@@ -1,15 +1,18 @@
 import { NextResponse } from 'next/server';
 import { getMacroAssetPrices } from '@/lib/coingecko';
-import { getCommodityPrices } from '@/lib/twelvedata';
+import { getCommodityPrices, getForexPrice } from '@/lib/twelvedata';
+
+const FOREX_PAIRS = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF', 'NZD/USD', 'USD/CNY'];
 
 export async function GET() {
   try {
-    const [prices, commodities] = await Promise.all([
+    const [prices, commodities, forexResults] = await Promise.all([
       getMacroAssetPrices(),
       getCommodityPrices(),
+      Promise.all(FOREX_PAIRS.map(pair => getForexPrice(pair))),
     ]);
 
-    const commodityAssets = commodities.map(c => ({
+    const commodityAssets = prices.length >= 0 ? commodities.map(c => ({
       id: c.symbol.toLowerCase(),
       symbol: c.symbol,
       name: c.name,
@@ -18,13 +21,25 @@ export async function GET() {
       price_change_percentage_7d_in_currency: undefined,
       market_cap: 0,
       total_volume: 0,
-      high_24h: 0,
-      low_24h: 0,
       type: 'commodity',
-    }));
+    })) : [];
+
+    const forexAssets = forexResults
+      .filter(f => f !== null)
+      .map((f: any) => ({
+        id: f.symbol.toLowerCase().replace('/', ''),
+        symbol: f.symbol,
+        name: f.name,
+        current_price: f.price,
+        price_change_percentage_24h: f.percent_change_24h,
+        price_change_percentage_7d_in_currency: undefined,
+        market_cap: 0,
+        total_volume: 0,
+        type: 'forex',
+      }));
 
     const cryptoAssets = prices.map(p => ({ ...p, type: 'crypto' }));
-    const allAssets = [...cryptoAssets, ...commodityAssets];
+    const allAssets = [...cryptoAssets, ...commodityAssets, ...forexAssets];
 
     const btc = prices.find(p => p.id === 'bitcoin');
     let riskScore = 50;
@@ -39,8 +54,8 @@ export async function GET() {
 
     const totalMarketCap = prices.reduce((sum, p) => sum + (p.market_cap || 0), 0);
     const totalVolume = prices.reduce((sum, p) => sum + (p.total_volume || 0), 0);
-    const gainers = prices.filter(p => p.price_change_percentage_24h > 0).length;
-    const losers = prices.filter(p => p.price_change_percentage_24h < 0).length;
+    const gainers = allAssets.filter(p => p.price_change_percentage_24h > 0).length;
+    const losers = allAssets.filter(p => p.price_change_percentage_24h < 0).length;
 
     return NextResponse.json({
       success: true,
