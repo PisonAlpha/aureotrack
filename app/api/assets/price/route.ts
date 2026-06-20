@@ -1,13 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTokenData } from '@/lib/coingecko';
 import { getCommodityPrices, getForexPrice } from '@/lib/twelvedata';
-
-const FOREX_PAIRS = ['EUR/USD', 'GBP/USD', 'USD/JPY'];
-const FOREX_SYMBOL_MAP: Record<string, string> = {
-  'EURUSD': 'EUR/USD',
-  'GBPUSD': 'GBP/USD',
-  'USDJPY': 'USD/JPY',
-};
+import { getBinanceLivePrice } from '@/lib/exchanges';
 
 const CRYPTO_MAP: Record<string, string> = {
   BTC: 'bitcoin',
@@ -30,6 +24,18 @@ const CRYPTO_MAP: Record<string, string> = {
   ARB: 'arbitrum',
 };
 
+const FOREX_PAIRS = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF', 'NZD/USD', 'USD/CNY'];
+const FOREX_SYMBOL_MAP: Record<string, string> = {
+  'EURUSD': 'EUR/USD',
+  'GBPUSD': 'GBP/USD',
+  'USDJPY': 'USD/JPY',
+  'AUDUSD': 'AUD/USD',
+  'USDCAD': 'USD/CAD',
+  'USDCHF': 'USD/CHF',
+  'NZDUSD': 'NZD/USD',
+  'USDCNY': 'USD/CNY',
+};
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -42,6 +48,18 @@ export async function GET(request: NextRequest) {
     const upperSymbol = symbol.toUpperCase();
 
     if (CRYPTO_MAP[upperSymbol]) {
+      const binancePrice = await getBinanceLivePrice(upperSymbol);
+      if (binancePrice) {
+        return NextResponse.json({
+          success: true,
+          symbol: upperSymbol,
+          type: 'crypto',
+          price: binancePrice.price,
+          change_24h: binancePrice.change24h,
+          source: 'binance',
+        });
+      }
+
       const data = await getTokenData(CRYPTO_MAP[upperSymbol]);
       if (data.length === 0) {
         return NextResponse.json({ error: 'Price not found' }, { status: 404 });
@@ -52,6 +70,7 @@ export async function GET(request: NextRequest) {
         type: 'crypto',
         price: data[0].current_price,
         change_24h: data[0].price_change_percentage_24h,
+        source: 'coingecko',
       });
     }
 
@@ -72,21 +91,23 @@ export async function GET(request: NextRequest) {
         type: 'commodity',
         price: match.price,
         change_24h: match.percent_change_24h,
+        source: 'twelvedata',
       });
     }
 
-if (FOREX_PAIRS.includes(symbol) || FOREX_SYMBOL_MAP[symbol]) {
-      const lookupSymbol = FOREX_SYMBOL_MAP[symbol] || symbol;
+    if (FOREX_PAIRS.includes(symbol) || FOREX_SYMBOL_MAP[upperSymbol]) {
+      const lookupSymbol = FOREX_SYMBOL_MAP[upperSymbol] || symbol;
       const forex = await getForexPrice(lookupSymbol);
       if (!forex) {
         return NextResponse.json({ error: 'Price not found' }, { status: 404 });
       }
       return NextResponse.json({
         success: true,
-        symbol: symbol,
+        symbol: upperSymbol,
         type: 'forex',
         price: forex.price,
         change_24h: forex.percent_change_24h,
+        source: 'twelvedata',
       });
     }
 

@@ -12,6 +12,19 @@ async function getBinancePrice(symbol: string): Promise<number | null> {
     return parseFloat(data.price);
   } catch { return null; }
 }
+export async function getBinanceLivePrice(symbol: string): Promise<{ price: number; change24h: number } | null> {
+  try {
+    const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}USDT`, { next: { revalidate: 5 } });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return {
+      price: parseFloat(data.lastPrice),
+      change24h: parseFloat(data.priceChangePercent),
+    };
+  } catch {
+    return null;
+  }
+}
 
 async function getBybitPrice(symbol: string): Promise<number | null> {
   try {
