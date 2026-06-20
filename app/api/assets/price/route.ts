@@ -3,6 +3,11 @@ import { getTokenData } from '@/lib/coingecko';
 import { getCommodityPrices, getForexPrice } from '@/lib/twelvedata';
 
 const FOREX_PAIRS = ['EUR/USD', 'GBP/USD', 'USD/JPY'];
+const FOREX_SYMBOL_MAP: Record<string, string> = {
+  'EURUSD': 'EUR/USD',
+  'GBPUSD': 'GBP/USD',
+  'USDJPY': 'USD/JPY',
+};
 
 const CRYPTO_MAP: Record<string, string> = {
   BTC: 'bitcoin',
@@ -11,6 +16,18 @@ const CRYPTO_MAP: Record<string, string> = {
   SOL: 'solana',
   XRP: 'ripple',
   DOGE: 'dogecoin',
+  ADA: 'cardano',
+  TRX: 'tron',
+  AVAX: 'avalanche-2',
+  LINK: 'chainlink',
+  DOT: 'polkadot',
+  MATIC: 'matic-network',
+  LTC: 'litecoin',
+  UNI: 'uniswap',
+  ATOM: 'cosmos',
+  NEAR: 'near',
+  OP: 'optimism',
+  ARB: 'arbitrum',
 };
 
 export async function GET(request: NextRequest) {
@@ -58,14 +75,15 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    if (FOREX_PAIRS.includes(symbol)) {
-      const forex = await getForexPrice(symbol);
+if (FOREX_PAIRS.includes(symbol) || FOREX_SYMBOL_MAP[symbol]) {
+      const lookupSymbol = FOREX_SYMBOL_MAP[symbol] || symbol;
+      const forex = await getForexPrice(lookupSymbol);
       if (!forex) {
         return NextResponse.json({ error: 'Price not found' }, { status: 404 });
       }
       return NextResponse.json({
         success: true,
-        symbol: forex.symbol,
+        symbol: symbol,
         type: 'forex',
         price: forex.price,
         change_24h: forex.percent_change_24h,

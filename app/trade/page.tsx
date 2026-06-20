@@ -3,13 +3,28 @@
 import { useState, useEffect, useCallback } from 'react';
 
 const TRADABLE_ASSETS = [
-  { symbol: 'BTC', name: 'Bitcoin', type: 'crypto' },
-  { symbol: 'ETH', name: 'Ethereum', type: 'crypto' },
-  { symbol: 'BNB', name: 'BNB', type: 'crypto' },
-  { symbol: 'SOL', name: 'Solana', type: 'crypto' },
-  { symbol: 'XRP', name: 'XRP', type: 'crypto' },
-  { symbol: 'DOGE', name: 'Dogecoin', type: 'crypto' },
- { symbol: 'GOLD', name: 'Gold', type: 'commodity' },
+  { symbol: 'BTC', name: 'Bitcoin', type: 'crypto', tvSymbol: 'BINANCE:BTCUSDT' },
+  { symbol: 'ETH', name: 'Ethereum', type: 'crypto', tvSymbol: 'BINANCE:ETHUSDT' },
+  { symbol: 'BNB', name: 'BNB', type: 'crypto', tvSymbol: 'BINANCE:BNBUSDT' },
+  { symbol: 'SOL', name: 'Solana', type: 'crypto', tvSymbol: 'BINANCE:SOLUSDT' },
+  { symbol: 'XRP', name: 'XRP', type: 'crypto', tvSymbol: 'BINANCE:XRPUSDT' },
+  { symbol: 'DOGE', name: 'Dogecoin', type: 'crypto', tvSymbol: 'BINANCE:DOGEUSDT' },
+  { symbol: 'ADA', name: 'Cardano', type: 'crypto', tvSymbol: 'BINANCE:ADAUSDT' },
+  { symbol: 'TRX', name: 'TRON', type: 'crypto', tvSymbol: 'BINANCE:TRXUSDT' },
+  { symbol: 'AVAX', name: 'Avalanche', type: 'crypto', tvSymbol: 'BINANCE:AVAXUSDT' },
+  { symbol: 'LINK', name: 'Chainlink', type: 'crypto', tvSymbol: 'BINANCE:LINKUSDT' },
+  { symbol: 'DOT', name: 'Polkadot', type: 'crypto', tvSymbol: 'BINANCE:DOTUSDT' },
+  { symbol: 'MATIC', name: 'Polygon', type: 'crypto', tvSymbol: 'BINANCE:MATICUSDT' },
+  { symbol: 'LTC', name: 'Litecoin', type: 'crypto', tvSymbol: 'BINANCE:LTCUSDT' },
+  { symbol: 'UNI', name: 'Uniswap', type: 'crypto', tvSymbol: 'BINANCE:UNIUSDT' },
+  { symbol: 'ATOM', name: 'Cosmos', type: 'crypto', tvSymbol: 'BINANCE:ATOMUSDT' },
+  { symbol: 'NEAR', name: 'NEAR Protocol', type: 'crypto', tvSymbol: 'BINANCE:NEARUSDT' },
+  { symbol: 'OP', name: 'Optimism', type: 'crypto', tvSymbol: 'BINANCE:OPUSDT' },
+  { symbol: 'ARB', name: 'Arbitrum', type: 'crypto', tvSymbol: 'BINANCE:ARBUSDT' },
+  { symbol: 'GOLD', name: 'Gold', type: 'commodity', tvSymbol: 'OANDA:XAUUSD' },
+  { symbol: 'EURUSD', name: 'Euro / US Dollar', type: 'forex', tvSymbol: 'OANDA:EURUSD' },
+  { symbol: 'GBPUSD', name: 'British Pound / US Dollar', type: 'forex', tvSymbol: 'OANDA:GBPUSD' },
+  { symbol: 'USDJPY', name: 'US Dollar / Japanese Yen', type: 'forex', tvSymbol: 'OANDA:USDJPY' },
 ];
 
 export default function Trade() {
