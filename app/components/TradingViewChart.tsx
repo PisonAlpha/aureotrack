@@ -47,5 +47,5 @@ export default function TradingViewChart({ symbol }: { symbol: string }) {
     containerRef.current.appendChild(wrapper);
   }, [symbol]);
 
-  return <div ref={containerRef} style={{ height: '500px', width: '100%' }} />;
+  return <div ref={containerRef} className="h-[350px] sm:h-[450px] lg:h-[500px]" style={{ width: '100%' }} />;
 }

@@ -404,7 +404,7 @@ export default function Trade() {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 sticky top-20">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 lg:sticky lg:top-20">
               <div className="flex gap-2 mb-6">
                 <button
                   onClick={() => setTradeMode('spot')}
