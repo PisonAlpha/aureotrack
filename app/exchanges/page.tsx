@@ -132,46 +132,48 @@ export default function Exchanges() {
               {displayPrices.length === 0 ? (
                 <div className="text-center py-10 text-gray-500 text-sm">No {tab === 'dex' ? 'DEX' : 'CEX'} prices found for {symbol}</div>
               ) : (
-                <table className="w-full">
-                  <thead className="bg-white/5">
-                    <tr>
-                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500">Exchange</th>
-                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500">Type</th>
-                      <th className="text-right px-6 py-3 text-xs font-medium text-gray-500">Price (USDT)</th>
-                      <th className="text-right px-6 py-3 text-xs font-medium text-gray-500">vs Lowest</th>
-                      <th className="text-right px-6 py-3 text-xs font-medium text-gray-500">Signal</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {displayPrices.map((p: any, i: number) => (
-                      <tr key={i} className="border-t border-white/5 hover:bg-white/5 transition-colors">
-                        <td className="px-6 py-4 font-medium text-white">{p.exchange}</td>
-                        <td className="px-6 py-4">
-                          <span className={"text-xs px-2 py-0.5 rounded-full border " + (p.type === 'DEX' ? 'bg-purple-400/10 text-purple-400 border-purple-400/20' : 'bg-blue-400/10 text-blue-400 border-blue-400/20')}>
-                            {p.type}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-right text-white font-medium">${p.price.toLocaleString(undefined, { maximumFractionDigits: 6 })}</td>
-                        <td className="px-6 py-4 text-right">
-                          {p.exchange === data.lowest.exchange && p.type === data.lowest.type ? (
-                            <span className="text-green-400 text-sm font-medium">Lowest ✓</span>
-                          ) : (
-                            <span className="text-gray-400 text-sm">+{(((p.price - data.lowest.price) / data.lowest.price) * 100).toFixed(3)}%</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          {p.exchange === data.lowest.exchange ? (
-                            <span className="px-2 py-1 bg-green-400/10 text-green-400 rounded-lg text-xs border border-green-400/20">Buy</span>
-                          ) : p.exchange === data.highest.exchange ? (
-                            <span className="px-2 py-1 bg-red-400/10 text-red-400 rounded-lg text-xs border border-red-400/20">Sell</span>
-                          ) : (
-                            <span className="text-gray-600 text-xs">—</span>
-                          )}
-                        </td>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[600px]">
+                    <thead className="bg-white/5">
+                      <tr>
+                        <th className="text-left px-6 py-3 text-xs font-medium text-gray-500">Exchange</th>
+                        <th className="text-left px-6 py-3 text-xs font-medium text-gray-500">Type</th>
+                        <th className="text-right px-6 py-3 text-xs font-medium text-gray-500">Price (USDT)</th>
+                        <th className="text-right px-6 py-3 text-xs font-medium text-gray-500">vs Lowest</th>
+                        <th className="text-right px-6 py-3 text-xs font-medium text-gray-500">Signal</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {displayPrices.map((p: any, i: number) => (
+                        <tr key={i} className="border-t border-white/5 hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-4 font-medium text-white whitespace-nowrap">{p.exchange}</td>
+                          <td className="px-6 py-4">
+                            <span className={"text-xs px-2 py-0.5 rounded-full border " + (p.type === 'DEX' ? 'bg-purple-400/10 text-purple-400 border-purple-400/20' : 'bg-blue-400/10 text-blue-400 border-blue-400/20')}>
+                              {p.type}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-right text-white font-medium whitespace-nowrap">${p.price.toLocaleString(undefined, { maximumFractionDigits: 6 })}</td>
+                          <td className="px-6 py-4 text-right whitespace-nowrap">
+                            {p.exchange === data.lowest.exchange && p.type === data.lowest.type ? (
+                              <span className="text-green-400 text-sm font-medium">Lowest ✓</span>
+                            ) : (
+                              <span className="text-gray-400 text-sm">+{(((p.price - data.lowest.price) / data.lowest.price) * 100).toFixed(3)}%</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            {p.exchange === data.lowest.exchange ? (
+                              <span className="px-2 py-1 bg-green-400/10 text-green-400 rounded-lg text-xs border border-green-400/20">Buy</span>
+                            ) : p.exchange === data.highest.exchange ? (
+                              <span className="px-2 py-1 bg-red-400/10 text-red-400 rounded-lg text-xs border border-red-400/20">Sell</span>
+                            ) : (
+                              <span className="text-gray-600 text-xs">—</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
 
