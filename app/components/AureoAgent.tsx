@@ -58,7 +58,7 @@ export default function AureoAgent() {
   return (
     <>
       {open && (
-        <div className="fixed bottom-24 right-6 w-full max-w-sm z-50 shadow-2xl rounded-2xl overflow-hidden border border-white/20" style={{ height: minimized ? 'auto' : '520px', display: 'flex', flexDirection: 'column' }}>
+        <div className="fixed bottom-24 right-4 left-4 sm:left-auto sm:right-6 sm:w-full sm:max-w-sm z-50 shadow-2xl rounded-2xl overflow-hidden border border-white/20" style={{ height: minimized ? 'auto' : '520px', display: 'flex', flexDirection: 'column' }}>
           <div className="bg-black px-4 py-3 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-2">
               <img src="/aureotrack-logo.png" alt="AureoAI" className="w-7 h-7 rounded-lg object-cover" />
