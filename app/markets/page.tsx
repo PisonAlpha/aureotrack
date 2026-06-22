@@ -6,7 +6,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } f
 export default function Markets() {
   const [chartData, setChartData] = useState<any[]>([]);
   const [correlation, setCorrelation] = useState<number | null>(null);
-  const [days, setDays] = useState(30);
+  const [days, setDays] = useState(1);
   const [loadingChart, setLoadingChart] = useState(true);
   const [cryptoNews, setCryptoNews] = useState<any[]>([]);
   const [globalNews, setGlobalNews] = useState<any[]>([]);
@@ -142,9 +142,16 @@ export default function Markets() {
               <p className="text-xs text-gray-500 mt-0.5">Both assets normalized to 0-100 scale for comparison</p>
             </div>
            <div className="flex gap-2 flex-wrap">
-              {[7, 14, 30, 90].map(d => (
-                <button key={d} onClick={() => setDays(d)} className={"px-3 py-1.5 rounded-lg text-xs font-medium transition-colors " + (days === d ? 'bg-white text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10')}>
-                  {d}D
+              {[
+                { label: '4H', value: 0.17 },
+                { label: '1D', value: 1 },
+                { label: '7D', value: 7 },
+                { label: '14D', value: 14 },
+                { label: '30D', value: 30 },
+                { label: '90D', value: 90 },
+              ].map(d => (
+                <button key={d.label} onClick={() => setDays(d.value)} className={"px-3 py-1.5 rounded-lg text-xs font-medium transition-colors " + (days === d.value ? 'bg-white text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10')}>
+                  {d.label}
                 </button>
               ))}
             </div>
@@ -185,7 +192,7 @@ export default function Markets() {
         <div className="bg-[#111111] border border-white/10 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
             <h2 className="font-semibold text-white">Live News Feed</h2>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <button onClick={() => { setNewsTab('crypto'); }} className={"px-4 py-2 rounded-xl text-sm font-medium transition-colors " + (newsTab === 'crypto' ? 'bg-white text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10')}>
                 🪙 Crypto News
               </button>
