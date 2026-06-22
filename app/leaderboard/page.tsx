@@ -67,30 +67,30 @@ export default function Leaderboard() {
           </div>
         ) : (
           <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-            <div className="px-6 py-4 border-b border-white/10 grid grid-cols-3 text-xs text-gray-500 font-medium">
+           <div className="px-4 sm:px-6 py-4 border-b border-white/10 grid grid-cols-3 text-xs text-gray-500 font-medium">
               <span>Rank & Trader</span>
-              <span className="text-center">Trades</span>
-              <span className="text-right">{tab === 'returns' ? 'Total Return' : 'Win Rate'}</span>
+              <span className="text-center hidden sm:block">Trades</span>
+              <span className="text-right">{tab === 'returns' ? 'Return' : 'Win Rate'}</span>
             </div>
             {list.map((trader, i) => (
-              <div key={i} className={"flex items-center justify-between px-6 py-4 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors " + (i < 3 ? 'bg-yellow-500/5' : '')}>
-                <div className="flex items-center gap-4 flex-1">
-                  <span className="font-bold text-gray-400 w-8 text-center text-lg">{getMedal(i)}</span>
-                  <div>
-                    <p className="font-medium text-white">{trader.name}</p>
+              <div key={i} className={"flex items-center justify-between px-4 sm:px-6 py-4 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors " + (i < 3 ? 'bg-yellow-500/5' : '')}>
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <span className="font-bold text-gray-400 w-7 text-center text-base flex-shrink-0">{getMedal(i)}</span>
+                  <div className="min-w-0">
+                    <p className="font-medium text-white truncate">{trader.name}</p>
                     <p className="text-xs text-gray-500">Demo Trader</p>
                   </div>
                 </div>
-                <div className="text-center w-20">
+                <div className="text-center w-12 sm:w-20 hidden sm:block">
                   <p className="text-sm text-gray-400">{trader.totalTrades}</p>
                 </div>
-                <div className="text-right w-24">
+                <div className="text-right w-20 sm:w-24 flex-shrink-0">
                   {tab === 'returns' ? (
-                    <p className={"font-bold text-lg " + (trader.returnPercent >= 0 ? 'text-green-400' : 'text-red-400')}>
+                    <p className={"font-bold text-base sm:text-lg " + (trader.returnPercent >= 0 ? 'text-green-400' : 'text-red-400')}>
                       {trader.returnPercent >= 0 ? '+' : ''}{trader.returnPercent.toFixed(2)}%
                     </p>
                   ) : (
-                    <p className="font-bold text-lg text-yellow-400">{trader.winRate.toFixed(1)}%</p>
+                    <p className="font-bold text-base sm:text-lg text-yellow-400">{trader.winRate.toFixed(1)}%</p>
                   )}
                 </div>
               </div>
