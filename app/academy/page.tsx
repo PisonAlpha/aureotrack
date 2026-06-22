@@ -357,17 +357,58 @@ const handleSelectLesson = async (course: any) => {
                   </button>
                 ))}
               </div>
-              {quizSubmitted && (
-                <p className={"text-sm mt-3 font-medium " + (selectedQuizOption === lesson.quizQuestion.correctIndex ? 'text-green-400' : 'text-red-400')}>
-                  {selectedQuizOption === lesson.quizQuestion.correctIndex ? '✓ Correct! Lesson marked as complete.' : '✗ Incorrect. Review the lesson and try again.'}
-                </p>
+              {quizSubmitted && selectedQuizOption === lesson.quizQuestion.correctIndex && (
+                <div className="mt-4 p-4 bg-green-400/10 border border-green-400/20 rounded-xl">
+                  <p className="text-green-400 text-sm font-medium mb-3">✓ Correct! Well done.</p>
+                  <button
+                    onClick={async () => {
+                      await handleMarkComplete();
+                      const currentIndex = courses.findIndex(c => c.id === selectedLesson.id);
+                      const nextLesson = courses[currentIndex + 1];
+                      if (nextLesson) {
+                        handleSelectLesson(nextLesson);
+                      } else {
+                        setSelectedLesson(null);
+                        setLesson(null);
+                      }
+                    }}
+                    className="w-full py-2.5 bg-green-500 text-black rounded-xl text-sm font-semibold hover:bg-green-400 transition-colors"
+                  >
+                    Mark Complete & Continue →
+                  </button>
+                </div>
+              )}
+              {quizSubmitted && selectedQuizOption !== lesson.quizQuestion.correctIndex && (
+                <div className="mt-4 p-4 bg-red-400/10 border border-red-400/20 rounded-xl">
+                  <p className="text-red-400 text-sm font-medium mb-2">✗ Incorrect — review the lesson and try again.</p>
+                  <p className="text-gray-500 text-xs mb-3">Re-read the sections above, then attempt the quiz again.</p>
+                  <button
+                    onClick={() => { setSelectedQuizOption(null); setQuizSubmitted(false); }}
+                    className="w-full py-2.5 bg-white/10 border border-white/20 text-white rounded-xl text-sm font-semibold hover:bg-white/20 transition-colors"
+                  >
+                    Try Quiz Again
+                  </button>
+                </div>
               )}
             </div>
           )}
 
-          {user && (
-            <button onClick={handleMarkComplete} className="w-full py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
-              Mark as Complete
+          {user && !lesson.quizQuestion && (
+            <button
+              onClick={async () => {
+                await handleMarkComplete();
+                const currentIndex = courses.findIndex(c => c.id === selectedLesson.id);
+                const nextLesson = courses[currentIndex + 1];
+                if (nextLesson) {
+                  handleSelectLesson(nextLesson);
+                } else {
+                  setSelectedLesson(null);
+                  setLesson(null);
+                }
+              }}
+              className="w-full py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors"
+            >
+              Mark as Complete & Continue →
             </button>
           )}
         </div>
@@ -458,7 +499,7 @@ const handleSelectLesson = async (course: any) => {
           <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-white">AureoAcademy</h1>
           <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">World-class trading education across 6 specialized schools. Learn, practice, get certified.</p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <button onClick={() => setActiveTab('schools')} className="px-6 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">Start Learning</button>
+            <button onClick={() => { setActiveTab('schools'); window.scrollTo({ top: 400, behavior: 'smooth' }); }} className="px-6 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">Start Learning</button>
             <button onClick={() => setActiveTab('certifications')} className="px-6 py-3 border border-white/20 text-white rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">View Certifications</button>
           </div>
         </div>
