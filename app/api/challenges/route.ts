@@ -112,7 +112,30 @@ export async function POST(request: NextRequest) {
 
     if (error) throw error;
 
-    return NextResponse.json({ success: true });
+    // Auto-whitelist user for TGE airdrop when they join any challenge
+    try {
+      const { data: alreadyWhitelisted } = await supabaseAdmin
+        .from('airdrop_whitelist')
+        .select('id')
+        .eq('user_id', userId)
+        .single();
+
+      if (!alreadyWhitelisted) {
+        await supabaseAdmin
+          .from('airdrop_whitelist')
+          .insert({
+            user_id: userId,
+            challenge_id: challengeId,
+            qualified_via: 'challenge',
+            tier: 'standard',
+          });
+      }
+    } catch (whitelistError) {
+      // Don't fail the challenge join if whitelist insertion fails
+      console.error('Whitelist insert error:', whitelistError);
+    }
+
+    return NextResponse.json({ success: true, whitelisted: true });
   } catch (error) {
     console.error('Challenge join error:', error);
     return NextResponse.json({ error: 'Failed to join challenge' }, { status: 500 });
