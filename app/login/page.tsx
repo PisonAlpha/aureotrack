@@ -7,6 +7,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -36,8 +37,10 @@ export default function Login() {
     }
   };
 
+  const inputClass = "w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-black transition-all font-medium";
+
   return (
-    <main className="min-h-screen bg-white flex">
+    <main className="min-h-screen bg-gray-50 flex">
       <div className="hidden lg:flex lg:w-1/2 bg-black flex-col justify-between p-12">
         <button onClick={() => window.location.href = '/'} className="flex items-center gap-3 bg-transparent border-0 cursor-pointer p-0">
           <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-9 h-9 rounded-lg object-cover" />
@@ -53,9 +56,10 @@ export default function Login() {
           <div className="space-y-3">
             {[
               '✓ Live macro & crypto dashboards',
-              '✓ AI market intelligence',
-              '✓ Demo trading with real charts',
+              '✓ AI market intelligence & event simulator',
+              '✓ Demo trading with real TradingView charts',
               '✓ Portfolio & risk analytics',
+              '✓ TGE airdrop whitelist eligibility',
             ].map(item => (
               <p key={item} className="text-gray-300 text-sm">{item}</p>
             ))}
@@ -64,13 +68,11 @@ export default function Login() {
         <p className="text-gray-600 text-xs">© 2026 AureoTrack. Macro & Trading Intelligence.</p>
       </div>
 
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12">
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 bg-white">
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-8">
             <button onClick={() => window.location.href = '/'} className="inline-flex items-center gap-2 bg-transparent border-0 cursor-pointer">
-              <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold">AT</span>
-              </div>
+              <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-10 h-10 rounded-xl object-cover" />
               <span className="font-bold text-xl text-gray-900">AureoTrack</span>
             </button>
           </div>
@@ -79,7 +81,7 @@ export default function Login() {
           <p className="text-gray-500 text-sm mb-8">Sign in to your AureoTrack account</p>
 
           {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm mb-6">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm mb-6 font-medium">
               {error}
             </div>
           )}
@@ -93,41 +95,56 @@ export default function Login() {
                 onChange={e => setEmail(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleLogin()}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                className={inputClass}
               />
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleLogin()}
-                placeholder="Enter your password"
-                className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black transition-all"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleLogin()}
+                  placeholder="Enter your password"
+                  className={inputClass + " pr-12"}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 bg-transparent border-0 cursor-pointer text-sm font-medium"
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
             </div>
 
             <button
               onClick={handleLogin}
               disabled={loading}
-              className="w-full py-3.5 bg-black text-white rounded-xl text-sm font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50"
+              className="w-full py-3.5 bg-black text-white rounded-xl text-sm font-bold hover:bg-gray-800 transition-colors disabled:opacity-50"
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? 'Signing in...' : 'Sign in →'}
             </button>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-gray-100 text-center">
+          <div className="mt-6 pt-6 border-t border-gray-100 text-center space-y-3">
             <p className="text-sm text-gray-500">
               Don't have an account?{' '}
               <button
                 onClick={() => window.location.href = '/register'}
-                className="text-black font-semibold hover:underline bg-transparent border-0 cursor-pointer"
+                className="text-black font-bold hover:underline bg-transparent border-0 cursor-pointer"
               >
                 Create one free
               </button>
             </p>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="text-xs text-gray-400 hover:text-gray-600 bg-transparent border-0 cursor-pointer"
+            >
+              ← Back to AureoTrack
+            </button>
           </div>
         </div>
       </div>
