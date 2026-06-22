@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Nav from './components/Nav';
+
 
 interface Asset {
   id: string;
@@ -14,13 +16,7 @@ interface Asset {
   type: string;
 }
 
-const NAV_LINKS = [
-  { label: 'Intelligence', href: '/markets' },
-  { label: 'AureoTrade', href: '/trade' },
-  { label: 'AureoAcademy', href: '/academy' },
-  { label: 'AureoAI', href: '/ai' },
-  { label: 'AureoCommunity', href: '/community' },
-];
+
 
 export default function Home() {
   const [assets, setAssets] = useState<Asset[]>([]);
@@ -32,7 +28,6 @@ export default function Home() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [filter, setFilter] = useState<'all' | 'crypto' | 'commodity' | 'forex'>('all');
   const [search, setSearch] = useState('');
-  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('aureotrack_user');
@@ -61,10 +56,7 @@ export default function Home() {
     else { setSortBy(col); setSortDir('desc'); }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('aureotrack_user');
-    setUser(null);
-  };
+ 
 
   const filtered = assets
     .filter(a => filter === 'all' || a.type === filter)
@@ -104,47 +96,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0d0d0d] text-white">
-      <header className="border-b border-white/10 sticky top-0 z-50 bg-[#0d0d0d]/95 backdrop-blur">
-        <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-          <button onClick={() => window.location.href = '/'} className="flex items-center gap-2 bg-transparent border-0 cursor-pointer p-0 flex-shrink-0">
-            <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-8 h-8 rounded-lg object-cover" />
-            <span className="font-bold text-white text-base hidden sm:block">AureoTrack</span>
-          </button>
-
-          <nav className="hidden lg:flex items-center gap-1">
-            {NAV_LINKS.map(link => (
-              <button key={link.label} onClick={() => window.location.href = link.href} className={"px-3 py-1.5 rounded-lg text-sm transition-colors bg-transparent border-0 cursor-pointer " + (link.href === '/' ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5')}>
-                {link.label}
-              </button>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-3">
-            {user ? (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-400 hidden sm:block">{user.full_name}</span>
-                <button onClick={handleLogout} className="px-3 py-1.5 border border-white/20 text-gray-300 rounded-lg text-sm hover:bg-white/5 transition-colors bg-transparent cursor-pointer">Logout</button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <button onClick={() => window.location.href = '/login'} className="px-3 py-1.5 text-gray-300 text-sm hover:text-white bg-transparent border-0 cursor-pointer">Login</button>
-                <button onClick={() => window.location.href = '/register'} className="px-3 py-1.5 bg-yellow-500 text-black rounded-lg text-sm font-semibold hover:bg-yellow-400 transition-colors">Sign up</button>
-              </div>
-            )}
-            <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden bg-transparent border-0 cursor-pointer text-white p-1">☰</button>
-          </div>
-        </div>
-
-        {menuOpen && (
-          <div className="lg:hidden border-t border-white/10 px-4 py-3 grid grid-cols-3 gap-2">
-            {NAV_LINKS.map(link => (
-              <button key={link.label} onClick={() => { window.location.href = link.href; setMenuOpen(false); }} className="px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors bg-transparent border-0 cursor-pointer text-left">
-                {link.label}
-              </button>
-            ))}
-          </div>
-        )}
-      </header>
+      <Nav active="Intelligence" />
 
       <div className="border-b border-white/10 bg-[#111111]">
         <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center gap-6 overflow-x-auto text-xs text-gray-400 whitespace-nowrap">
@@ -299,8 +251,8 @@ export default function Home() {
             <span className="text-sm text-gray-500">AureoTrack © 2026</span>
           </div>
           <div className="flex items-center gap-4 flex-wrap justify-center">
-            {NAV_LINKS.map(link => (
-              <button key={link.label} onClick={() => window.location.href = link.href} className="text-xs text-gray-600 hover:text-gray-400 bg-transparent border-0 cursor-pointer">{link.label}</button>
+            {[['/', 'Markets'], ['/trade', 'AureoTrade'], ['/academy', 'AureoAcademy'], ['/ai', 'AureoAI'], ['/community', 'AureoCommunity']].map(([href, label]) => (
+              <button key={label} onClick={() => window.location.href = href} className="text-xs text-gray-600 hover:text-gray-400 bg-transparent border-0 cursor-pointer">{label}</button>
             ))}
           </div>
         </div>
