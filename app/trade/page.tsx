@@ -23,7 +23,7 @@ const TRADABLE_ASSETS = [
   { symbol: 'NEAR', name: 'NEAR Protocol', type: 'crypto', tvSymbol: 'BINANCE:NEARUSDT' },
   { symbol: 'OP', name: 'Optimism', type: 'crypto', tvSymbol: 'BINANCE:OPUSDT' },
   { symbol: 'ARB', name: 'Arbitrum', type: 'crypto', tvSymbol: 'BINANCE:ARBUSDT' },
-  { symbol: 'GOLD', name: 'Gold', type: 'commodity', tvSymbol: 'OANDA:XAUUSD' },
+  { symbol: 'GOLD', name: 'Gold (XAUT)', type: 'commodity', tvSymbol: 'OANDA:XAUUSD' },
   { symbol: 'EURUSD', name: 'Euro / US Dollar', type: 'forex', tvSymbol: 'OANDA:EURUSD' },
   { symbol: 'GBPUSD', name: 'British Pound / US Dollar', type: 'forex', tvSymbol: 'OANDA:GBPUSD' },
   { symbol: 'USDJPY', name: 'US Dollar / Japanese Yen', type: 'forex', tvSymbol: 'OANDA:USDJPY' },
