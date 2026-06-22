@@ -150,20 +150,20 @@ const handleSelectLesson = async (course: any) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: course.title, category: course.school, courseId: course.id }),
       });
-     console.log('Lesson API status:', res.status);
-      const rawText = await res.text();
-      console.log('Lesson API raw response:', rawText.substring(0, 500));
-      let data;
-      try {
-        data = JSON.parse(rawText);
-      } catch (e) {
-        console.error('Failed to parse response as JSON:', e);
-        setError('Server returned invalid response. Please try again.');
+    console.log('Lesson API status:', res.status);
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('Lesson API error:', errText);
+        setError('Server error. Please try again.');
         return;
       }
-      console.log('Lesson API parsed:', data);
-      if (data.success) setLesson(data.lesson);
-      else setError('Failed to load lesson: ' + (data.error || 'Unknown error'));
+      const data = await res.json();
+      console.log('Lesson API success:', !!data.success, 'has lesson:', !!data.lesson);
+      if (data.success && data.lesson) {
+        setLesson(data.lesson);
+      } else {
+        setError('Failed to load lesson: ' + (data.error || 'No lesson data returned'));
+      }
     } catch (err: any) {
       console.error('Lesson fetch error:', err);
       setError('Failed to load lesson: ' + err.message);
