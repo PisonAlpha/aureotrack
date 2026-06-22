@@ -30,14 +30,19 @@ async function fetchAllPrices(): Promise<Record<string, any>> {
 
   try {
     const allSymbols = [...COMMODITY_SYMBOLS, ...FOREX_SYMBOLS];
-    const symbolsParam = allSymbols.map(s => encodeURIComponent(s)).join(',');
+    const symbolsParam = allSymbols.join(',');
     const res = await fetch(
-      `${TWELVE_DATA_BASE}/quote?symbol=${symbolsParam}&apikey=${apiKey}`,
+      `${TWELVE_DATA_BASE}/quote?symbol=${encodeURIComponent(symbolsParam)}&apikey=${apiKey}`,
       { next: { revalidate: 60 } }
     );
-    if (!res.ok) throw new Error('TwelveData batch fetch failed');
+    console.log('TwelveData batch URL:', `${TWELVE_DATA_BASE}/quote?symbol=${symbolsParam}&apikey=***`);
+   if (!res.ok) {
+      console.error('TwelveData batch failed:', res.status, res.statusText);
+      throw new Error('TwelveData batch fetch failed');
+    }
     const data = await res.json();
-    return data;
+    console.log('TwelveData batch response keys:', Object.keys(data));
+    return data;;
   } catch (error) {
     console.error('TwelveData batch error:', error);
     return {};
