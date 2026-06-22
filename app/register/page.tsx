@@ -43,7 +43,18 @@ export default function Register() {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {
+        if (data.needsVerification) {
+          window.location.href = '/verify?userId=' + data.userId + '&email=' + encodeURIComponent(email);
+          return;
+        }
+        throw new Error(data.error);
+      }
+
+      if (data.needsVerification) {
+        window.location.href = '/verify?userId=' + data.userId + '&email=' + encodeURIComponent(email);
+        return;
+      }
 
       localStorage.setItem('aureotrack_user', JSON.stringify(data.user));
       window.location.href = '/';
@@ -218,7 +229,7 @@ export default function Register() {
               disabled={loading}
               className="w-full py-3.5 bg-black text-white rounded-xl text-sm font-bold hover:bg-gray-800 transition-colors disabled:opacity-50"
             >
-              {loading ? 'Creating account...' : 'Create free account →'}
+              {loading ? 'Creating account & sending code...' : 'Create free account →'}
             </button>
           </div>
 

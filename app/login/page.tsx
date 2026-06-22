@@ -26,7 +26,13 @@ export default function Login() {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) {
+        if (data.needsVerification) {
+          window.location.href = '/verify?userId=' + data.userId + '&email=' + encodeURIComponent(data.email);
+          return;
+        }
+        throw new Error(data.error);
+      }
 
       localStorage.setItem('aureotrack_user', JSON.stringify(data.user));
       window.location.href = '/';
