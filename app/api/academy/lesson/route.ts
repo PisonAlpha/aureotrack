@@ -1,16 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { supabaseAdmin } from '@/lib/supabase';
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function POST(request: NextRequest) {
   try {
-    const { topic, category } = await request.json();
+    const { topic, category, courseId } = await request.json();
 
     if (!topic) {
       return NextResponse.json({ error: 'Topic required' }, { status: 400 });
     }
 
+    // Check cache first — if lesson already generated, return instantly
+    if (courseId) {
+      const { data: cached } = await supabaseAdmin
+        .from('courses')
+        .select('lesson_content')
+        .eq('id', courseId)
+        .single();
+
+      if (cached?.lesson_content) {
+        return NextResponse.json({ success: true, lesson: cached.lesson_content, cached: true });
+      }
+    }
+
+    // Generate lesson with AI
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 1200,
@@ -28,7 +43,15 @@ export async function POST(request: NextRequest) {
     const clean = text.replace(/```json|```/g, '').trim();
     const lesson = JSON.parse(clean);
 
-    return NextResponse.json({ success: true, lesson });
+    // Save to cache so next user gets it instantly
+    if (courseId) {
+      await supabaseAdmin
+        .from('courses')
+        .update({ lesson_content: lesson })
+        .eq('id', courseId);
+    }
+
+    return NextResponse.json({ success: true, lesson, cached: false });
   } catch (error) {
     console.error('Lesson generation error:', error);
     return NextResponse.json({ error: 'Failed to generate lesson' }, { status: 500 });

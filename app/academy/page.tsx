@@ -135,7 +135,7 @@ export default function Academy() {
     } catch {}
   };
 
-  const handleSelectLesson = async (course: any) => {
+ const handleSelectLesson = async (course: any) => {
     setSelectedLesson(course);
     setLesson(null);
     setSelectedQuizOption(null);
@@ -146,11 +146,14 @@ export default function Academy() {
       const res = await fetch('/api/academy/lesson', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic: course.title, category: course.school }),
+        body: JSON.stringify({ topic: course.title, category: course.school, courseId: course.id }),
       });
       const data = await res.json();
       if (data.success) setLesson(data.lesson);
-    } catch {} finally {
+      else setError('Failed to load lesson. Please try again.');
+    } catch {
+      setError('Failed to load lesson. Please check your connection and try again.');
+    } finally {
       setLoadingLesson(false);
     }
   };
@@ -222,6 +225,55 @@ export default function Academy() {
       setChatLoading(false);
     }
   };
+
+  if (selectedLesson && loadingLesson) {
+    return (
+      <main className="min-h-screen bg-[#0d0d0d] text-white flex flex-col">
+        <header className="bg-[#0a0a0a] border-b border-white/10 sticky top-0 z-50">
+          <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <button onClick={() => { setSelectedLesson(null); setLesson(null); setLoadingLesson(false); }} className="text-sm text-gray-400 hover:text-white bg-transparent border-0 cursor-pointer">
+              ← Back to {selectedSchool?.title}
+            </button>
+            <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-8 h-8 rounded-lg object-cover" />
+          </div>
+        </header>
+        <div className="flex-1 flex flex-col items-center justify-center px-4 py-20 text-center">
+          <div className="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mb-6" />
+          <h3 className="text-white font-semibold mb-2">Loading Lesson...</h3>
+          <p className="text-gray-500 text-sm max-w-xs">AI is preparing your lesson on <span className="text-yellow-400">"{selectedLesson.title}"</span>. This may take up to 15 seconds on first load.</p>
+          <p className="text-gray-600 text-xs mt-3">Subsequent loads will be instant — lessons are cached after first generation.</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (selectedLesson && !lesson && !loadingLesson) {
+    return (
+      <main className="min-h-screen bg-[#0d0d0d] text-white flex flex-col">
+        <header className="bg-[#0a0a0a] border-b border-white/10 sticky top-0 z-50">
+          <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <button onClick={() => { setSelectedLesson(null); setLesson(null); }} className="text-sm text-gray-400 hover:text-white bg-transparent border-0 cursor-pointer">
+              ← Back to {selectedSchool?.title}
+            </button>
+            <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-8 h-8 rounded-lg object-cover" />
+          </div>
+        </header>
+        <div className="flex-1 flex flex-col items-center justify-center px-4 py-20 text-center">
+          <p className="text-4xl mb-4">⚠️</p>
+          <h3 className="text-white font-semibold mb-2">Failed to Load Lesson</h3>
+          <p className="text-gray-500 text-sm mb-6 max-w-xs">{error || 'Something went wrong. Please check your connection and try again.'}</p>
+          <div className="flex gap-3">
+            <button onClick={() => handleSelectLesson(selectedLesson)} className="px-5 py-2.5 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
+              Try Again
+            </button>
+            <button onClick={() => { setSelectedLesson(null); setLesson(null); setError(null); }} className="px-5 py-2.5 bg-white/5 border border-white/10 text-gray-300 rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">
+              Go Back
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   if (selectedLesson && lesson) {
     return (
