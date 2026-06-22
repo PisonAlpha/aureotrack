@@ -100,9 +100,9 @@ export default function Airdrop() {
         <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
           {[
             { label: 'Whitelisted', value: loading ? '...' : (status?.totalWhitelisted || 0).toLocaleString() },
-            { label: 'Max Supply', value: '100M ART' },
-            { label: 'Airdrop Pool', value: '5M ART' },
-            { label: 'TGE', value: 'Q4 2026' },
+            { label: 'Max Supply', value: '1B ART' },
+            { label: 'Airdrop Pool', value: '30M ART (5%)' },
+            { label: 'TGE', value: 'Q3 2026' },
           ].map(stat => (
             <div key={stat.label}>
               <p className="text-2xl font-bold text-yellow-400">{stat.value}</p>

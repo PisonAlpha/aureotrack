@@ -66,7 +66,7 @@ export default function Portfolio() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-400 mb-2">EVM Wallet (BNB / Ethereum / Polygon / Base)</label>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="text"
                 value={evmAddress}
@@ -74,7 +74,7 @@ export default function Portfolio() {
                 placeholder="0x..."
                 className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500/50"
               />
-              <button onClick={connectMetaMask} className="px-4 py-3 border border-white/20 text-gray-300 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors whitespace-nowrap">
+              <button onClick={connectMetaMask} className="px-4 py-3 border border-white/20 text-gray-300 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors sm:whitespace-nowrap">
                 Connect MetaMask
               </button>
             </div>

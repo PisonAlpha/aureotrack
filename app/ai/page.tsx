@@ -166,7 +166,7 @@ export default function AIInsights() {
           <h2 className="font-semibold text-white mb-2">AI Event Impact Simulator</h2>
           <p className="text-sm text-gray-500 mb-5">Describe any market event and see its likely impact across all major asset classes.</p>
 
-          <div className="flex gap-3 mb-6">
+          <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <input
               type="text"
               value={eventInput}
@@ -178,7 +178,7 @@ export default function AIInsights() {
             <button
               onClick={handleSimulateEvent}
               disabled={loadingEvent}
-              className="px-6 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors disabled:opacity-50"
+              className="px-4 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors disabled:opacity-50 sm:whitespace-nowrap"
             >
               {loadingEvent ? 'Simulating...' : 'Simulate'}
             </button>
