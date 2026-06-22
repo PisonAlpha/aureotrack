@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const PRODUCTS = [
   {
@@ -58,6 +58,7 @@ const PRODUCTS = [
 export default function Nav({ active }: { active?: string }) {
   const [user, setUser] = useState<any>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const closeTimer = useRef<NodeJS.Timeout | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -82,9 +83,14 @@ export default function Nav({ active }: { active?: string }) {
         <nav className="hidden lg:flex items-center gap-1">
           {PRODUCTS.map(product => (
             <div key={product.label} className="relative"
-              onMouseEnter={() => setOpenMenu(product.label)}
-              onMouseLeave={() => setOpenMenu(null)}
-            >
+                onMouseEnter={() => {
+                  if (closeTimer.current) clearTimeout(closeTimer.current);
+                  setOpenMenu(product.label);
+                }}
+                onMouseLeave={() => {
+                  closeTimer.current = setTimeout(() => setOpenMenu(null), 150);
+                }}
+              >
               <button
                 onClick={() => window.location.href = product.href}
                 className={"px-3 py-1.5 rounded-lg text-sm transition-colors bg-transparent border-0 cursor-pointer " + (active === product.label ? 'text-yellow-400 bg-yellow-400/10' : 'text-gray-400 hover:text-white hover:bg-white/5')}

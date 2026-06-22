@@ -13,7 +13,19 @@ export interface AssetPrice {
   low_24h: number;
 }
 
-const TRACKED_IDS = ['bitcoin', 'ethereum', 'binancecoin', 'solana', 'ripple', 'dogecoin', 'cardano', 'tron'];
+const TRACKED_IDS = [
+  // Top 10
+  'bitcoin', 'ethereum', 'binancecoin', 'solana', 'ripple',
+  'dogecoin', 'cardano', 'tron', 'avalanche-2', 'chainlink',
+  // DeFi & Layer 2
+  'uniswap', 'polkadot', 'matic-network', 'litecoin', 'cosmos',
+  'near', 'optimism', 'arbitrum', 'aptos', 'sui',
+  // Meme coins
+  'shiba-inu', 'pepe', 'floki', 'bonk',
+  // Other majors
+  'stellar', 'vechain', 'filecoin', 'internet-computer', 'hedera-hashgraph',
+  'render-token', 'the-sandbox', 'decentraland', 'axie-infinity', 'gala',
+];
 
 export async function getMacroAssetPrices(): Promise<AssetPrice[]> {
   try {
