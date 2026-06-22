@@ -50,7 +50,7 @@ const PRODUCTS = [
       { label: 'Discussion Rooms', href: '/community' },
       { label: 'Leaderboard', href: '/leaderboard' },
       { label: 'Challenges', href: '/challenges' },
-      { label: 'Academy Community', href: '/academy' },
+      { label: '🪙 Token Airdrop', href: '/airdrop' },
     ],
   },
 ];
