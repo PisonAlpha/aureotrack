@@ -135,24 +135,29 @@ export default function Academy() {
     } catch {}
   };
 
- const handleSelectLesson = async (course: any) => {
+const handleSelectLesson = async (course: any) => {
     setSelectedLesson(course);
     setLesson(null);
     setSelectedQuizOption(null);
     setQuizSubmitted(false);
     setCertEarned(null);
+    setError(null);
     setLoadingLesson(true);
     try {
+      console.log('Loading lesson:', course.title, 'id:', course.id);
       const res = await fetch('/api/academy/lesson', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: course.title, category: course.school, courseId: course.id }),
       });
+      console.log('Lesson API status:', res.status);
       const data = await res.json();
+      console.log('Lesson API response:', data);
       if (data.success) setLesson(data.lesson);
-      else setError('Failed to load lesson. Please try again.');
-    } catch {
-      setError('Failed to load lesson. Please check your connection and try again.');
+      else setError('Failed to load lesson: ' + (data.error || 'Unknown error'));
+    } catch (err: any) {
+      console.error('Lesson fetch error:', err);
+      setError('Failed to load lesson: ' + err.message);
     } finally {
       setLoadingLesson(false);
     }
