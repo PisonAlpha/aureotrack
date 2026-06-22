@@ -205,7 +205,7 @@ export default function Home() {
         ) : (
           <div className="bg-[#111111] border border-white/10 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full min-w-[320px]">
                 <thead>
                   <tr className="border-b border-white/10">
                     <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 w-8">#</th>
@@ -230,12 +230,12 @@ export default function Home() {
                     <tr key={asset.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                       <td className="px-4 py-4 text-gray-600 text-sm">{i + 1}</td>
                       <td className="px-4 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
                             <span className="text-xs font-bold text-white">{asset.symbol.slice(0, 2)}</span>
                           </div>
-                          <div>
-                            <p className="text-sm font-medium text-white">{asset.name}</p>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-white truncate max-w-[100px] sm:max-w-none">{asset.name}</p>
                             <p className="text-xs text-gray-500">{asset.symbol}</p>
                           </div>
                         </div>
