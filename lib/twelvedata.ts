@@ -8,55 +8,8 @@ export interface CommodityPrice {
   percent_change_24h: number;
 }
 
-const COMMODITY_SYMBOLS: Record<string, string> = {
+const SYMBOL_NAMES: Record<string, string> = {
   'XAU/USD': 'Gold',
-
-};
-
-export async function getCommodityPrices(): Promise<CommodityPrice[]> {
-  const apiKey = process.env.TWELVE_DATA_API_KEY;
-  if (!apiKey) return [];
-
-  try {
-    const symbols = Object.keys(COMMODITY_SYMBOLS).join(',');
-    const res = await fetch(
-      `${TWELVE_DATA_BASE}/quote?symbol=${encodeURIComponent(symbols)}&apikey=${apiKey}`,
-      { next: { revalidate: 60 } }
-    );
-    if (!res.ok) throw new Error('TwelveData fetch failed');
-    const data = await res.json();
-
-    const results: CommodityPrice[] = [];
-
-    if (Object.keys(COMMODITY_SYMBOLS).length === 1) {
-      const sym = Object.keys(COMMODITY_SYMBOLS)[0];
-      results.push(parseQuote(sym, data));
-    } else {
-      for (const sym of Object.keys(COMMODITY_SYMBOLS)) {
-        if (data[sym]) {
-          results.push(parseQuote(sym, data[sym]));
-        }
-      }
-    }
-
-    return results;
-  } catch (error) {
-    console.error('TwelveData error:', error);
-    return [];
-  }
-}
-
-function parseQuote(symbol: string, quote: any): CommodityPrice {
-  return {
-    symbol: symbol.replace('/USD', ''),
-    name: COMMODITY_SYMBOLS[symbol],
-    price: parseFloat(quote.close) || 0,
-    change_24h: parseFloat(quote.change) || 0,
-    percent_change_24h: parseFloat(quote.percent_change) || 0,
-  };
-}
-
-const FOREX_NAMES: Record<string, string> = {
   'EUR/USD': 'Euro / US Dollar',
   'GBP/USD': 'British Pound / US Dollar',
   'USD/JPY': 'US Dollar / Japanese Yen',
@@ -67,26 +20,82 @@ const FOREX_NAMES: Record<string, string> = {
   'USD/CNY': 'US Dollar / Chinese Yuan',
 };
 
-export async function getForexPrice(pair: string) {
+const COMMODITY_SYMBOLS = ['XAU/USD'];
+const FOREX_SYMBOLS = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF', 'NZD/USD', 'USD/CNY'];
+
+// Single batched call for ALL symbols - avoids rate limiting
+async function fetchAllPrices(): Promise<Record<string, any>> {
   const apiKey = process.env.TWELVE_DATA_API_KEY;
-  if (!apiKey) return null;
+  if (!apiKey) return {};
 
   try {
+    const allSymbols = [...COMMODITY_SYMBOLS, ...FOREX_SYMBOLS];
+    const symbolsParam = allSymbols.map(s => encodeURIComponent(s)).join(',');
     const res = await fetch(
-      `${TWELVE_DATA_BASE}/quote?symbol=${encodeURIComponent(pair)}&apikey=${apiKey}`,
+      `${TWELVE_DATA_BASE}/quote?symbol=${symbolsParam}&apikey=${apiKey}`,
       { next: { revalidate: 60 } }
     );
-    if (!res.ok) throw new Error('Forex fetch failed');
+    if (!res.ok) throw new Error('TwelveData batch fetch failed');
     const data = await res.json();
-    return {
-      symbol: pair,
-      name: FOREX_NAMES[pair] || pair,
-      price: parseFloat(data.close) || 0,
-      change_24h: parseFloat(data.change) || 0,
-      percent_change_24h: parseFloat(data.percent_change) || 0,
-    };
+    return data;
   } catch (error) {
-    console.error('Forex error:', error);
+    console.error('TwelveData batch error:', error);
+    return {};
+  }
+}
+
+function parseQuote(symbol: string, quote: any): CommodityPrice {
+  return {
+    symbol: symbol.replace('/USD', '').replace('USD/', 'USD/'),
+    name: SYMBOL_NAMES[symbol] || symbol,
+    price: parseFloat(quote?.close) || 0,
+    change_24h: parseFloat(quote?.change) || 0,
+    percent_change_24h: parseFloat(quote?.percent_change) || 0,
+  };
+}
+
+let cachedPrices: Record<string, any> = {};
+let lastFetch = 0;
+
+async function getPricesWithCache(): Promise<Record<string, any>> {
+  const now = Date.now();
+  if (now - lastFetch > 55000 || Object.keys(cachedPrices).length === 0) {
+    cachedPrices = await fetchAllPrices();
+    lastFetch = now;
+  }
+  return cachedPrices;
+}
+
+export async function getCommodityPrices(): Promise<CommodityPrice[]> {
+  try {
+    const data = await getPricesWithCache();
+    const results: CommodityPrice[] = [];
+
+    for (const sym of COMMODITY_SYMBOLS) {
+      const quote = data[sym] || data;
+      if (quote && (quote.close || quote.last)) {
+        const parsed = parseQuote(sym, quote);
+        if (parsed.price > 0) results.push(parsed);
+      }
+    }
+    return results;
+  } catch (error) {
+    console.error('Commodity prices error:', error);
+    return [];
+  }
+}
+
+export async function getForexPrice(pair: string): Promise<CommodityPrice | null> {
+  try {
+    const data = await getPricesWithCache();
+    const quote = data[pair] || (Object.keys(data).length === 1 ? data : null);
+    if (!quote || !quote.close) return null;
+    const parsed = parseQuote(pair, quote);
+    return parsed.price > 0 ? { ...parsed, symbol: pair, name: SYMBOL_NAMES[pair] || pair } : null;
+  } catch (error) {
+    console.error('Forex price error:', error);
     return null;
   }
 }
+
+const FOREX_NAMES: Record<string, string> = SYMBOL_NAMES;
