@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
         type: 'commodity',
         price: match.price,
         change_24h: match.percent_change_24h,
-        source: 'twelvedata',
+        source: 'coingecko-xaut',
       });
     }
 

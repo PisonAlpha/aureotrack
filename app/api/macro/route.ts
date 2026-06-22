@@ -1,22 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getMacroAssetPrices } from '@/lib/coingecko';
-import { getCommodityPrices, getForexPrice } from '@/lib/twelvedata';
-
-const FOREX_PAIRS = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF', 'NZD/USD', 'USD/CNY'];
+import { getCommodityPrices, getAllForexPrices } from '@/lib/twelvedata';
 
 export async function GET() {
   try {
-    const [prices, commodities] = await Promise.all([
+    const [prices, commodities, forexList] = await Promise.all([
       getMacroAssetPrices(),
       getCommodityPrices().catch(() => []),
+      getAllForexPrices().catch(() => []),
     ]);
-
-    // Fetch forex pairs individually with per-pair error handling
-    const forexResults = await Promise.all(
-      FOREX_PAIRS.map(pair =>
-        getForexPrice(pair).catch(() => null)
-      )
-    );
 
     const commodityAssets = commodities.map(c => ({
       id: c.symbol.toLowerCase(),
@@ -30,9 +22,9 @@ export async function GET() {
       type: 'commodity',
     }));
 
-    const forexAssets = forexResults
-      .filter(f => f !== null && f !== undefined && f.price > 0)
-      .map((f: any) => ({
+    const forexAssets = forexList
+      .filter(f => f.price > 0)
+      .map(f => ({
         id: f.symbol.toLowerCase().replace('/', ''),
         symbol: f.symbol,
         name: f.name,

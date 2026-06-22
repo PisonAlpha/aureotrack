@@ -33,10 +33,9 @@ export async function GET(request: NextRequest) {
     const goldInterval = daysNum <= 1 ? '1h' : daysNum <= 7 ? '1h' : '1day';
     const goldOutputsize = daysNum <= 1 ? '24' : Math.ceil(daysNum).toString();
 
-    const goldApiRes = await fetch(
-      `https://api.twelvedata.com/time_series?symbol=XAU/USD&interval=${goldInterval}&outputsize=${goldOutputsize}&apikey=${process.env.TWELVE_DATA_API_KEY}`,
-      { next: { revalidate } }
-    ).catch(() => null);
+   const { getGoldTimeSeries } = await import('@/lib/twelvedata');
+    const goldApiRes_data = await getGoldTimeSeries(goldInterval, goldOutputsize).catch(() => null);
+    const goldApiRes = goldApiRes_data ? { ok: true, json: async () => goldApiRes_data } : null;
 
     const goldData = goldApiRes?.ok ? await goldApiRes.json() : null;
     const goldPrices: Record<string, number> = {};

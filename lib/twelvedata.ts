@@ -1,5 +1,3 @@
-const TWELVE_DATA_BASE = 'https://api.twelvedata.com';
-
 export interface CommodityPrice {
   symbol: string;
   name: string;
@@ -8,99 +6,104 @@ export interface CommodityPrice {
   percent_change_24h: number;
 }
 
-const SYMBOL_NAMES: Record<string, string> = {
-  'XAU/USD': 'Gold',
-  'EUR/USD': 'Euro / US Dollar',
-  'GBP/USD': 'British Pound / US Dollar',
-  'USD/JPY': 'US Dollar / Japanese Yen',
-  'AUD/USD': 'Australian Dollar / US Dollar',
-  'USD/CAD': 'US Dollar / Canadian Dollar',
-  'USD/CHF': 'US Dollar / Swiss Franc',
-  'NZD/USD': 'New Zealand Dollar / US Dollar',
-  'USD/CNY': 'US Dollar / Chinese Yuan',
-};
-
-const COMMODITY_SYMBOLS = ['XAU/USD'];
-const FOREX_SYMBOLS = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF', 'NZD/USD', 'USD/CNY'];
-
-// Single batched call for ALL symbols - avoids rate limiting
-async function fetchAllPrices(): Promise<Record<string, any>> {
-  const apiKey = process.env.TWELVE_DATA_API_KEY;
-  if (!apiKey) return {};
-
+// Gold via CoinGecko XAUT (Tether Gold) - tracks real gold price 1:1, no rate limits
+async function getGoldPrice(): Promise<CommodityPrice | null> {
   try {
-    const allSymbols = [...COMMODITY_SYMBOLS, ...FOREX_SYMBOLS];
-    const symbolsParam = allSymbols.join(',');
     const res = await fetch(
-      `${TWELVE_DATA_BASE}/quote?symbol=${encodeURIComponent(symbolsParam)}&apikey=${apiKey}`,
+      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=tether-gold&price_change_percentage=24h',
       { next: { revalidate: 60 } }
     );
-    console.log('TwelveData batch URL:', `${TWELVE_DATA_BASE}/quote?symbol=${symbolsParam}&apikey=***`);
-   if (!res.ok) {
-      console.error('TwelveData batch failed:', res.status, res.statusText);
-      throw new Error('TwelveData batch fetch failed');
-    }
+    if (!res.ok) return null;
     const data = await res.json();
-    console.log('TwelveData batch response keys:', Object.keys(data));
-    return data;;
-  } catch (error) {
-    console.error('TwelveData batch error:', error);
-    return {};
-  }
+    if (!data[0]) return null;
+    return {
+      symbol: 'XAU',
+      name: 'Gold',
+      price: data[0].current_price,
+      change_24h: data[0].price_change_24h || 0,
+      percent_change_24h: data[0].price_change_percentage_24h || 0,
+    };
+  } catch { return null; }
 }
 
-function parseQuote(symbol: string, quote: any): CommodityPrice {
-  return {
-    symbol: symbol.replace('/USD', '').replace('USD/', 'USD/'),
-    name: SYMBOL_NAMES[symbol] || symbol,
-    price: parseFloat(quote?.close) || 0,
-    change_24h: parseFloat(quote?.change) || 0,
-    percent_change_24h: parseFloat(quote?.percent_change) || 0,
-  };
+// Forex via Frankfurter API - European Central Bank data, completely free, no key, no rate limits
+async function getForexRates(): Promise<Record<string, number>> {
+  try {
+    const res = await fetch(
+      'https://api.frankfurter.app/latest?from=USD&to=EUR,GBP,JPY,AUD,CAD,CHF,NZD,CNY',
+      { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return {};
+    const data = await res.json();
+    return data.rates || {};
+  } catch { return {}; }
 }
 
-let cachedPrices: Record<string, any> = {};
-let lastFetch = 0;
-
-async function getPricesWithCache(): Promise<Record<string, any>> {
-  const now = Date.now();
-  if (now - lastFetch > 55000 || Object.keys(cachedPrices).length === 0) {
-    cachedPrices = await fetchAllPrices();
-    lastFetch = now;
-  }
-  return cachedPrices;
-}
+const FOREX_META: Record<string, { symbol: string; name: string; invert: boolean }> = {
+  'EUR': { symbol: 'EUR/USD', name: 'Euro / US Dollar', invert: true },
+  'GBP': { symbol: 'GBP/USD', name: 'British Pound / US Dollar', invert: true },
+  'JPY': { symbol: 'USD/JPY', name: 'US Dollar / Japanese Yen', invert: false },
+  'AUD': { symbol: 'AUD/USD', name: 'Australian Dollar / US Dollar', invert: true },
+  'CAD': { symbol: 'USD/CAD', name: 'US Dollar / Canadian Dollar', invert: false },
+  'CHF': { symbol: 'USD/CHF', name: 'US Dollar / Swiss Franc', invert: false },
+  'NZD': { symbol: 'NZD/USD', name: 'New Zealand Dollar / US Dollar', invert: true },
+  'CNY': { symbol: 'USD/CNY', name: 'US Dollar / Chinese Yuan', invert: false },
+};
 
 export async function getCommodityPrices(): Promise<CommodityPrice[]> {
-  try {
-    const data = await getPricesWithCache();
-    const results: CommodityPrice[] = [];
+  const gold = await getGoldPrice();
+  return gold ? [gold] : [];
+}
 
-    for (const sym of COMMODITY_SYMBOLS) {
-      const quote = data[sym] || data;
-      if (quote && (quote.close || quote.last)) {
-        const parsed = parseQuote(sym, quote);
-        if (parsed.price > 0) results.push(parsed);
-      }
+export async function getAllForexPrices(): Promise<CommodityPrice[]> {
+  try {
+    const rates = await getForexRates();
+    const results: CommodityPrice[] = [];
+    for (const [currencyCode, meta] of Object.entries(FOREX_META)) {
+      const rate = rates[currencyCode];
+      if (!rate) continue;
+      const price = meta.invert ? 1 / rate : rate;
+      results.push({
+        symbol: meta.symbol,
+        name: meta.name,
+        price: parseFloat(price.toFixed(meta.invert ? 5 : 4)),
+        change_24h: 0,
+        percent_change_24h: 0,
+      });
     }
     return results;
-  } catch (error) {
-    console.error('Commodity prices error:', error);
-    return [];
-  }
+  } catch { return []; }
 }
 
 export async function getForexPrice(pair: string): Promise<CommodityPrice | null> {
   try {
-    const data = await getPricesWithCache();
-    const quote = data[pair] || (Object.keys(data).length === 1 ? data : null);
-    if (!quote || !quote.close) return null;
-    const parsed = parseQuote(pair, quote);
-    return parsed.price > 0 ? { ...parsed, symbol: pair, name: SYMBOL_NAMES[pair] || pair } : null;
-  } catch (error) {
-    console.error('Forex price error:', error);
-    return null;
-  }
+    const rates = await getForexRates();
+    const entry = Object.entries(FOREX_META).find(([, meta]) => meta.symbol === pair);
+    if (!entry) return null;
+    const [currencyCode, meta] = entry;
+    const rate = rates[currencyCode];
+    if (!rate) return null;
+    const price = meta.invert ? 1 / rate : rate;
+    return {
+      symbol: pair,
+      name: meta.name,
+      price: parseFloat(price.toFixed(meta.invert ? 5 : 4)),
+      change_24h: 0,
+      percent_change_24h: 0,
+    };
+  } catch { return null; }
 }
 
-const FOREX_NAMES: Record<string, string> = SYMBOL_NAMES;
+// TwelveData kept only for Gold chart time series (single infrequent call)
+export async function getGoldTimeSeries(interval: string, outputsize: string) {
+  const apiKey = process.env.TWELVE_DATA_API_KEY;
+  if (!apiKey) return null;
+  try {
+    const res = await fetch(
+      `https://api.twelvedata.com/time_series?symbol=XAU/USD&interval=${interval}&outputsize=${outputsize}&apikey=${apiKey}`,
+      { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return null;
+    return await res.json();
+  } catch { return null; }
+}
