@@ -12,48 +12,85 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Topic required' }, { status: 400 });
     }
 
-    // Check cache first — if lesson already generated, return instantly
+    // Check cache first
     if (courseId) {
-      const { data: cached } = await supabaseAdmin
-        .from('courses')
-        .select('lesson_content')
-        .eq('id', courseId)
-        .single();
+      try {
+        const { data: cached } = await supabaseAdmin
+          .from('courses')
+          .select('lesson_content')
+          .eq('id', courseId)
+          .single();
 
-      if (cached?.lesson_content) {
-        return NextResponse.json({ success: true, lesson: cached.lesson_content, cached: true });
+        if (cached?.lesson_content) {
+          console.log('Returning cached lesson for:', topic);
+          return NextResponse.json({ success: true, lesson: cached.lesson_content, cached: true });
+        }
+      } catch (cacheError) {
+        console.error('Cache check error:', cacheError);
       }
     }
 
-    // Generate lesson with AI
+    console.log('Generating lesson for:', topic);
+
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 1200,
       messages: [{
         role: 'user',
-        content: 'You are an expert trading instructor writing a lesson for AureoTrack\'s Trading Academy. Write a clear, beginner-friendly lesson on: "' + topic + '" (category: ' + category + ').\n\n' +
-          'Respond ONLY with valid JSON, no markdown, no preamble, in this exact format:\n' +
-          '{ "title": "lesson title", "introduction": "2-3 sentence intro to the topic", "sections": [ { "heading": "section heading", "content": "3-5 sentence explanation" } ], "keyTakeaways": ["takeaway1", "takeaway2", "takeaway3"], "quizQuestion": { "question": "a question testing understanding", "options": ["option A", "option B", "option C", "option D"], "correctIndex": number } }\n\n' +
-          'Include 3-4 sections. Keep the tone educational and practical, suitable for someone learning to trade. Use real examples where helpful.',
+        content: 'You are an expert trading instructor writing a lesson for AureoTrack\'s Trading Academy. Write a clear, beginner-friendly lesson on: "' + topic + '" (category: ' + category + ').\n\nRespond ONLY with valid JSON, no markdown, no preamble, no backticks, in this exact format:\n{"title":"lesson title","introduction":"2-3 sentence intro","sections":[{"heading":"section heading","content":"3-5 sentence explanation"}],"keyTakeaways":["takeaway1","takeaway2","takeaway3"],"quizQuestion":{"question":"test question","options":["A","B","C","D"],"correctIndex":0}}\n\nInclude 3-4 sections. Keep it educational and practical.',
       }],
     });
 
     const textBlock = message.content.find(c => c.type === 'text');
-    const text = textBlock && 'text' in textBlock ? textBlock.text : '{}';
-    const clean = text.replace(/```json|```/g, '').trim();
-    const lesson = JSON.parse(clean);
+    if (!textBlock || !('text' in textBlock)) {
+      return NextResponse.json({ error: 'No response from AI' }, { status: 500 });
+    }
 
-    // Save to cache so next user gets it instantly
+    let text = textBlock.text.trim();
+    console.log('Raw AI response length:', text.length);
+
+    // Strip any markdown formatting
+    text = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+
+    // Find JSON boundaries
+    const jsonStart = text.indexOf('{');
+    const jsonEnd = text.lastIndexOf('}');
+    if (jsonStart === -1 || jsonEnd === -1) {
+      console.error('No JSON found in response:', text.substring(0, 200));
+      return NextResponse.json({ error: 'Invalid AI response format' }, { status: 500 });
+    }
+
+    const jsonString = text.substring(jsonStart, jsonEnd + 1);
+    let lesson;
+    try {
+      lesson = JSON.parse(jsonString);
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError, 'String:', jsonString.substring(0, 200));
+      return NextResponse.json({ error: 'Failed to parse lesson content' }, { status: 500 });
+    }
+
+    // Validate required fields
+    if (!lesson.title || !lesson.introduction || !lesson.sections || !lesson.keyTakeaways) {
+      console.error('Missing required fields in lesson:', Object.keys(lesson));
+      return NextResponse.json({ error: 'Incomplete lesson content' }, { status: 500 });
+    }
+
+    // Save to cache
     if (courseId) {
-      await supabaseAdmin
-        .from('courses')
-        .update({ lesson_content: lesson })
-        .eq('id', courseId);
+      try {
+        await supabaseAdmin
+          .from('courses')
+          .update({ lesson_content: lesson })
+          .eq('id', courseId);
+        console.log('Lesson cached for courseId:', courseId);
+      } catch (saveError) {
+        console.error('Cache save error:', saveError);
+      }
     }
 
     return NextResponse.json({ success: true, lesson, cached: false });
   } catch (error) {
     console.error('Lesson generation error:', error);
-    return NextResponse.json({ error: 'Failed to generate lesson' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to generate lesson: ' + (error instanceof Error ? error.message : 'Unknown error') }, { status: 500 });
   }
 }
