@@ -144,26 +144,22 @@ const handleSelectLesson = async (course: any) => {
     setError(null);
     setLoadingLesson(true);
     try {
-      console.log('Loading lesson:', course.title, 'id:', course.id);
       const res = await fetch('/api/academy/lesson', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: course.title, category: course.school, courseId: course.id }),
       });
-    console.log('Lesson API status:', res.status);
       if (!res.ok) {
-        const errText = await res.text();
-        console.error('Lesson API error:', errText);
         setError('Server error. Please try again.');
         return;
       }
       const data = await res.json();
-      console.log('Lesson API success:', !!data.success, 'has lesson:', !!data.lesson);
       if (data.success && data.lesson) {
         setLesson(data.lesson);
       } else {
         setError('Failed to load lesson: ' + (data.error || 'No lesson data returned'));
       }
+      
     } catch (err: any) {
       console.error('Lesson fetch error:', err);
       setError('Failed to load lesson: ' + err.message);
