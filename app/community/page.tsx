@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Nav from '../components/Nav';
 
 export default function Community() {
   const [user, setUser] = useState<any>(null);
@@ -54,28 +55,7 @@ export default function Community() {
 
   return (
     <main className="min-h-screen bg-[#0d0d0d] text-white">
-      <header className="border-b border-white/10 sticky top-0 z-50 bg-[#0d0d0d]/95 backdrop-blur">
-        <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
-          <button onClick={() => window.location.href = '/'} className="flex items-center gap-2 bg-transparent border-0 cursor-pointer p-0">
-            <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-8 h-8 rounded-lg object-cover" />
-            <span className="font-bold text-white">AureoCommunity</span>
-          </button>
-          <nav className="hidden md:flex items-center gap-1">
-            {[['/', 'Intelligence'], ['/trade', 'AureoTrade'], ['/academy', 'AureoAcademy'], ['/auroai', 'AureoAI'], ['/community', 'Community']].map(([href, label]) => (
-              <button key={label} onClick={() => window.location.href = href} className={"px-3 py-1.5 rounded-lg text-sm transition-colors bg-transparent border-0 cursor-pointer " + (href === '/community' ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5')}>
-                {label}
-              </button>
-            ))}
-          </nav>
-          {user ? (
-            <span className="text-sm text-gray-400">{user.full_name}</span>
-          ) : (
-            <button onClick={() => window.location.href = '/login'} className="px-4 py-2 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
-              Sign in
-            </button>
-          )}
-        </div>
-      </header>
+      <Nav active="AureoCommunity" />
 
       <div className="bg-black py-12 px-4 text-center border-b border-white/10">
         <h1 className="text-3xl font-bold text-white mb-2">AureoCommunity</h1>

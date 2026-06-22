@@ -126,6 +126,15 @@ export default function Login() {
               </div>
             </div>
 
+           <div className="flex justify-end mb-1">
+              <button
+                onClick={() => window.location.href = '/forgot-password'}
+                className="text-xs text-gray-500 hover:text-gray-700 bg-transparent border-0 cursor-pointer"
+              >
+                Forgot password?
+              </button>
+            </div>
+
             <button
               onClick={handleLogin}
               disabled={loading}
