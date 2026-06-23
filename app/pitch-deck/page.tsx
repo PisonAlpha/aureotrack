@@ -4,396 +4,446 @@ import { useState } from 'react';
 import Nav from '../components/Nav';
 
 const SLIDES = [
-  {
-    id: 1,
-    title: 'AureoTrack',
-    subtitle: 'Macro & Trading Intelligence Platform',
-    type: 'cover',
-  },
-  {
-    id: 2,
-    title: 'The Problem',
-    subtitle: 'Why retail traders fail',
-    type: 'problem',
-  },
-  {
-    id: 3,
-    title: 'The Solution',
-    subtitle: 'AureoTrack — Everything a trader needs',
-    type: 'solution',
-  },
-  {
-    id: 4,
-    title: 'Product Suite',
-    subtitle: 'Five integrated products',
-    type: 'products',
-  },
-  {
-    id: 5,
-    title: 'Market Opportunity',
-    subtitle: 'A massive underserved market',
-    type: 'market',
-  },
-  {
-    id: 6,
-    title: 'Traction',
-    subtitle: 'What we have built',
-    type: 'traction',
-  },
-  {
-    id: 7,
-    title: 'Business Model',
-    subtitle: 'Multiple revenue streams',
-    type: 'business',
-  },
-  {
-    id: 8,
-    title: 'ART Tokenomics',
-    subtitle: '1 Billion ART Token',
-    type: 'tokenomics',
-  },
-  {
-    id: 9,
-    title: 'Funding & Use of Funds',
-    subtitle: '$3M raised — deploying for growth',
-    type: 'funding',
-  },
-  {
-    id: 10,
-    title: 'Roadmap',
-    subtitle: 'Path to global scale',
-    type: 'roadmap',
-  },
-  {
-    id: 11,
-    title: 'Team',
-    subtitle: 'Led by a visionary founder',
-    type: 'team',
-  },
-  {
-    id: 12,
-    title: 'Join AureoTrack',
-    subtitle: 'Invest in the future of trading intelligence',
-    type: 'cta',
-  },
+  { id: 1, label: 'Cover', type: 'cover' },
+  { id: 2, label: 'Problem', type: 'problem' },
+  { id: 3, label: 'Solution', type: 'solution' },
+  { id: 4, label: 'Products', type: 'products' },
+  { id: 5, label: 'Market', type: 'market' },
+  { id: 6, label: 'Traction', type: 'traction' },
+  { id: 7, label: 'Business Model', type: 'business' },
+  { id: 8, label: 'Tokenomics', type: 'tokenomics' },
+  { id: 9, label: 'Funding', type: 'funding' },
+  { id: 10, label: 'Roadmap', type: 'roadmap' },
+  { id: 11, label: 'Team', type: 'team' },
+  { id: 12, label: 'Invest', type: 'cta' },
 ];
+
+function PaperSlide({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`w-full h-full flex flex-col ${className}`} style={{
+      background: 'linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%)',
+      color: '#1a1a2e',
+      padding: '0',
+    }}>
+      {children}
+    </div>
+  );
+}
+
+function SlideTitle({ children, accent }: { children: React.ReactNode; accent?: string }) {
+  return (
+    <h2 className="text-2xl font-black mb-6" style={{ color: '#1a1a2e' }}>
+      {children}{accent && <span style={{ color: '#f59e0b' }}> {accent}</span>}
+    </h2>
+  );
+}
+
+function Tag({ children, color = '#f59e0b' }: { children: React.ReactNode; color?: string }) {
+  return (
+    <span className="inline-flex px-3 py-1 rounded-full text-xs font-bold" style={{ background: `${color}18`, color, border: `1px solid ${color}33` }}>
+      {children}
+    </span>
+  );
+}
 
 function SlideContent({ type }: { type: string }) {
   switch (type) {
     case 'cover':
       return (
-        <div className="flex flex-col items-center justify-center h-full text-center px-8">
-          <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-24 h-24 rounded-3xl object-cover mb-8 shadow-2xl" />
-          <h1 className="text-5xl sm:text-6xl font-black text-white mb-4">AureoTrack</h1>
-          <p className="text-xl text-yellow-400 font-medium mb-6">Macro & Trading Intelligence Platform</p>
-          <p className="text-gray-400 max-w-xl leading-relaxed">Democratizing access to professional-grade trading tools, AI-powered market intelligence, and world-class education for the next generation of global traders.</p>
-          <div className="flex gap-4 mt-8 flex-wrap justify-center">
-            <div className="px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-yellow-400 text-sm">$3M Raised</div>
-            <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-gray-300 text-sm">52+ Features</div>
-            <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-gray-300 text-sm">Q3 2026 TGE</div>
+        <PaperSlide>
+          <div className="flex-1 flex flex-col items-center justify-center text-center px-10 py-8" style={{ background: 'linear-gradient(145deg, #0a0a1a, #111827)' }}>
+            <div className="absolute inset-0 opacity-10" style={{ background: 'radial-gradient(ellipse at 50% 30%, #f59e0b 0%, transparent 60%)' }} />
+            <div className="relative">
+              <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-20 h-20 rounded-2xl mx-auto mb-6 object-cover" style={{ boxShadow: '0 0 40px rgba(245,158,11,0.3)' }} />
+              <h1 className="text-5xl font-black text-white mb-3 tracking-tight">AureoTrack</h1>
+              <p className="text-xl font-medium mb-2" style={{ color: '#f59e0b' }}>Macro & Trading Intelligence Platform</p>
+              <p className="text-gray-400 text-sm max-w-md mx-auto mb-8">Democratizing professional trading tools, AI-powered intelligence, and world-class education for the next generation of global traders.</p>
+              <div className="flex gap-3 justify-center flex-wrap">
+                {[['Founded 2025', '#f59e0b'], ['$3M Raised', '#10b981'], ['58+ Features', '#3b82f6'], ['Q3 2026 TGE', '#8b5cf6']].map(([label, color]) => (
+                  <Tag key={label} color={color}>{label}</Tag>
+                ))}
+              </div>
+              <p className="text-gray-600 text-xs mt-8">contact@aureotrack.com · aureotrack.com · @aureotrack</p>
+            </div>
           </div>
-        </div>
+        </PaperSlide>
       );
 
     case 'problem':
       return (
-        <div className="px-8 py-6 h-full flex flex-col justify-center">
-          <div className="grid grid-cols-2 gap-4">
+        <PaperSlide>
+          <div className="px-8 pt-6 pb-2">
+            <SlideTitle accent="Statement">The Problem</SlideTitle>
+          </div>
+          <div className="flex-1 px-8 pb-6 grid grid-cols-2 gap-3 content-start">
             {[
-              { icon: '🚫', title: 'Information Asymmetry', desc: 'Retail traders lack access to the real-time data institutional traders use' },
-              { icon: '💸', title: 'Expensive Tools', desc: 'Bloomberg Terminal costs $24,000/year — unaffordable for retail traders' },
-              { icon: '📚', title: 'Poor Education', desc: 'Most trading education is low quality or taught by unqualified instructors' },
-              { icon: '🌍', title: 'Geographic Exclusion', desc: 'Traders in Africa and Asia excluded from best platforms by geo-restrictions' },
-              { icon: '⚡', title: 'Fragmented Tools', desc: 'Traders use 5-10 apps for different needs, creating friction and inefficiency' },
-              { icon: '🎰', title: '80% Failure Rate', desc: 'Most retail traders lose money due to lack of proper tools and education' },
+              { icon: '🚫', title: 'Information Asymmetry', desc: 'Retail traders lack real-time intelligence that institutional traders use daily', color: '#ef4444' },
+              { icon: '💸', title: 'Unaffordable Tools', desc: 'Bloomberg Terminal costs $24,000+/year — impossible for most retail traders', color: '#f97316' },
+              { icon: '📚', title: 'Poor Education', desc: 'Low-quality, overpriced courses taught by unqualified instructors', color: '#f59e0b' },
+              { icon: '🌍', title: 'Geographic Exclusion', desc: 'Africa & Asia traders excluded from best platforms by geo-restrictions', color: '#8b5cf6' },
+              { icon: '⚡', title: 'Fragmented Tools', desc: 'Traders need 5–10 apps for charts, news, education, community', color: '#3b82f6' },
+              { icon: '📉', title: '80%+ Failure Rate', desc: 'Most retail traders lose money due to lack of education and tools', color: '#6b7280' },
             ].map(p => (
-              <div key={p.title} className="bg-white/5 border border-white/10 rounded-xl p-4">
-                <span className="text-xl mb-1 block">{p.icon}</span>
-                <p className="text-sm font-semibold text-white mb-1">{p.title}</p>
-                <p className="text-xs text-gray-500">{p.desc}</p>
+              <div key={p.title} className="rounded-xl p-4" style={{ background: `${p.color}08`, border: `1px solid ${p.color}22` }}>
+                <span className="text-xl mb-2 block">{p.icon}</span>
+                <p className="font-bold text-xs mb-1" style={{ color: '#1a1a2e' }}>{p.title}</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#6b7280' }}>{p.desc}</p>
               </div>
             ))}
           </div>
-        </div>
+        </PaperSlide>
       );
 
     case 'solution':
       return (
-        <div className="px-8 py-6 h-full flex flex-col justify-center">
-          <div className="bg-yellow-500/5 border border-yellow-500/20 rounded-2xl p-6 mb-4">
-            <p className="text-lg text-white font-semibold mb-2">One platform. Everything a trader needs.</p>
-            <p className="text-gray-400 text-sm">AureoTrack combines real-time market intelligence, AI-powered analysis, professional demo trading, world-class education, and a global community — all in one unified platform, free to use.</p>
+        <PaperSlide>
+          <div className="px-8 pt-6 pb-2">
+            <SlideTitle accent="Solution">The AureoTrack</SlideTitle>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              '✓ Real-time data from 40+ assets (crypto, forex, gold)',
-              '✓ AI market analysis with probability forecasts',
-              '✓ TradingView live charts with full technical tools',
-              '✓ Arbitrage scanner across 9 CEX + DEX sources',
-              '✓ 60+ AI-generated trading lessons and certifications',
-              '✓ Multi-chain portfolio tracking across 5 networks',
-            ].map((point, i) => (
-              <div key={i} className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300">
-                {point}
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-
-    case 'products':
-      return (
-        <div className="px-8 py-6 h-full flex flex-col justify-center">
-          <div className="grid grid-cols-1 gap-3">
-            {[
-              { icon: '📊', name: 'AureoTrack Intelligence', desc: 'Real-time market data, BTC/Gold correlation, arbitrage scanner, live news' },
-              { icon: '📈', name: 'AureoTrade', desc: 'Demo trading terminal with TradingView charts, 22 pairs, spot & futures' },
-              { icon: '🎓', name: 'AureoAcademy', desc: '6 schools, 60+ lessons, certifications, live online training programs' },
-              { icon: '🤖', name: 'AureoAI', desc: 'AI market analysis, event simulator, AI mentor, site-wide AI assistant' },
-              { icon: '🌐', name: 'AureoCommunity', desc: 'Discussion rooms, leaderboards, challenges, global chapters, airdrop whitelist' },
-            ].map(product => (
-              <div key={product.name} className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-xl px-5 py-3">
-                <span className="text-2xl flex-shrink-0">{product.icon}</span>
-                <div>
-                  <p className="text-sm font-semibold text-white">{product.name}</p>
-                  <p className="text-xs text-gray-500">{product.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-
-    case 'market':
-      return (
-        <div className="px-8 py-6 h-full flex flex-col justify-center">
-          <div className="grid grid-cols-3 gap-4 mb-6">
-            {[
-              { value: '$3.2T+', label: 'Daily Forex Volume', sub: 'Global market' },
-              { value: '425M+', label: 'Crypto Users', sub: '+15% YoY growth' },
-              { value: '$12.7B', label: 'EdFintech Market', sub: 'By 2028' },
-            ].map(stat => (
-              <div key={stat.label} className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center">
-                <p className="text-2xl font-black text-yellow-400">{stat.value}</p>
-                <p className="text-sm font-medium text-white mt-1">{stat.label}</p>
-                <p className="text-xs text-gray-500">{stat.sub}</p>
-              </div>
-            ))}
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-            <p className="text-sm text-gray-300 leading-relaxed">AureoTrack targets the <span className="text-yellow-400 font-semibold">underserved retail trader segment</span> in Africa and Asia — two of the world's fastest-growing trading markets with hundreds of millions of potential users seeking affordable, professional-grade trading tools and education.</p>
-          </div>
-        </div>
-      );
-
-    case 'traction':
-      return (
-        <div className="px-8 py-6 h-full flex flex-col justify-center">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {[
-              { value: '52+', label: 'Platform Features', icon: '⚡' },
-              { value: '60+', label: 'Academy Lessons', icon: '📚' },
-              { value: '6', label: 'Trading Schools', icon: '🎓' },
-              { value: '9', label: 'Exchange Sources', icon: '📊' },
-              { value: '22', label: 'Trading Pairs', icon: '📈' },
-              { value: '5', label: 'Blockchain Networks', icon: '🌐' },
-              { value: '$3M', label: 'Total Raised', icon: '💰' },
-              { value: '2', label: 'Global Chapters', icon: '🌍' },
-              { value: 'Q3 2026', label: 'TGE Date', icon: '🪙' },
-            ].map(stat => (
-              <div key={stat.label} className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-                <span className="text-2xl mb-1 block">{stat.icon}</span>
-                <p className="text-xl font-black text-yellow-400">{stat.value}</p>
-                <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-
-    case 'business':
-      return (
-        <div className="px-8 py-6 h-full flex flex-col justify-center">
-          <div className="grid grid-cols-1 gap-3">
-            {[
-              { stream: 'ART Token Sales', desc: 'Public sale at $0.20 — $30M target at full raise', revenue: 'Primary' },
-              { stream: 'Premium Subscriptions', desc: 'Pro tier unlocking advanced AI signals, priority data, and exclusive tools', revenue: 'Recurring' },
-              { stream: 'Live Training Programs', desc: '$149-$299 per program with cohort-based enrollment', revenue: 'Recurring' },
-              { stream: 'Exchange Partnerships', desc: 'Revenue sharing with exchanges referred through arbitrage scanner', revenue: 'Passive' },
-              { stream: 'API Access', desc: 'White-label platform licensing and institutional API subscriptions', revenue: 'B2B' },
-              { stream: 'ART Staking Fees', desc: 'Protocol fees from DEX trading redistributed to ART stakers', revenue: 'Token' },
-            ].map(item => (
-              <div key={item.stream} className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-5 py-3">
-                <div>
-                  <p className="text-sm font-semibold text-white">{item.stream}</p>
-                  <p className="text-xs text-gray-500">{item.desc}</p>
-                </div>
-                <span className="px-2 py-1 bg-yellow-500/10 text-yellow-400 rounded-lg text-xs font-medium border border-yellow-500/20 flex-shrink-0 ml-4">{item.revenue}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-
-    case 'tokenomics':
-      return (
-        <div className="px-8 py-6 h-full flex flex-col justify-center">
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            {[
-              { label: 'Total Supply', value: '1,000,000,000 ART' },
-              { label: 'Public Sale Price', value: '$0.20 per ART' },
-              { label: 'TGE Date', value: 'Q3 2026' },
-              { label: 'Airdrop Pool', value: '30M ART (3%)' },
-            ].map(stat => (
-              <div key={stat.label} className="bg-white/5 border border-white/10 rounded-xl p-4">
-                <p className="text-xs text-gray-500 mb-1">{stat.label}</p>
-                <p className="text-base font-bold text-yellow-400">{stat.value}</p>
-              </div>
-            ))}
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <div className="grid grid-cols-2 gap-2">
+          <div className="flex-1 px-8 pb-6 flex flex-col gap-4">
+            <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg, #fefce8, #fef9c3)', border: '2px solid #fde68a' }}>
+              <p className="font-black text-lg mb-1" style={{ color: '#92400e' }}>One platform. Everything a trader needs.</p>
+              <p className="text-sm" style={{ color: '#78350f' }}>Real-time market data + AI analysis + demo trading + world-class education + global community — free to use.</p>
+            </div>
+            <div className="grid grid-cols-2 gap-2 flex-1">
               {[
-                { name: 'Ecosystem & Dev', pct: '20%' },
-                { name: 'Team & Advisors', pct: '18%' },
-                { name: 'Public Sale', pct: '15%' },
-                { name: 'Marketing', pct: '12%' },
-                { name: 'Private Sale', pct: '10%' },
-                { name: 'Academy', pct: '10%' },
-                { name: 'Reserve', pct: '10%' },
-                { name: 'Community', pct: '5%' },
-              ].map(item => (
-                <div key={item.name} className="flex justify-between text-xs">
-                  <span className="text-gray-400">{item.name}</span>
-                  <span className="text-white font-medium">{item.pct}</span>
+                'Real-time data — 40+ assets (crypto, forex, gold)',
+                'AI analysis with bull/neutral/bear probability forecasts',
+                'TradingView live charts — 22 tradable pairs',
+                'Arbitrage scanner — 9 CEX + DEX sources',
+                '60+ AI trading lessons with certifications',
+                'Multi-chain portfolio tracking — 5 blockchains',
+                'Live online training programs ($149–$299)',
+                'Global community — Asia + Africa chapters',
+              ].map((point, i) => (
+                <div key={i} className="flex items-start gap-2 px-3 py-2.5 rounded-xl text-xs" style={{ background: i % 2 === 0 ? '#f8f9ff' : '#eef0ff', color: '#374151' }}>
+                  <span className="font-bold flex-shrink-0" style={{ color: '#f59e0b' }}>✓</span>{point}
                 </div>
               ))}
             </div>
           </div>
-        </div>
+        </PaperSlide>
+      );
+
+    case 'products':
+      return (
+        <PaperSlide>
+          <div className="px-8 pt-6 pb-2">
+            <SlideTitle accent="Suite">5-Product</SlideTitle>
+          </div>
+          <div className="flex-1 px-8 pb-6 flex flex-col gap-2.5">
+            {[
+              { icon: '📊', name: 'AureoTrack Intelligence', desc: 'Real-time prices, BTC/Gold chart, arbitrage scanner, live news', color: '#3b82f6' },
+              { icon: '📈', name: 'AureoTrade', desc: 'Demo terminal with TradingView charts, 22 pairs, spot + futures 20x', color: '#10b981' },
+              { icon: '🎓', name: 'AureoAcademy', desc: '6 schools, 60+ AI lessons, certifications, live training cohorts', color: '#f59e0b' },
+              { icon: '🤖', name: 'AureoAI', desc: 'Market analysis, event simulator, AI mentor, site-wide assistant', color: '#8b5cf6' },
+              { icon: '🌐', name: 'AureoCommunity', desc: 'Discussion rooms, leaderboard, challenges, airdrop whitelist', color: '#ec4899' },
+            ].map(p => (
+              <div key={p.name} className="flex items-center gap-4 rounded-xl px-4 py-3" style={{ background: `${p.color}08`, border: `1px solid ${p.color}22` }}>
+                <span className="text-2xl flex-shrink-0">{p.icon}</span>
+                <div className="flex-1">
+                  <p className="font-black text-sm" style={{ color: p.color }}>{p.name}</p>
+                  <p className="text-xs" style={{ color: '#6b7280' }}>{p.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </PaperSlide>
+      );
+
+    case 'market':
+      return (
+        <PaperSlide>
+          <div className="px-8 pt-6 pb-2">
+            <SlideTitle accent="Opportunity">Market</SlideTitle>
+          </div>
+          <div className="flex-1 px-8 pb-6 flex flex-col gap-4">
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { value: '$3.2T+', label: 'Daily Forex Volume', color: '#f59e0b' },
+                { value: '425M+', label: 'Global Crypto Users', color: '#3b82f6' },
+                { value: '$12.7B', label: 'EdFintech by 2028', color: '#10b981' },
+              ].map(s => (
+                <div key={s.label} className="rounded-2xl p-4 text-center" style={{ background: 'linear-gradient(145deg, #0a0a1a, #111827)', boxShadow: '0 8px 20px rgba(0,0,0,0.3)' }}>
+                  <p className="text-2xl font-black" style={{ color: s.color }}>{s.value}</p>
+                  <p className="text-xs text-gray-400 mt-1">{s.label}</p>
+                </div>
+              ))}
+            </div>
+            <div className="flex-1 rounded-2xl p-5" style={{ background: 'linear-gradient(135deg, #f8f9ff, #eef0ff)', border: '1px solid #e8eaf0' }}>
+              <p className="font-black text-base mb-3" style={{ color: '#1a1a2e' }}>Why AureoTrack Wins</p>
+              {[
+                'Africa + Asia — fastest growing retail trading markets, most underserved',
+                'Freemium model removes barrier to entry, ART token drives monetization',
+                'AI-first approach gives retail traders institutional-quality intelligence',
+                'Education + tools + community — full lifecycle platform for every trader',
+              ].map((p, i) => (
+                <p key={i} className="text-xs mb-2 flex items-start gap-2" style={{ color: '#374151' }}>
+                  <span style={{ color: '#f59e0b' }}>→</span>{p}
+                </p>
+              ))}
+            </div>
+          </div>
+        </PaperSlide>
+      );
+
+    case 'traction':
+      return (
+        <PaperSlide>
+          <div className="px-8 pt-6 pb-2">
+            <SlideTitle accent="& Milestones">Traction</SlideTitle>
+          </div>
+          <div className="flex-1 px-8 pb-6 grid grid-cols-3 gap-3 content-start">
+            {[
+              { value: '58+', label: 'Platform Features', icon: '⚡', color: '#f59e0b' },
+              { value: '60+', label: 'Academy Lessons', icon: '📚', color: '#3b82f6' },
+              { value: '6', label: 'Trading Schools', icon: '🎓', color: '#10b981' },
+              { value: '22', label: 'Trading Pairs', icon: '📈', color: '#8b5cf6' },
+              { value: '9', label: 'Exchange Sources', icon: '🔍', color: '#ec4899' },
+              { value: '5', label: 'Blockchain Networks', icon: '🌐', color: '#f97316' },
+              { value: '$3M', label: 'Total Raised', icon: '💰', color: '#10b981' },
+              { value: '2', label: 'Global Chapters', icon: '🌍', color: '#3b82f6' },
+              { value: 'Q3 2026', label: 'TGE Date', icon: '🪙', color: '#f59e0b' },
+            ].map(stat => (
+              <div key={stat.label} className="rounded-xl p-4 text-center" style={{ background: `${stat.color}08`, border: `1px solid ${stat.color}22` }}>
+                <span className="text-xl mb-1 block">{stat.icon}</span>
+                <p className="text-xl font-black" style={{ color: stat.color }}>{stat.value}</p>
+                <p className="text-xs mt-1" style={{ color: '#6b7280' }}>{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </PaperSlide>
+      );
+
+    case 'business':
+      return (
+        <PaperSlide>
+          <div className="px-8 pt-6 pb-2">
+            <SlideTitle accent="Model">Business</SlideTitle>
+          </div>
+          <div className="flex-1 px-8 pb-6 flex flex-col gap-2.5">
+            {[
+              { stream: 'ART Token Public Sale', desc: '$0.20/ART — $30M target at TGE', type: 'Primary', color: '#f59e0b' },
+              { stream: 'Premium Subscriptions', desc: 'ART-gated pro tier with advanced AI signals and tools', type: 'Recurring', color: '#10b981' },
+              { stream: 'Live Training Programs', desc: '$149–$299 per cohort — quarterly intake', type: 'Recurring', color: '#3b82f6' },
+              { stream: 'Exchange Partnerships', desc: 'Revenue sharing on referrals via arbitrage scanner', type: 'Passive', color: '#8b5cf6' },
+              { stream: 'API & White-label', desc: 'Institutional API access and white-label licensing', type: 'B2B', color: '#ec4899' },
+              { stream: 'AureoTrack DEX (2027)', desc: 'Protocol fees from DEX trading — ART staker rewards', type: 'Token', color: '#f97316' },
+            ].map(item => (
+              <div key={item.stream} className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: `${item.color}06`, border: `1px solid ${item.color}20` }}>
+                <div>
+                  <p className="font-bold text-sm" style={{ color: '#1a1a2e' }}>{item.stream}</p>
+                  <p className="text-xs" style={{ color: '#6b7280' }}>{item.desc}</p>
+                </div>
+                <Tag color={item.color}>{item.type}</Tag>
+              </div>
+            ))}
+          </div>
+        </PaperSlide>
+      );
+
+    case 'tokenomics':
+      return (
+        <PaperSlide>
+          <div className="px-8 pt-6 pb-2">
+            <SlideTitle accent="(ART)">Tokenomics</SlideTitle>
+          </div>
+          <div className="flex-1 px-8 pb-6 flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { label: 'Total Supply', value: '1,000,000,000 ART', color: '#f59e0b' },
+                { label: 'Initial Circulating', value: '12% — 120M ART', color: '#3b82f6' },
+                { label: 'Public Sale Price', value: '$0.20 per ART', color: '#10b981' },
+                { label: 'TGE Date', value: 'Q3 2026', color: '#8b5cf6' },
+              ].map(s => (
+                <div key={s.label} className="rounded-xl p-3" style={{ background: `${s.color}08`, border: `1px solid ${s.color}22` }}>
+                  <p className="text-xs" style={{ color: '#6b7280' }}>{s.label}</p>
+                  <p className="font-black text-sm mt-0.5" style={{ color: s.color }}>{s.value}</p>
+                </div>
+              ))}
+            </div>
+            <div className="rounded-xl p-4 flex-1" style={{ background: 'linear-gradient(135deg, #f8f9ff, #eef0ff)', border: '1px solid #e8eaf0' }}>
+              <p className="font-bold text-xs mb-2" style={{ color: '#6b7280' }}>ALLOCATION BREAKDOWN</p>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+                {[
+                  ['Community & Airdrop', '12%', '#f59e0b'],
+                  ['Public Sale', '15%', '#3b82f6'],
+                  ['Private Sale', '10%', '#8b5cf6'],
+                  ['Angel Round', '5%', '#ec4899'],
+                  ['Team & Advisors*', '18%', '#f97316'],
+                  ['Ecosystem & Dev', '10%', '#10b981'],
+                  ['Marketing', '10%', '#06b6d4'],
+                  ['Treasury**', '20%', '#6b7280'],
+                ].map(([name, pct, color]) => (
+                  <div key={name} className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+                      <span style={{ color: '#374151' }}>{name}</span>
+                    </div>
+                    <span className="font-black" style={{ color }}>{pct}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs mt-3" style={{ color: '#9ca3af' }}>* Team locked 1 year · ** Treasury locked 3 years (DAO governed after)</p>
+            </div>
+          </div>
+        </PaperSlide>
       );
 
     case 'funding':
       return (
-        <div className="px-8 py-6 h-full flex flex-col justify-center">
-          <div className="grid grid-cols-3 gap-3 mb-5">
-            {[
-              { round: 'Angel Round', amount: '$500K', status: 'Closed' },
-              { round: 'Private Sale', amount: '$2M', status: 'Closed' },
-              { round: 'Grants', amount: '$500K', status: 'Received' },
-            ].map(r => (
-              <div key={r.round} className="bg-white/5 border border-yellow-500/20 rounded-xl p-4 text-center">
-                <p className="text-lg font-black text-yellow-400">{r.amount}</p>
-                <p className="text-sm text-white font-medium">{r.round}</p>
-                <span className="text-xs text-green-400">✓ {r.status}</span>
-              </div>
-            ))}
+        <PaperSlide>
+          <div className="px-8 pt-6 pb-2">
+            <SlideTitle accent="& Use of Funds">Funding</SlideTitle>
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="text-xs text-gray-500 mb-3 font-medium uppercase tracking-wide">Use of Funds — $3M</p>
-            {[
-              { label: 'Team & Operations', pct: 30, amount: '$900K' },
-              { label: 'Marketing & Community', pct: 25, amount: '$750K' },
-              { label: 'Academy & Training', pct: 20, amount: '$600K' },
-              { label: 'Token Launch & Listings', pct: 15, amount: '$450K' },
-              { label: 'Infrastructure', pct: 10, amount: '$300K' },
-            ].map(item => (
-              <div key={item.label} className="mb-2">
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-gray-400">{item.label}</span>
-                  <span className="text-white">{item.amount} ({item.pct}%)</span>
+          <div className="flex-1 px-8 pb-6 flex flex-col gap-4">
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { round: 'Angel Round', amount: '$700K', detail: '$0.15/ART · Q1 2025', color: '#f59e0b', bg: '#fefce8' },
+                { round: 'Private Sale', amount: '$2M', detail: '$0.18/ART · Q2 2026', color: '#8b5cf6', bg: '#f5f3ff' },
+                { round: 'Grants', amount: '$300K', detail: 'Non-dilutive · Q2 2026', color: '#3b82f6', bg: '#eff6ff' },
+              ].map(r => (
+                <div key={r.round} className="rounded-xl p-4 text-center" style={{ background: r.bg, border: `1px solid ${r.color}33` }}>
+                  <p className="text-xs font-semibold mb-1" style={{ color: '#6b7280' }}>{r.round}</p>
+                  <p className="text-2xl font-black" style={{ color: r.color }}>{r.amount}</p>
+                  <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>{r.detail}</p>
+                  <span className="text-xs font-bold" style={{ color: '#10b981' }}>✓ Closed</span>
                 </div>
-                <div className="h-1.5 bg-white/10 rounded-full">
-                  <div className="h-full bg-yellow-500 rounded-full" style={{ width: item.pct + '%' }} />
+              ))}
+            </div>
+            <div className="rounded-xl p-4 flex-1" style={{ background: 'linear-gradient(135deg, #f8f9ff, #eef0ff)', border: '1px solid #e8eaf0' }}>
+              <p className="font-bold text-xs mb-3" style={{ color: '#6b7280' }}>USE OF FUNDS — $3,000,000</p>
+              {[
+                { label: 'Team & Operations', pct: 30, amount: '$900K', color: '#f97316' },
+                { label: 'Marketing & Community', pct: 25, amount: '$750K', color: '#8b5cf6' },
+                { label: 'Academy & Training', pct: 20, amount: '$600K', color: '#06b6d4' },
+                { label: 'Token Launch & Listings', pct: 15, amount: '$450K', color: '#10b981' },
+                { label: 'Infrastructure', pct: 10, amount: '$300K', color: '#f59e0b' },
+              ].map(item => (
+                <div key={item.label} className="mb-2">
+                  <div className="flex justify-between text-xs mb-1">
+                    <span style={{ color: '#374151' }}>{item.label}</span>
+                    <span className="font-bold" style={{ color: item.color }}>{item.amount} ({item.pct}%)</span>
+                  </div>
+                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.08)' }}>
+                    <div className="h-full rounded-full" style={{ width: item.pct + '%', background: item.color }} />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        </PaperSlide>
       );
 
     case 'roadmap':
       return (
-        <div className="px-8 py-6 h-full flex flex-col justify-center">
-          <div className="space-y-3">
+        <PaperSlide>
+          <div className="px-8 pt-6 pb-2">
+            <SlideTitle accent="to Scale">Path</SlideTitle>
+          </div>
+          <div className="flex-1 px-8 pb-6 flex flex-col gap-3">
             {[
-              { phase: 'Phase 1 — Foundation', period: 'Q1-Q2 2026', status: 'Completed', color: 'border-green-500/30 bg-green-500/5', items: ['Platform launch with 52+ features', '$3M raised across Angel + Private Sale + Grants'] },
-              { phase: 'Phase 2 — TGE', period: 'Q3 2026', status: 'In Progress', color: 'border-yellow-500/30 bg-yellow-500/5', items: ['ART Token launch at $0.20', 'Airdrop to whitelist, CEX/DEX listings'] },
-              { phase: 'Phase 3 — Mobile', period: 'Q4 2026', status: 'Upcoming', color: 'border-white/10 bg-white/5', items: ['iOS + Android app launch', 'Premium ART-gated features'] },
-              { phase: 'Phase 4 — Ecosystem', period: '2027', status: 'Planned', color: 'border-white/10 bg-white/5', items: ['AureoTrack DEX launch', 'Governance + staking portal'] },
+              { phase: 'Phase 1', period: 'Q1 2025 – Q2 2026', status: 'Completed', color: '#10b981', bg: '#f0fdf4', items: ['AureoTrack founded 2025 · 58+ features launched', '$3M raised (Angel $700K + Private $2M + Grants $300K)', 'AureoAcademy · Asia + Africa chapters established'] },
+              { phase: 'Phase 2', period: 'Q3 2026', status: 'In Progress', color: '#f59e0b', bg: '#fffbeb', items: ['ART TGE — 12% initial supply · Public sale at $0.20', '30M ART airdrop distribution · CEX + DEX listings'] },
+              { phase: 'Phase 3', period: 'Q4 2026', status: 'Upcoming', color: '#3b82f6', bg: '#eff6ff', items: ['iOS + Android mobile app · ART premium tier launch', 'Exchange revenue partnerships · AI signal alerts'] },
+              { phase: 'Phase 4', period: '2027+', status: 'Planned', color: '#8b5cf6', bg: '#f5f3ff', items: ['AureoTrack DEX · Governance portal · Treasury DAO unlock', 'Global expansion — 10+ countries · 100K+ users'] },
             ].map(phase => (
-              <div key={phase.phase} className={"border rounded-xl px-5 py-3 " + phase.color}>
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-bold text-white">{phase.phase}</p>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500">{phase.period}</span>
-                    <span className={"text-xs px-2 py-0.5 rounded-full " + (phase.status === 'Completed' ? 'bg-green-400/10 text-green-400' : phase.status === 'In Progress' ? 'bg-yellow-400/10 text-yellow-400' : 'bg-white/10 text-gray-400')}>
-                      {phase.status}
-                    </span>
+              <div key={phase.phase} className="rounded-xl overflow-hidden" style={{ border: `1px solid ${phase.color}30` }}>
+                <div className="px-4 py-2 flex items-center justify-between" style={{ background: phase.bg }}>
+                  <div>
+                    <span className="font-black text-xs" style={{ color: phase.color }}>{phase.phase}</span>
+                    <span className="text-xs ml-2" style={{ color: '#9ca3af' }}>{phase.period}</span>
                   </div>
+                  <Tag color={phase.color}>{phase.status}</Tag>
                 </div>
-                <div className="flex gap-4">
+                <div className="px-4 py-2" style={{ background: phase.bg + '88' }}>
                   {phase.items.map((item, i) => (
-                    <p key={i} className="text-xs text-gray-500">→ {item}</p>
+                    <p key={i} className="text-xs mb-0.5 flex items-start gap-1.5" style={{ color: '#374151' }}>
+                      <span style={{ color: phase.color }}>→</span>{item}
+                    </p>
                   ))}
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </PaperSlide>
       );
 
     case 'team':
       return (
-        <div className="px-8 py-6 h-full flex flex-col justify-center">
-          <div className="flex flex-col sm:flex-row gap-8 items-center bg-white/5 border border-white/10 rounded-2xl p-8">
-            <div className="w-32 h-32 rounded-2xl overflow-hidden flex-shrink-0">
-              <img src="/academy/photos/staff-stage.jpeg" alt="Glean Moore" className="w-full h-full object-cover object-top" />
-            </div>
-            <div>
-              <h3 className="text-2xl font-black text-white mb-1">Glean Moore</h3>
-              <p className="text-yellow-400 text-sm font-medium mb-3">Founder & CEO — AureoTrack</p>
-              <p className="text-gray-400 text-sm leading-relaxed mb-4">Visionary founder with a mission to democratize access to professional trading tools for emerging market traders. Built AureoTrack from zero to a 52-feature platform with global reach across Asia and Africa.</p>
-              <div className="flex gap-3 flex-wrap">
-                <div className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-300">Platform Architecture</div>
-                <div className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-300">Trading Education</div>
-                <div className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-300">Community Building</div>
-                <div className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-300">AI Integration</div>
+        <PaperSlide>
+          <div className="px-8 pt-6 pb-2">
+            <SlideTitle accent="Leadership">Our</SlideTitle>
+          </div>
+          <div className="flex-1 px-8 pb-6 flex flex-col gap-5">
+            <div className="flex gap-6 items-start p-6 rounded-2xl" style={{ background: 'linear-gradient(135deg, #0a0a1a, #111827)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+              <div className="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0" style={{ boxShadow: '0 8px 20px rgba(0,0,0,0.4)' }}>
+                <img src="/academy/photos/staff-stage.jpeg" alt="Glean Moore" className="w-full h-full object-cover object-top" />
+              </div>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#f59e0b' }}>Founder & CEO</p>
+                <h3 className="text-xl font-black text-white mb-2">Glean Moore</h3>
+                <p className="text-sm text-gray-400 leading-relaxed mb-3">Founded AureoTrack in 2025 with a mission to democratize professional trading tools for retail traders in emerging markets. Built a 58-feature platform from scratch with global reach across Asia and Africa.</p>
+                <div className="flex gap-2 flex-wrap">
+                  {['Platform Architecture', 'Trading Education', 'Community Building', 'AI Integration'].map(s => (
+                    <span key={s} className="text-xs px-2.5 py-1 rounded-lg text-gray-300" style={{ background: 'rgba(255,255,255,0.08)' }}>{s}</span>
+                  ))}
+                </div>
               </div>
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { title: 'Asia Chapter', desc: 'Empowering traders across Southeast Asia', img: '/academy/photos/asia-chapter.jpeg' },
+                { title: 'Africa Chapter', desc: "Building Africa's next generation of traders", img: '/academy/photos/africa-chapter.jpeg' },
+              ].map(ch => (
+                <div key={ch.title} className="rounded-xl overflow-hidden" style={{ border: '1px solid #e8eaf0' }}>
+                  <div className="h-24 overflow-hidden">
+                    <img src={ch.img} alt={ch.title} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="p-3" style={{ background: '#f8f9ff' }}>
+                    <p className="font-bold text-xs" style={{ color: '#1a1a2e' }}>{ch.title}</p>
+                    <p className="text-xs" style={{ color: '#6b7280' }}>{ch.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </PaperSlide>
       );
 
     case 'cta':
       return (
-        <div className="flex flex-col items-center justify-center h-full text-center px-8">
-          <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-20 h-20 rounded-2xl object-cover mb-6" />
-          <h2 className="text-4xl font-black text-white mb-3">Invest in AureoTrack</h2>
-          <p className="text-yellow-400 text-lg font-medium mb-4">The future of trading intelligence is here</p>
-          <p className="text-gray-400 max-w-lg mb-8 text-sm leading-relaxed">Join us in democratizing access to professional trading tools for the next billion traders in emerging markets. ART public sale opens Q3 2026 at $0.20 per token.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-lg mb-8">
-            {[
-              { label: 'Public Sale Price', value: '$0.20' },
-              { label: 'Total Raised', value: '$3M' },
-              { label: 'TGE', value: 'Q3 2026' },
-            ].map(stat => (
-              <div key={stat.label} className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
-                <p className="text-xl font-black text-yellow-400">{stat.value}</p>
-                <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
+        <PaperSlide>
+          <div className="flex-1 flex flex-col items-center justify-center text-center px-10 py-8" style={{ background: 'linear-gradient(145deg, #0a0a1a, #111827)' }}>
+            <div className="absolute inset-0 opacity-10" style={{ background: 'radial-gradient(ellipse at 50% 50%, #f59e0b 0%, transparent 60%)' }} />
+            <div className="relative">
+              <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-16 h-16 rounded-2xl mx-auto mb-5 object-cover" style={{ boxShadow: '0 0 30px rgba(245,158,11,0.4)' }} />
+              <h2 className="text-4xl font-black text-white mb-2">Invest in <span style={{ color: '#f59e0b' }}>AureoTrack</span></h2>
+              <p className="text-gray-400 mb-6 max-w-md mx-auto text-sm">The future of trading intelligence for the next billion traders in emerging markets.</p>
+              <div className="grid grid-cols-3 gap-4 mb-8 max-w-sm mx-auto">
+                {[
+                  { label: 'Public Sale', value: '$0.20/ART' },
+                  { label: 'Total Raised', value: '$3M' },
+                  { label: 'TGE', value: 'Q3 2026' },
+                ].map(s => (
+                  <div key={s.label} className="rounded-xl p-3" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <p className="font-black text-yellow-400 text-base">{s.value}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{s.label}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+              <div className="flex gap-3 justify-center flex-wrap mb-6">
+                <button onClick={() => window.location.href = 'mailto:contact@aureotrack.com'} className="px-7 py-3 rounded-xl text-sm font-bold text-black transition-all" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '0 8px 20px rgba(245,158,11,0.4)' }}>
+                  Contact for Investment →
+                </button>
+                <button onClick={() => window.location.href = '/whitepaper'} className="px-7 py-3 rounded-xl text-sm font-semibold text-white transition-all" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
+                  Read Whitepaper
+                </button>
+              </div>
+              <p className="text-gray-600 text-xs">contact@aureotrack.com · aureotrack.com · @aureotrack</p>
+            </div>
           </div>
-          <div className="flex gap-4 flex-wrap justify-center">
-            <button onClick={() => window.location.href = 'mailto:contact@aureotrack.com'} className="px-8 py-3 bg-yellow-500 text-black rounded-xl text-sm font-bold hover:bg-yellow-400 transition-colors">
-              Contact for Investment →
-            </button>
-            <button onClick={() => window.location.href = '/whitepaper'} className="px-8 py-3 border border-white/20 text-white rounded-xl text-sm font-semibold hover:bg-white/5 transition-colors">
-              Read Whitepaper
-            </button>
-          </div>
-          <p className="text-xs text-gray-600 mt-6">contact@aureotrack.com · aureotrack.com · @aureotrack</p>
-        </div>
+        </PaperSlide>
       );
 
     default:
@@ -402,79 +452,68 @@ function SlideContent({ type }: { type: string }) {
 }
 
 export default function PitchDeck() {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [current, setCurrent] = useState(0);
 
-  const goNext = () => setCurrentSlide(s => Math.min(s + 1, SLIDES.length - 1));
-  const goPrev = () => setCurrentSlide(s => Math.max(s - 1, 0));
-
-  const slide = SLIDES[currentSlide];
+  const slide = SLIDES[current];
+  const goNext = () => setCurrent(s => Math.min(s + 1, SLIDES.length - 1));
+  const goPrev = () => setCurrent(s => Math.max(s - 1, 0));
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] text-white flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(135deg, #0a0a0a 0%, #111827 50%, #0a0a0a 100%)' }}>
       <Nav active="" />
 
-      <div className="flex-1 flex flex-col max-w-screen-xl mx-auto w-full px-4 py-6">
+      <div className="flex-1 max-w-screen-xl mx-auto w-full px-4 py-6 flex flex-col">
+        {/* Header */}
         <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
           <div>
-            <h1 className="text-lg font-bold text-white">AureoTrack Pitch Deck</h1>
-            <p className="text-xs text-gray-500">Slide {currentSlide + 1} of {SLIDES.length}</p>
+            <h1 className="text-lg font-black text-white">AureoTrack <span style={{ color: '#f59e0b' }}>Pitch Deck</span></h1>
+            <p className="text-xs text-gray-500">Slide {current + 1} of {SLIDES.length} — {slide.label}</p>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => window.location.href = '/whitepaper'} className="px-4 py-2 bg-white/5 border border-white/10 text-gray-300 rounded-xl text-sm hover:bg-white/10 transition-colors">
-              Whitepaper
-            </button>
-            <button onClick={() => window.location.href = '/tokenomics'} className="px-4 py-2 bg-white/5 border border-white/10 text-gray-300 rounded-xl text-sm hover:bg-white/10 transition-colors">
-              Tokenomics
-            </button>
-            <button onClick={() => window.location.href = 'mailto:contact@aureotrack.com'} className="px-4 py-2 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
-              Contact →
-            </button>
+            <button onClick={() => window.location.href = '/whitepaper'} className="px-4 py-2 rounded-xl text-xs text-gray-400 hover:text-white transition-colors border border-white/10 hover:bg-white/5">Whitepaper</button>
+            <button onClick={() => window.location.href = '/tokenomics'} className="px-4 py-2 rounded-xl text-xs text-gray-400 hover:text-white transition-colors border border-white/10 hover:bg-white/5">Tokenomics</button>
+            <button onClick={() => window.location.href = 'mailto:contact@aureotrack.com'} className="px-4 py-2 rounded-xl text-xs font-bold text-black" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>Contact →</button>
           </div>
         </div>
 
-        <div className="flex gap-1 mb-4 overflow-x-auto pb-2">
+        {/* Slide tabs */}
+        <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1">
           {SLIDES.map((s, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentSlide(i)}
-              className={"flex-shrink-0 px-3 py-1.5 rounded-lg text-xs transition-colors " + (i === currentSlide ? 'bg-yellow-500 text-black font-semibold' : 'bg-white/5 text-gray-500 hover:text-white hover:bg-white/10')}
-            >
-              {i + 1}
+            <button key={i} onClick={() => setCurrent(i)}
+              className="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+              style={i === current
+                ? { background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#000', boxShadow: '0 4px 12px rgba(245,158,11,0.3)' }
+                : { background: 'rgba(255,255,255,0.05)', color: '#6b7280', border: '1px solid rgba(255,255,255,0.08)' }}>
+              {i + 1}. {s.label}
             </button>
           ))}
         </div>
 
-        <div className="flex-1 bg-[#111111] border border-white/10 rounded-2xl overflow-hidden" style={{ minHeight: '500px' }}>
-          <div className="border-b border-white/10 px-6 py-4 flex items-center justify-between">
-            <div>
-              <h2 className="font-bold text-white">{slide.title}</h2>
-              <p className="text-xs text-gray-500">{slide.subtitle}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500/50" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
-              <div className="w-3 h-3 rounded-full bg-green-500/50" />
-            </div>
-          </div>
-          <div style={{ minHeight: '460px' }}>
-            <SlideContent type={slide.type} />
-          </div>
+        {/* Slide */}
+        <div className="flex-1 relative rounded-3xl overflow-hidden" style={{
+          minHeight: '520px',
+          boxShadow: '0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05)',
+        }}>
+          <SlideContent type={slide.type} />
         </div>
 
+        {/* Navigation */}
         <div className="flex items-center justify-between mt-4">
-          <button
-            onClick={goPrev}
-            disabled={currentSlide === 0}
-            className="px-6 py-2.5 bg-white/5 border border-white/10 text-gray-300 rounded-xl text-sm font-medium hover:bg-white/10 transition-colors disabled:opacity-30"
-          >
+          <button onClick={goPrev} disabled={current === 0}
+            className="px-6 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white transition-all disabled:opacity-20"
+            style={{ border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.03)' }}>
             ← Previous
           </button>
-          <p className="text-xs text-gray-600">{slide.title}</p>
-          <button
-            onClick={goNext}
-            disabled={currentSlide === SLIDES.length - 1}
-            className="px-6 py-2.5 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors disabled:opacity-30"
-          >
+          <div className="flex gap-1.5">
+            {SLIDES.map((_, i) => (
+              <button key={i} onClick={() => setCurrent(i)}
+                className="w-2 h-2 rounded-full transition-all"
+                style={{ background: i === current ? '#f59e0b' : 'rgba(255,255,255,0.15)', transform: i === current ? 'scale(1.4)' : 'scale(1)' }} />
+            ))}
+          </div>
+          <button onClick={goNext} disabled={current === SLIDES.length - 1}
+            className="px-6 py-2.5 rounded-xl text-sm font-bold transition-all disabled:opacity-20"
+            style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#000', boxShadow: '0 4px 12px rgba(245,158,11,0.3)' }}>
             Next →
           </button>
         </div>
