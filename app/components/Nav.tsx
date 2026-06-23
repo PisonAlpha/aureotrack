@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 const PRODUCTS = [
-  {
+ {
     label: 'Intelligence',
     href: '/markets',
     sub: [
@@ -11,6 +11,7 @@ const PRODUCTS = [
       { label: 'BTC/Gold Chart', href: '/markets' },
       { label: 'Crypto Scanner', href: '/crypto' },
       { label: 'Exchange Arbitrage', href: '/exchanges' },
+      { label: 'About AureoTrack', href: '/about' },
     ],
   },
   {

@@ -107,13 +107,33 @@ export default function Training() {
     }
   }, []);
 
-  const handleEnroll = async () => {
+ const handleEnroll = async () => {
     if (!form.name || !form.email) { setError('Name and email are required'); return; }
     setSubmitting(true);
     setError(null);
-    await new Promise(r => setTimeout(r, 1500));
-    setStep('success');
-    setSubmitting(false);
+    try {
+      const res = await fetch('/api/training', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          experience: form.experience,
+          goals: form.goals,
+          programId: selected.id,
+          programTitle: selected.title,
+          programPrice: selected.price,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setStep('success');
+    } catch (err: any) {
+      setError(err.message || 'Failed to submit enrollment. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (step === 'success') {
