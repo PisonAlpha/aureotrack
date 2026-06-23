@@ -29,6 +29,12 @@ export default function TradingViewChart({ symbol }: { symbol: string }) {
       save_image: false,
       calendar: false,
       hide_volume: false,
+      drawings_access: { type: 'all', tools: [{ name: 'Regression Trend' }] },
+      enabled_features: ['study_templates', 'use_localstorage_for_settings'],
+      disabled_features: ['header_symbol_search', 'header_compare'],
+      show_popup_button: true,
+      popup_width: '1000',
+      popup_height: '650',
       support_host: 'https://www.tradingview.com',
     });
 
