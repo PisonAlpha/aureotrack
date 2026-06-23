@@ -21,7 +21,7 @@ export default function About() {
             { value: '52+', label: 'Platform Features' },
             { value: '60+', label: 'Academy Lessons' },
             { value: '6', label: 'Trading Schools' },
-            { value: '2026', label: 'Founded' },
+            { value: '2025', label: 'Founded' },
           ].map(stat => (
             <div key={stat.label}>
               <p className="text-3xl font-bold text-yellow-400">{stat.value}</p>
@@ -75,7 +75,7 @@ export default function About() {
             <div>
               <p className="text-yellow-500 text-sm font-medium mb-1 uppercase tracking-wide">Founder & CEO</p>
               <h3 className="text-2xl font-bold text-white mb-3">Glean Moore</h3>
-              <p className="text-gray-400 text-sm leading-relaxed mb-3">Glean Moore is the visionary behind AureoTrack — a global trading intelligence platform designed to democratize access to professional-grade market tools and education for traders across Asia, Africa, and beyond.</p>
+             <p className="text-gray-400 text-sm leading-relaxed mb-3">Visionary founder of AureoTrack since 2025, with a mission to democratize access to professional trading tools for emerging market traders. Built AureoTrack from the ground up into a 58-feature platform with global reach across Asia and Africa.</p>
               <p className="text-gray-400 text-sm leading-relaxed">Through live training events, AI-powered lessons, and a growing global community, Glean and the AureoTrack team are building the next generation of informed, confident, and profitable traders.</p>
               <div className="flex items-center gap-3 mt-4">
                 <a href="https://x.com/aureotrack" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors">

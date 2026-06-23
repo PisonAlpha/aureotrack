@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 const PRODUCTS = [
- {
+{
     label: 'Intelligence',
     href: '/markets',
     sub: [
@@ -11,7 +11,6 @@ const PRODUCTS = [
       { label: 'BTC/Gold Chart', href: '/markets' },
       { label: 'Crypto Scanner', href: '/crypto' },
       { label: 'Exchange Arbitrage', href: '/exchanges' },
-      { label: 'About AureoTrack', href: '/about' },
     ],
   },
   {
@@ -24,7 +23,7 @@ const PRODUCTS = [
       { label: 'Portfolio', href: '/portfolio' },
     ],
   },
-  {
+ {
     label: 'AureoAcademy',
     href: '/academy',
     sub: [
@@ -44,7 +43,7 @@ const PRODUCTS = [
       { label: 'AI Assistant', href: '/ai' },
     ],
   },
-  {
+{
     label: 'AureoCommunity',
     href: '/community',
     sub: [
@@ -52,6 +51,16 @@ const PRODUCTS = [
       { label: 'Leaderboard', href: '/leaderboard' },
       { label: 'Challenges', href: '/challenges' },
       { label: '🪙 Token Airdrop', href: '/airdrop' },
+    ],
+  },
+  {
+    label: 'AureoDoc',
+    href: '/about',
+    sub: [
+      { label: '🏢 About AureoTrack', href: '/about' },
+      { label: '📄 Whitepaper', href: '/whitepaper' },
+      { label: '📊 Tokenomics', href: '/tokenomics' },
+      { label: '🎯 Pitch Deck', href: '/pitch-deck' },
     ],
   },
 ];
