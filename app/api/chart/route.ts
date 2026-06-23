@@ -2,56 +2,66 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-   const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(request.url);
     const daysParam = searchParams.get('days') || '1';
     const daysNum = parseFloat(daysParam);
 
-    // Use hourly interval for short timeframes, daily for longer ones
     const interval = daysNum <= 1 ? 'hourly' : daysNum <= 7 ? 'hourly' : 'daily';
     const revalidate = daysNum <= 1 ? 300 : 3600;
-    const outputsize = daysNum <= 1 ? '24' : Math.ceil(daysNum).toString();
 
-    const [btcRes] = await Promise.all([
+    const [btcRes, goldRes] = await Promise.all([
       fetch(
         `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${Math.ceil(daysNum)}&interval=${interval}`,
         { next: { revalidate } }
       ),
+      fetch(
+        `https://api.coingecko.com/api/v3/coins/tether-gold/market_chart?vs_currency=usd&days=${Math.ceil(daysNum)}&interval=${interval}`,
+        { next: { revalidate } }
+      ),
     ]);
 
-   const btcData = btcRes.ok ? await btcRes.json() : null;
+    const btcData = btcRes.ok ? await btcRes.json() : null;
+    const goldData = goldRes.ok ? await goldRes.json() : null;
+
+    if (!btcData?.prices || !goldData?.prices) {
+      return NextResponse.json({ success: true, data: [], correlation: 0, days: daysNum });
+    }
 
     const timeFormat: Intl.DateTimeFormatOptions = daysNum <= 1
       ? { hour: 'numeric', minute: '2-digit' }
       : { month: 'short', day: 'numeric' };
 
-    const btcPrices = (btcData?.prices || []).map(([timestamp, price]: [number, number]) => ({
-      date: new Date(timestamp).toLocaleString('en-US', timeFormat),
+    const btcPrices = btcData.prices.map(([timestamp, price]: [number, number]) => ({
       timestamp,
+      date: new Date(timestamp).toLocaleString('en-US', timeFormat),
       btc: Math.round(price),
     }));
 
-    const goldInterval = daysNum <= 1 ? '1h' : daysNum <= 7 ? '1h' : '1day';
-    const goldOutputsize = daysNum <= 1 ? '24' : Math.ceil(daysNum).toString();
+    const goldPriceMap: Record<number, number> = {};
+    goldData.prices.forEach(([timestamp, price]: [number, number]) => {
+      goldPriceMap[timestamp] = price;
+    });
 
-   const { getGoldTimeSeries } = await import('@/lib/twelvedata');
-    const goldApiRes_data = await getGoldTimeSeries(goldInterval, goldOutputsize).catch(() => null);
-    const goldApiRes = goldApiRes_data ? { ok: true, json: async () => goldApiRes_data } : null;
+    // Match by closest timestamp instead of date string
+    const combined = btcPrices.map((point: any) => {
+      const closestGoldTimestamp = Object.keys(goldPriceMap)
+        .map(Number)
+        .reduce((prev, curr) =>
+          Math.abs(curr - point.timestamp) < Math.abs(prev - point.timestamp) ? curr : prev
+        );
+      const timeDiff = Math.abs(closestGoldTimestamp - point.timestamp);
+      // Only match if within 2 hours
+      if (timeDiff > 7200000) return null;
+      return {
+        date: point.date,
+        btc: point.btc,
+        gold: Math.round(goldPriceMap[closestGoldTimestamp]),
+      };
+    }).filter(Boolean);
 
-    const goldData = goldApiRes?.ok ? await goldApiRes.json() : null;
-    const goldPrices: Record<string, number> = {};
-
-    if (goldData?.values) {
-      goldData.values.forEach((item: any) => {
-        const date = new Date(item.datetime).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        goldPrices[date] = parseFloat(item.close);
-      });
+    if (combined.length === 0) {
+      return NextResponse.json({ success: true, data: [], correlation: 0, days: daysNum });
     }
-
-    const combined = btcPrices.map((point: any) => ({
-      date: point.date,
-      btc: point.btc,
-      gold: goldPrices[point.date] || null,
-    })).filter((p: any) => p.gold !== null);
 
     const btcMin = Math.min(...combined.map((p: any) => p.btc));
     const btcMax = Math.max(...combined.map((p: any) => p.btc));
