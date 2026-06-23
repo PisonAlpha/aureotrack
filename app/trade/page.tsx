@@ -351,7 +351,7 @@ export default function Trade() {
               </div>
 
               <div className="rounded-xl overflow-hidden border border-white/10">
-                <TradingViewChart symbol={selectedAsset.tvSymbol} />
+                <TradingViewChart symbol={selectedAsset.symbol} tvSymbol={selectedAsset.tvSymbol} />
               </div>
             </div>
 
