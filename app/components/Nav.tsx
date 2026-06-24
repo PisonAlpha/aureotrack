@@ -7,7 +7,7 @@ const PRODUCTS = [
     label: 'Intelligence',
     href: '/markets',
     sub: [
-      { label: 'Market Overview', href: '/' },
+      { label: 'Market Overview', href: '/markets' },
       { label: 'BTC/Gold Chart', href: '/markets' },
       { label: 'Crypto Scanner', href: '/crypto' },
       { label: 'Exchange Arbitrage', href: '/exchanges' },
