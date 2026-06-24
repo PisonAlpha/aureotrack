@@ -21,16 +21,41 @@ const TRACKED_IDS = [
   'uniswap', 'polkadot', 'matic-network', 'litecoin', 'cosmos',
   'near', 'optimism', 'arbitrum', 'aptos', 'sui',
   // Meme coins
-  'shiba-inu', 'pepe', 'floki', 'bonk',
-  // Other majors
+  'shiba-inu', 'pepe', 'floki', 'bonk', 'dogwifcoin', 'brett',
+  // Layer 1s
   'stellar', 'vechain', 'filecoin', 'internet-computer', 'hedera-hashgraph',
-  'render-token', 'the-sandbox', 'decentraland', 'axie-infinity', 'gala',
+  'algorand', 'tezos', 'elrond', 'fantom', 'harmony',
+  'zilliqa', 'theta-token', 'flow', 'neo', 'waves',
+  // DeFi
+  'render-token', 'aave', 'maker', 'compound-governance-token', 'curve-dao-token',
+  'synthetix-network-token', 'yearn-finance', 'pancakeswap-token', 'sushi',
+  '1inch', 'balancer', 'loopring', 'dydx', 'gmx', 'gains-network',
+  // Gaming & Metaverse
+  'the-sandbox', 'decentraland', 'axie-infinity', 'gala', 'illuvium',
+  'gods-unchained', 'yield-guild-games', 'merit-circle', 'victoria-vr',
+  // Infrastructure
+  'chainlink', 'the-graph', 'basic-attention-token', 'ocean-protocol',
+  'fetch-ai', 'singularitynet', 'numeraire', 'band-protocol',
+  // Exchange tokens
+  'crypto-com-chain', 'okb', 'huobi-token', 'kucoin-shares',
+  'gate', 'bitget-token', 'mexc-global',
+  // Other majors
+  'monero', 'dash', 'zcash', 'ethereum-classic', 'bitcoin-cash',
+  'bitcoin-sv', 'litecoin', 'ravencoin', 'horizen',
+  // New & trending
+  'worldcoin-wld', 'celestia', 'starknet', 'pyth-network',
+  'jito-governance-token', 'jupiter-ag', 'tensor', 'drift-protocol',
+  'wormhole', 'layerzero', 'eigenlayer',
 ];
+
+// Remove duplicates
+const UNIQUE_IDS = [...new Set(TRACKED_IDS)];
 
 export async function getMacroAssetPrices(): Promise<AssetPrice[]> {
   try {
+    // CoinGecko allows up to 250 IDs per request
     const res = await fetch(
-      `${COINGECKO_BASE}/coins/markets?vs_currency=usd&ids=${TRACKED_IDS.join(',')}&price_change_percentage=24h,7d`,
+      `${COINGECKO_BASE}/coins/markets?vs_currency=usd&ids=${UNIQUE_IDS.join(',')}&price_change_percentage=24h,7d&per_page=250&order=market_cap_desc`,
       { next: { revalidate: 60 } }
     );
     if (!res.ok) throw new Error('CoinGecko fetch failed');

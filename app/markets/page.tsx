@@ -1,241 +1,262 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import Nav from '../components/Nav';
+
+const TABS = ['All', 'Crypto', 'Forex', 'Commodity'];
 
 export default function Markets() {
-  const [chartData, setChartData] = useState<any[]>([]);
-  const [correlation, setCorrelation] = useState<number | null>(null);
-  const [days, setDays] = useState(1);
-  const [loadingChart, setLoadingChart] = useState(true);
-  const [cryptoNews, setCryptoNews] = useState<any[]>([]);
-  const [globalNews, setGlobalNews] = useState<any[]>([]);
-  const [loadingNews, setLoadingNews] = useState(true);
-  const [newsTab, setNewsTab] = useState<'crypto' | 'global'>('crypto');
-  const [btcPrice, setBtcPrice] = useState<number | null>(null);
-  const [goldPrice, setGoldPrice] = useState<number | null>(null);
+  const [assets, setAssets] = useState<any[]>([]);
+  const [filtered, setFiltered] = useState<any[]>([]);
+  const [tab, setTab] = useState('All');
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [marketStats, setMarketStats] = useState<any>(null);
+  const [riskSentiment, setRiskSentiment] = useState<any>(null);
+  const [sortBy, setSortBy] = useState('market_cap');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
   useEffect(() => {
-    fetchChart(days);
-    fetchNews();
-    fetchPrices();
+    fetchAssets();
+    const interval = setInterval(fetchAssets, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    fetchChart(days);
-  }, [days]);
+    let list = [...assets];
+    if (tab !== 'All') list = list.filter(a => a.type === tab.toLowerCase());
+    if (search) list = list.filter(a =>
+      a.name?.toLowerCase().includes(search.toLowerCase()) ||
+      a.symbol?.toLowerCase().includes(search.toLowerCase())
+    );
+    list.sort((a, b) => {
+      const av = a[sortBy] || 0;
+      const bv = b[sortBy] || 0;
+      return sortDir === 'desc' ? bv - av : av - bv;
+    });
+    setFiltered(list);
+  }, [assets, tab, search, sortBy, sortDir]);
 
-  const fetchChart = async (d: number) => {
-    setLoadingChart(true);
+  const fetchAssets = async () => {
     try {
-      const res = await fetch('/api/chart?days=' + d);
+      const res = await fetch('/api/macro');
       const data = await res.json();
       if (data.success) {
-        setChartData(data.data);
-        setCorrelation(data.correlation);
+        setAssets(data.assets);
+        setMarketStats(data.marketStats);
+        setRiskSentiment(data.riskSentiment);
       }
     } catch {} finally {
-      setLoadingChart(false);
+      setLoading(false);
     }
   };
 
-  const fetchNews = async () => {
-    setLoadingNews(true);
-    try {
-      const res = await fetch('/api/news');
-      const data = await res.json();
-      if (data.success) {
-        setCryptoNews(data.cryptoNews);
-        setGlobalNews(data.globalNews);
-      }
-    } catch {} finally {
-      setLoadingNews(false);
-    }
+  const formatPrice = (price: number, type?: string) => {
+    if (!price && price !== 0) return '—';
+    if (type === 'forex') return price.toFixed(4);
+    if (price >= 1000) return '$' + price.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    if (price >= 1) return '$' + price.toFixed(2);
+    if (price >= 0.001) return '$' + price.toFixed(6);
+    return '$' + price.toFixed(8);
   };
 
-  const fetchPrices = async () => {
-    try {
-      const [btcRes, goldRes] = await Promise.all([
-        fetch('/api/assets/price?symbol=BTC'),
-        fetch('/api/assets/price?symbol=GOLD'),
-      ]);
-      const btcData = await btcRes.json();
-      const goldData = await goldRes.json();
-      if (btcData.success) setBtcPrice(btcData.price);
-      if (goldData.success) setGoldPrice(goldData.price);
-    } catch {}
+  const formatChange = (change: number) => {
+    if (!change && change !== 0) return '—';
+    return (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
   };
 
-  const getCorrelationLabel = (c: number) => {
-    if (c >= 0.7) return { label: 'Strong Positive', color: 'text-green-400' };
-    if (c >= 0.3) return { label: 'Moderate Positive', color: 'text-yellow-400' };
-    if (c >= -0.3) return { label: 'No Correlation', color: 'text-gray-400' };
-    if (c >= -0.7) return { label: 'Moderate Negative', color: 'text-orange-400' };
-    return { label: 'Strong Negative', color: 'text-red-400' };
+  const formatLarge = (num: number) => {
+    if (!num) return '—';
+    if (num >= 1e12) return '$' + (num / 1e12).toFixed(2) + 'T';
+    if (num >= 1e9) return '$' + (num / 1e9).toFixed(2) + 'B';
+    if (num >= 1e6) return '$' + (num / 1e6).toFixed(2) + 'M';
+    return '$' + num.toLocaleString();
   };
 
-  const formatTime = (iso: string) => {
-    try {
-      const d = new Date(iso);
-      const now = new Date();
-      const diff = Math.floor((now.getTime() - d.getTime()) / 60000);
-      if (diff < 60) return diff + 'm ago';
-      if (diff < 1440) return Math.floor(diff / 60) + 'h ago';
-      return Math.floor(diff / 1440) + 'd ago';
-    } catch { return '' }
+  const handleSort = (field: string) => {
+    if (sortBy === field) setSortDir(d => d === 'desc' ? 'asc' : 'desc');
+    else { setSortBy(field); setSortDir('desc'); }
   };
 
-  const news = newsTab === 'crypto' ? cryptoNews : globalNews;
+  const sentimentColor = riskSentiment?.score >= 65 ? '#10b981' : riskSentiment?.score <= 35 ? '#ef4444' : '#f59e0b';
 
   return (
-    <main className="min-h-screen bg-[#0d0d0d] text-white">
-      <header className="border-b border-white/10 sticky top-0 z-50 bg-[#0d0d0d]/95 backdrop-blur">
-        <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center justify-between">
-          <button onClick={() => window.location.href = '/'} className="flex items-center gap-2 bg-transparent border-0 cursor-pointer p-0">
-            <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-8 h-8 rounded-lg object-cover" />
-            <span className="font-bold text-white">AureoTrack</span>
-          </button>
-          <nav className="hidden md:flex items-center gap-1">
-            {[['/', 'Markets'], ['/trade', 'Trade'], ['/crypto', 'Crypto'], ['/ai', 'AI Insights'], ['/academy', 'Academy']].map(([href, label]) => (
-              <button key={label} onClick={() => window.location.href = href} className="px-3 py-1.5 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors bg-transparent border-0 cursor-pointer">
-                {label}
-              </button>
+    <div className="min-h-screen text-white" style={{ background: 'linear-gradient(135deg, #0a0a0a 0%, #0d1117 50%, #0a0a0a 100%)' }}>
+      <Nav active="Intelligence" />
+
+      {/* Header */}
+      <div className="border-b border-white/10 py-10 px-4" style={{ background: 'rgba(255,255,255,0.01)' }}>
+        <div className="max-w-screen-xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <p className="text-yellow-400 text-xs font-bold uppercase tracking-widest mb-1">Live Market Data</p>
+              <h1 className="text-3xl font-black text-white">Market Overview</h1>
+              <p className="text-gray-500 text-sm mt-1">Real-time prices across crypto, forex, and commodities</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-xs text-gray-500">Live · Updates every 30s</span>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {[
+              { label: 'Total Market Cap', value: formatLarge(marketStats?.totalMarketCap), color: '#f59e0b' },
+              { label: '24h Volume', value: formatLarge(marketStats?.totalVolume), color: '#3b82f6' },
+              { label: 'Gainers', value: marketStats?.gainers || '—', color: '#10b981' },
+              { label: 'Market Sentiment', value: riskSentiment?.label || '—', color: sentimentColor },
+            ].map(stat => (
+              <div key={stat.label} className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <p className="text-xs text-gray-500 mb-1">{stat.label}</p>
+                <p className="text-lg font-black" style={{ color: stat.color }}>{stat.value}</p>
+              </div>
             ))}
-          </nav>
+          </div>
         </div>
-      </header>
+      </div>
 
       <div className="max-w-screen-xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-white mb-1">Markets Intelligence</h1>
-          <p className="text-gray-500 text-sm">BTC/Gold correlation tracker and live market news</p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-            <p className="text-xs text-gray-500 mb-1">Bitcoin (BTC)</p>
-            <p className="text-2xl font-bold text-white">{btcPrice ? '$' + btcPrice.toLocaleString(undefined, { maximumFractionDigits: 0 }) : '...'}</p>
-            <p className="text-xs text-blue-400 mt-1">Live price</p>
+        {/* Filters */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="flex gap-2">
+            {TABS.map(t => (
+              <button key={t} onClick={() => setTab(t)}
+                className="px-4 py-2 rounded-xl text-sm font-medium transition-all"
+                style={tab === t
+                  ? { background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#000', boxShadow: '0 4px 12px rgba(245,158,11,0.3)' }
+                  : { background: 'rgba(255,255,255,0.05)', color: '#6b7280', border: '1px solid rgba(255,255,255,0.08)' }}>
+                {t}
+                <span className="ml-1.5 text-xs opacity-60">
+                  {t === 'All' ? assets.length : assets.filter(a => a.type === t.toLowerCase()).length}
+                </span>
+              </button>
+            ))}
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-            <p className="text-xs text-gray-500 mb-1">Gold (XAU/USD)</p>
-            <p className="text-2xl font-bold text-white">{goldPrice ? '$' + goldPrice.toLocaleString(undefined, { maximumFractionDigits: 0 }) : '...'}</p>
-            <p className="text-xs text-yellow-400 mt-1">Live price</p>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-            <p className="text-xs text-gray-500 mb-1">BTC/Gold Correlation</p>
-            {correlation !== null ? (
-              <>
-                <p className="text-2xl font-bold text-white">{correlation > 0 ? '+' : ''}{correlation}</p>
-                <p className={"text-xs mt-1 " + getCorrelationLabel(correlation).color}>{getCorrelationLabel(correlation).label}</p>
-              </>
-            ) : (
-              <p className="text-2xl font-bold text-gray-500">...</p>
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              placeholder="Search by name or symbol..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full px-4 py-2 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+            />
+            {search && (
+              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white bg-transparent border-0 cursor-pointer">✕</button>
             )}
           </div>
         </div>
 
-        <div className="bg-[#111111] border border-white/10 rounded-2xl p-6 mb-8">
-          <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-            <div>
-              <h2 className="font-semibold text-white">BTC vs Gold — Normalized Price Comparison</h2>
-              <p className="text-xs text-gray-500 mt-0.5">Both assets normalized to 0-100 scale for comparison</p>
-            </div>
-           <div className="flex gap-2 flex-wrap">
-              {[
-                { label: '4H', value: 0.17 },
-                { label: '1D', value: 1 },
-                { label: '7D', value: 7 },
-                { label: '14D', value: 14 },
-                { label: '30D', value: 30 },
-                { label: '90D', value: 90 },
-              ].map(d => (
-                <button key={d.label} onClick={() => setDays(d.value)} className={"px-3 py-1.5 rounded-lg text-xs font-medium transition-colors " + (days === d.value ? 'bg-white text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10')}>
-                  {d.label}
-                </button>
-              ))}
-            </div>
+        {/* Table */}
+        <div className="rounded-3xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[800px]">
+              <thead>
+                <tr style={{ background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                  <th className="text-left px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider w-8">#</th>
+                  <th className="text-left px-4 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Asset</th>
+                  <th className="text-left px-4 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Type</th>
+                  <th className="text-right px-4 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer hover:text-white" onClick={() => handleSort('current_price')}>
+                    Price {sortBy === 'current_price' ? (sortDir === 'desc' ? '↓' : '↑') : ''}
+                  </th>
+                  <th className="text-right px-4 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer hover:text-white" onClick={() => handleSort('price_change_percentage_24h')}>
+                    24h {sortBy === 'price_change_percentage_24h' ? (sortDir === 'desc' ? '↓' : '↑') : ''}
+                  </th>
+                  <th className="text-right px-4 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer hover:text-white hidden sm:table-cell" onClick={() => handleSort('market_cap')}>
+                    Market Cap {sortBy === 'market_cap' ? (sortDir === 'desc' ? '↓' : '↑') : ''}
+                  </th>
+                  <th className="text-right px-4 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider hidden md:table-cell cursor-pointer hover:text-white" onClick={() => handleSort('total_volume')}>
+                    Volume {sortBy === 'total_volume' ? (sortDir === 'desc' ? '↓' : '↑') : ''}
+                  </th>
+                  <th className="text-right px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                    24h Range
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  Array(10).fill(0).map((_, i) => (
+                    <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      {Array(8).fill(0).map((_, j) => (
+                        <td key={j} className="px-4 py-4">
+                          <div className="h-4 rounded animate-pulse" style={{ background: 'rgba(255,255,255,0.06)' }} />
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                ) : filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="text-center py-16 text-gray-600">No assets found</td>
+                  </tr>
+                ) : (
+                  filtered.map((asset, i) => {
+                    const change = asset.price_change_percentage_24h || 0;
+                    const isPositive = change >= 0;
+                    const typeColor = asset.type === 'crypto' ? '#3b82f6' : asset.type === 'forex' ? '#8b5cf6' : '#f59e0b';
+                    const rangePercent = asset.high_24h && asset.low_24h && asset.current_price
+                      ? ((asset.current_price - asset.low_24h) / (asset.high_24h - asset.low_24h)) * 100
+                      : 50;
+                    return (
+                      <tr key={asset.id}
+                        className="hover:bg-white/5 transition-colors cursor-pointer"
+                        style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+                        onClick={() => asset.type === 'crypto' && (window.location.href = '/trade')}>
+                        <td className="px-6 py-4 text-xs text-gray-600">{i + 1}</td>
+                        <td className="px-4 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0" style={{ background: `${typeColor}18`, color: typeColor }}>
+                              {asset.symbol?.slice(0, 2)}
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-white">{asset.name}</p>
+                              <p className="text-xs text-gray-500">{asset.symbol}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-4">
+                          <span className="px-2 py-0.5 rounded-full text-xs font-medium capitalize" style={{ background: `${typeColor}15`, color: typeColor, border: `1px solid ${typeColor}25` }}>
+                            {asset.type}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-right">
+                          <p className="text-sm font-semibold text-white">{formatPrice(asset.current_price, asset.type)}</p>
+                        </td>
+                        <td className="px-4 py-4 text-right">
+                          <span className={"text-sm font-semibold px-2 py-0.5 rounded-lg " + (isPositive ? 'text-green-400' : 'text-red-400')} style={{ background: isPositive ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)' }}>
+                            {formatChange(change)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-right hidden sm:table-cell">
+                          <p className="text-sm text-gray-400">{formatLarge(asset.market_cap)}</p>
+                        </td>
+                        <td className="px-4 py-4 text-right hidden md:table-cell">
+                          <p className="text-sm text-gray-400">{formatLarge(asset.total_volume)}</p>
+                        </td>
+                        <td className="px-6 py-4 hidden lg:table-cell">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-600">{formatPrice(asset.low_24h, asset.type)}</span>
+                            <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)', minWidth: '60px' }}>
+                              <div className="h-full rounded-full" style={{ width: `${Math.min(100, Math.max(0, rangePercent))}%`, background: 'linear-gradient(90deg, #f59e0b, #10b981)' }} />
+                            </div>
+                            <span className="text-xs text-gray-600">{formatPrice(asset.high_24h, asset.type)}</span>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
           </div>
-
-          {loadingChart ? (
-            <div className="h-64 flex items-center justify-center">
-              <div className="w-8 h-8 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin" />
-            </div>
-          ) : chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                <XAxis dataKey="date" tick={{ fill: '#6b7280', fontSize: 11 }} tickLine={false} axisLine={false} interval={Math.floor(chartData.length / 6)} />
-                <YAxis tick={{ fill: '#6b7280', fontSize: 11 }} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={v => v + '%'} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
-                 formatter={(value: any, name: any) => [value.toFixed(1) + '%', name === 'btcNorm' ? 'Bitcoin' : 'Gold']}
-                  labelStyle={{ color: '#9ca3af', fontSize: 12 }}
-                />
-                <Legend formatter={(value) => value === 'btcNorm' ? 'Bitcoin' : 'Gold'} wrapperStyle={{ color: '#9ca3af', fontSize: 12 }} />
-                <Line type="monotone" dataKey="btcNorm" stroke="#f59e0b" strokeWidth={2} dot={false} name="btcNorm" />
-                <Line type="monotone" dataKey="goldNorm" stroke="#a855f7" strokeWidth={2} dot={false} name="goldNorm" />
-              </LineChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="h-64 flex items-center justify-center text-gray-500 text-sm">No chart data available</div>
-          )}
-
-          {correlation !== null && (
-            <div className="mt-4 pt-4 border-t border-white/10">
-              <p className="text-xs text-gray-500">
-                Over the last {days} days, Bitcoin and Gold have a correlation coefficient of <span className={"font-semibold " + getCorrelationLabel(correlation).color}>{correlation > 0 ? '+' : ''}{correlation}</span> — indicating a <span className={getCorrelationLabel(correlation).color}>{getCorrelationLabel(correlation).label.toLowerCase()}</span> relationship. A value near +1 means they move together; near -1 means they move opposite; near 0 means no relationship.
-              </p>
+          {!loading && filtered.length > 0 && (
+            <div className="px-6 py-3 border-t border-white/5 flex items-center justify-between">
+              <p className="text-xs text-gray-600">Showing {filtered.length} assets</p>
+              <p className="text-xs text-gray-600">Click any crypto asset to trade →</p>
             </div>
           )}
-        </div>
-
-        <div className="bg-[#111111] border border-white/10 rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-            <h2 className="font-semibold text-white">Live News Feed</h2>
-            <div className="flex gap-2 flex-wrap">
-              <button onClick={() => { setNewsTab('crypto'); }} className={"px-4 py-2 rounded-xl text-sm font-medium transition-colors " + (newsTab === 'crypto' ? 'bg-white text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10')}>
-                🪙 Crypto News
-              </button>
-              <button onClick={() => { setNewsTab('global'); }} className={"px-4 py-2 rounded-xl text-sm font-medium transition-colors " + (newsTab === 'global' ? 'bg-white text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10')}>
-                🌍 Global Economy
-              </button>
-            </div>
-          </div>
-
-          {loadingNews ? (
-            <div className="text-center py-10">
-              <div className="w-6 h-6 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto" />
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {news.map((item, i) => (
-                <button
-                  key={i}
-                  onClick={() => item.url !== '#' && window.open(item.url, '_blank')}
-                  className="w-full text-left p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/8 hover:border-white/20 transition-all cursor-pointer"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-white mb-1 leading-relaxed">{item.title}</p>
-                      {item.summary && <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{item.summary}</p>}
-                    </div>
-                    <span className="text-yellow-500 text-lg flex-shrink-0">→</span>
-                  </div>
-                  <div className="flex items-center gap-3 mt-2">
-                    <span className="text-xs text-gray-600">{item.source}</span>
-                    <span className="text-xs text-gray-700">·</span>
-                    <span className="text-xs text-gray-600">{formatTime(item.publishedAt)}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-
-          <button onClick={fetchNews} className="mt-4 w-full py-2.5 border border-white/10 text-gray-400 rounded-xl text-sm hover:bg-white/5 transition-colors bg-transparent cursor-pointer">
-            Refresh News
-          </button>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -30,7 +30,7 @@ async function getGoldPrice(): Promise<CommodityPrice | null> {
 async function getForexRates(): Promise<Record<string, number>> {
   try {
     const res = await fetch(
-      'https://api.frankfurter.app/latest?from=USD&to=EUR,GBP,JPY,AUD,CAD,CHF,NZD,CNY',
+      'https://api.frankfurter.app/latest?from=USD&to=EUR,GBP,JPY,AUD,CAD,CHF,NZD,CNY,SEK,NOK,DKK,SGD,HKD,MXN,ZAR,TRY,BRL,INR,KRW,THB',
       { next: { revalidate: 3600 } }
     );
     if (!res.ok) return {};
@@ -48,6 +48,19 @@ const FOREX_META: Record<string, { symbol: string; name: string; invert: boolean
   'CHF': { symbol: 'USD/CHF', name: 'US Dollar / Swiss Franc', invert: false },
   'NZD': { symbol: 'NZD/USD', name: 'New Zealand Dollar / US Dollar', invert: true },
   'CNY': { symbol: 'USD/CNY', name: 'US Dollar / Chinese Yuan', invert: false },
+  'SEK': { symbol: 'USD/SEK', name: 'US Dollar / Swedish Krona', invert: false },
+  'NOK': { symbol: 'USD/NOK', name: 'US Dollar / Norwegian Krone', invert: false },
+  'DKK': { symbol: 'USD/DKK', name: 'US Dollar / Danish Krone', invert: false },
+  'SGD': { symbol: 'USD/SGD', name: 'US Dollar / Singapore Dollar', invert: false },
+  'HKD': { symbol: 'USD/HKD', name: 'US Dollar / Hong Kong Dollar', invert: false },
+  'MXN': { symbol: 'USD/MXN', name: 'US Dollar / Mexican Peso', invert: false },
+  'ZAR': { symbol: 'USD/ZAR', name: 'US Dollar / South African Rand', invert: false },
+  'TRY': { symbol: 'USD/TRY', name: 'US Dollar / Turkish Lira', invert: false },
+  'BRL': { symbol: 'USD/BRL', name: 'US Dollar / Brazilian Real', invert: false },
+  'INR': { symbol: 'USD/INR', name: 'US Dollar / Indian Rupee', invert: false },
+  'KRW': { symbol: 'USD/KRW', name: 'US Dollar / South Korean Won', invert: false },
+  'THB': { symbol: 'USD/THB', name: 'US Dollar / Thai Baht', invert: false },
+  'NGN': { symbol: 'USD/NGN', name: 'US Dollar / Nigerian Naira', invert: false },
 };
 
 export async function getCommodityPrices(): Promise<CommodityPrice[]> {
