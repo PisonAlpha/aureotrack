@@ -154,6 +154,21 @@ export default function Nav({ active }: { active?: string }) {
               </div>
             </div>
           ))}
+          <div className="border-t border-white/10 pt-4">
+            <p className="text-xs text-gray-600 uppercase tracking-wide mb-2">Follow Us</p>
+            <div className="flex gap-2 flex-wrap">
+              {[
+                { label: 'X / Twitter', href: 'https://x.com/aureotrack' },
+                { label: 'Telegram', href: 'https://t.me/aureo_track' },
+                { label: 'Facebook', href: 'https://www.facebook.com/share/1LX95LaMVj/' },
+              ].map(social => (
+                <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer"
+                  className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-xs text-gray-400 hover:text-white transition-colors">
+                  {social.label}
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </header>

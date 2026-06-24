@@ -244,16 +244,38 @@ export default function Home() {
         </div>
       </div>
 
-      <footer className="border-t border-white/10 mt-12 py-8 px-4">
-        <div className="max-w-screen-xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-6 h-6 rounded object-cover" />
-            <span className="text-sm text-gray-500">AureoTrack © 2026</span>
+     <footer className="border-t border-white/10 mt-12 py-10 px-4">
+        <div className="max-w-screen-xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-6">
+            <div className="flex items-center gap-2">
+              <img src="/aureotrack-logo.png" alt="AureoTrack" className="w-7 h-7 rounded object-cover" />
+              <div>
+                <span className="text-sm font-bold text-white">AureoTrack</span>
+                <p className="text-xs text-gray-600">Macro & Trading Intelligence</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <a href="https://x.com/aureotrack" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                @aureotrack
+              </a>
+              <a href="https://t.me/aureo_track" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.088 14.86l-2.95-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.718.726z"/></svg>
+                Telegram
+              </a>
+              <a href="https://www.facebook.com/share/1LX95LaMVj/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Facebook
+              </a>
+            </div>
           </div>
-          <div className="flex items-center gap-4 flex-wrap justify-center">
-            {[['/', 'Markets'], ['/trade', 'AureoTrade'], ['/academy', 'AureoAcademy'], ['/ai', 'AureoAI'], ['/community', 'AureoCommunity']].map(([href, label]) => (
-              <button key={label} onClick={() => window.location.href = href} className="text-xs text-gray-600 hover:text-gray-400 bg-transparent border-0 cursor-pointer">{label}</button>
-            ))}
+          <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span className="text-xs text-gray-600">© 2025 AureoTrack. All rights reserved.</span>
+            <div className="flex items-center gap-4 flex-wrap justify-center">
+              {[['/', 'Markets'], ['/trade', 'AureoTrade'], ['/academy', 'AureoAcademy'], ['/ai', 'AureoAI'], ['/community', 'AureoCommunity'], ['/about', 'About'], ['/whitepaper', 'Whitepaper'], ['/airdrop', 'Airdrop']].map(([href, label]) => (
+                <button key={label} onClick={() => window.location.href = href} className="text-xs text-gray-600 hover:text-gray-400 bg-transparent border-0 cursor-pointer">{label}</button>
+              ))}
+            </div>
           </div>
         </div>
       </footer>
