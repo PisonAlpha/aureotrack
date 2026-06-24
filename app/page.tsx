@@ -3,12 +3,121 @@
 import { useState, useEffect } from 'react';
 import Nav from './components/Nav';
 
+function ContactModal({ type, onClose }: { type: 'investment' | 'partnership'; onClose: () => void }) {
+  const [form, setForm] = useState({ name: '', email: '', company: '', message: '' });
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
+
+  const isInvestment = type === 'investment';
+
+  const handleSend = async () => {
+    if (!form.name || !form.email || !form.message) { setError('Please fill in all required fields.'); return; }
+    setSending(true);
+    setError('');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, type }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setSent(true);
+    } catch (err: any) {
+      setError(err.message || 'Failed to send. Please try again.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" onClick={onClose}>
+      <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)' }} />
+      <div className="relative w-full max-w-lg rounded-3xl overflow-hidden" onClick={e => e.stopPropagation()}
+        style={{ background: 'linear-gradient(145deg, #111827, #0d1117)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 40px 80px rgba(0,0,0,0.6)' }}>
+
+        {/* Header */}
+        <div className="px-8 py-6 border-b border-white/10 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-black text-white">{isInvestment ? '💼 Investment Enquiry' : '🤝 Partnership Enquiry'}</h2>
+            <p className="text-xs text-gray-500 mt-1">{isInvestment ? 'Reach out about ART token, funding rounds, or investor relations' : 'Reach out about CEX listings, revenue sharing, or co-marketing'}</p>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-white transition-colors bg-transparent border-0 cursor-pointer" style={{ background: 'rgba(255,255,255,0.05)' }}>✕</button>
+        </div>
+
+        <div className="px-8 py-6">
+          {sent ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4" style={{ background: 'rgba(16,185,129,0.15)' }}>✓</div>
+              <h3 className="text-xl font-black text-white mb-2">Message Sent!</h3>
+              <p className="text-gray-400 text-sm mb-6">Thank you {form.name}. We'll get back to you at {form.email} within 24 hours.</p>
+              <button onClick={onClose} className="px-6 py-2.5 rounded-xl text-sm font-bold text-black" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
+                Close
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs text-gray-500 font-medium mb-1.5 block">Full Name *</label>
+                  <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                    placeholder="John Smith"
+                    className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none transition-colors"
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }} />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500 font-medium mb-1.5 block">Email Address *</label>
+                  <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                    placeholder="john@company.com"
+                    className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none transition-colors"
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }} />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 font-medium mb-1.5 block">Company / Organisation</label>
+                <input type="text" value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))}
+                  placeholder={isInvestment ? 'Investment firm, VC, or fund name' : 'Exchange or company name'}
+                  className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none transition-colors"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }} />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 font-medium mb-1.5 block">Message *</label>
+                <textarea value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                  placeholder={isInvestment ? 'Tell us about your investment interest, ticket size, and any questions about the ART token or funding rounds...' : 'Tell us about your exchange, the partnership opportunity you have in mind, and what you are looking to achieve...'}
+                  rows={4}
+                  className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none transition-colors resize-none"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }} />
+              </div>
+
+              {error && <p className="text-red-400 text-xs">{error}</p>}
+
+              <div className="flex gap-3 pt-2">
+                <button onClick={handleSend} disabled={sending}
+                  className="flex-1 py-3 rounded-xl text-sm font-black text-black transition-all disabled:opacity-50"
+                  style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '0 8px 20px rgba(245,158,11,0.3)' }}>
+                  {sending ? 'Sending...' : `Send ${isInvestment ? 'Investment' : 'Partnership'} Enquiry →`}
+                </button>
+                <button onClick={onClose} className="px-5 py-3 rounded-xl text-sm text-gray-400 transition-colors bg-transparent border-0 cursor-pointer hover:text-white"
+                  style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [assets, setAssets] = useState<any[]>([]);
   const [marketStats, setMarketStats] = useState<any>(null);
   const [riskSentiment, setRiskSentiment] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [contactModal, setContactModal] = useState<'investment' | 'partnership' | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem('aureotrack_user');
@@ -350,9 +459,9 @@ export default function Home() {
                 <span key={tag} className="px-3 py-1.5 rounded-full text-xs font-medium" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}>{tag}</span>
               ))}
             </div>
-            <a href="mailto:contact@aureotrack.com" className="px-8 py-3 rounded-xl text-sm font-bold text-black transition-all inline-block" style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 8px 20px rgba(16,185,129,0.3)' }}>
+           <button onClick={() => setContactModal('partnership')} className="px-8 py-3 rounded-xl text-sm font-bold text-black transition-all" style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 8px 20px rgba(16,185,129,0.3)' }}>
               Contact for Partnership →
-            </a>
+            </button>
           </div>
         </div>
       </section>
@@ -477,14 +586,17 @@ export default function Home() {
                 <button onClick={() => window.location.href = user ? '/trade' : '/register'} className="px-8 py-4 rounded-2xl text-base font-black text-black transition-all hover:scale-105" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '0 8px 30px rgba(245,158,11,0.4)' }}>
                   {user ? 'Go to Trading →' : 'Create Free Account →'}
                 </button>
-                <a href="mailto:contact@aureotrack.com" className="px-8 py-4 rounded-2xl text-base font-semibold text-white transition-all hover:bg-white/10 inline-block" style={{ border: '1px solid rgba(255,255,255,0.15)' }}>
+                <button onClick={() => setContactModal('investment')} className="px-8 py-4 rounded-2xl text-base font-semibold text-white transition-all hover:bg-white/10" style={{ border: '1px solid rgba(255,255,255,0.15)' }}>
                   Contact for Investment
-                </a>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Contact Modal */}
+      {contactModal && <ContactModal type={contactModal} onClose={() => setContactModal(null)} />}
 
       {/* ── FOOTER ── */}
       <footer className="border-t border-white/10 py-12 px-4" style={{ background: 'rgba(0,0,0,0.3)' }}>
