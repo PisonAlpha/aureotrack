@@ -350,9 +350,9 @@ export default function Home() {
                 <span key={tag} className="px-3 py-1.5 rounded-full text-xs font-medium" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}>{tag}</span>
               ))}
             </div>
-            <button onClick={() => window.location.href = 'mailto:contact@aureotrack.com'} className="px-8 py-3 rounded-xl text-sm font-bold text-black transition-all" style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 8px 20px rgba(16,185,129,0.3)' }}>
+            <a href="mailto:contact@aureotrack.com" className="px-8 py-3 rounded-xl text-sm font-bold text-black transition-all inline-block" style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 8px 20px rgba(16,185,129,0.3)' }}>
               Contact for Partnership →
-            </button>
+            </a>
           </div>
         </div>
       </section>
@@ -477,9 +477,9 @@ export default function Home() {
                 <button onClick={() => window.location.href = user ? '/trade' : '/register'} className="px-8 py-4 rounded-2xl text-base font-black text-black transition-all hover:scale-105" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '0 8px 30px rgba(245,158,11,0.4)' }}>
                   {user ? 'Go to Trading →' : 'Create Free Account →'}
                 </button>
-                <button onClick={() => window.location.href = 'mailto:contact@aureotrack.com'} className="px-8 py-4 rounded-2xl text-base font-semibold text-white transition-all hover:bg-white/10" style={{ border: '1px solid rgba(255,255,255,0.15)' }}>
+                <a href="mailto:contact@aureotrack.com" className="px-8 py-4 rounded-2xl text-base font-semibold text-white transition-all hover:bg-white/10 inline-block" style={{ border: '1px solid rgba(255,255,255,0.15)' }}>
                   Contact for Investment
-                </button>
+                </a>
               </div>
             </div>
           </div>
