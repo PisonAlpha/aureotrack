@@ -358,7 +358,7 @@ export default function Whitepaper() {
                 <p>This whitepaper has been prepared for informational purposes only and does not constitute financial advice, investment advice, or an offer to sell or solicitation to buy any securities or financial instruments in any jurisdiction.</p>
                 <p>The ART token is a utility token designed to power the AureoTrack ecosystem. It is not intended to constitute a security, investment product, or financial instrument. Prospective participants should carefully review applicable laws and regulations in their jurisdiction before participating in any token sale or airdrop.</p>
                 <p>All information contained in this whitepaper is subject to change without notice. AureoTrack makes no representations or warranties about the completeness, accuracy, or reliability of any information herein. Cryptocurrency and token investments carry significant risk. Never invest more than you can afford to lose.</p>
-                <p className="font-semibold" style={{ color: '#374151' }}>AureoTrack © 2025–2026 · contact@aureotrack.com · aureotrack.com · @aureotrack</p>
+                <p className="font-semibold" style={{ color: '#374151' }}>AureoTrack © 2025–2026 · contact@aureotrack.com · aureotrack.com · @aureotrack · t.me/aureo_track</p>
               </div>
             </PaperCard>
           </section>

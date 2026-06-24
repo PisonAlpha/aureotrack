@@ -440,7 +440,7 @@ function SlideContent({ type }: { type: string }) {
                   Read Whitepaper
                 </button>
               </div>
-              <p className="text-gray-600 text-xs">contact@aureotrack.com · aureotrack.com · @aureotrack</p>
+              <p className="text-gray-600 text-xs">contact@aureotrack.com · aureotrack.com · @aureotrack · t.me/aureo_track</p>
             </div>
           </div>
         </PaperSlide>
