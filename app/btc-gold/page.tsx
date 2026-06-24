@@ -104,10 +104,10 @@ export default function BtcGold() {
       </div>
 
       <div className="max-w-screen-xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8">
 
           {/* Chart Section */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="space-y-6">
 
             {/* Price Cards */}
             <div className="grid grid-cols-2 gap-4">
@@ -185,35 +185,7 @@ export default function BtcGold() {
             </div>
           </div>
 
-          {/* News Feed */}
-          <div>
-            <h2 className="text-lg font-black text-white mb-4">Live Market News</h2>
-            {newsLoading ? (
-              <div className="space-y-3">
-                {Array(6).fill(0).map((_, i) => (
-                  <div key={i} className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                    <div className="h-3 rounded mb-2 animate-pulse" style={{ background: 'rgba(255,255,255,0.08)', width: '80%' }} />
-                    <div className="h-3 rounded animate-pulse" style={{ background: 'rgba(255,255,255,0.05)', width: '50%' }} />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {news.map((article, i) => (
-                  <a key={i} href={article.url} target="_blank" rel="noopener noreferrer"
-                    className="block rounded-2xl p-4 transition-all hover:scale-[1.01]"
-                    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                    <p className="text-sm font-semibold text-white mb-1 leading-snug line-clamp-2">{article.title}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-xs text-gray-500">{article.source}</span>
-                      <span className="text-gray-700">·</span>
-                      <span className="text-xs text-gray-600">{article.published_at ? new Date(article.published_at).toLocaleDateString() : ''}</span>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
+          
         </div>
       </div>
     </div>
