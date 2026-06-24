@@ -8,7 +8,7 @@ const PRODUCTS = [
     href: '/markets',
     sub: [
       { label: 'Market Overview', href: '/markets' },
-      { label: 'BTC/Gold Chart', href: '/markets' },
+      { label: 'BTC/Gold Chart', href: '/btc-gold' },
       { label: 'Crypto Scanner', href: '/crypto' },
       { label: 'Exchange Arbitrage', href: '/exchanges' },
     ],
