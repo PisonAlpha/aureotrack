@@ -30,7 +30,7 @@ const team = [
   {
     name: "Dr. Aris Thorne",
     role: "Head of AI & Financial Intelligence",
-    photo: "/team/aris-thorne.jpg",
+    photo: "/team/aris-thorne.png",
     bio: "Dr. Thorne leads AI research and financial intelligence, overseeing predictive analytics, machine learning systems, and data modelling that transform complex market data into actionable insights.",
   },
   {
