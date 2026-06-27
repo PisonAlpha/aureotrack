@@ -64,11 +64,12 @@ export async function POST(request: NextRequest) {
 
     if (userError) throw userError;
 
-    // Create demo account
-    const balance = starting_balance || 100000;
-    await supabaseAdmin
+ // Create demo account
+    const balance = 100000;
+    const { error: demoError } = await supabaseAdmin
       .from('demo_accounts')
-      .insert({ user_id: user.id, balance, initial_balance: balance });
+      .insert({ user_id: user.id, balance, starting_balance: balance });
+    if (demoError) console.error('Demo account creation error:', demoError);
 
     // Send verification email
     const emailSent = await sendVerificationEmail(email, full_name, code);
