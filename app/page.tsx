@@ -118,11 +118,14 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [contactModal, setContactModal] = useState<'investment' | 'partnership' | null>(null);
-
-  useEffect(() => {
+  const [userCount, setUserCount] = useState('600+');
+ useEffect(() => {
     const stored = localStorage.getItem('aureotrack_user');
     if (stored) setUser(JSON.parse(stored));
     fetchMacroData();
+    fetch('/api/stats').then(r => r.json()).then(d => {
+      if (d.success) setUserCount(d.displayCount);
+    }).catch(() => {});
   }, []);
 
   const fetchMacroData = async () => {
@@ -194,11 +197,11 @@ export default function Home() {
                   View Pitch Deck
                 </button>
               </div>
-              <div className="flex items-center gap-6 flex-wrap">
+             <div className="flex items-center gap-6 flex-wrap">
                 {[
+                  { value: userCount, label: 'Traders' },
                   { value: '58+', label: 'Features' },
                   { value: '$3M', label: 'Raised' },
-                  { value: '2025', label: 'Founded' },
                   { value: 'Q3 2026', label: 'TGE' },
                 ].map(stat => (
                   <div key={stat.label} className="text-center">
