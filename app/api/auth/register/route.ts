@@ -64,8 +64,8 @@ export async function POST(request: NextRequest) {
 
     if (userError) throw userError;
 
- // Create demo account
-    const balance = 100000;
+ // Create demo account — use user-specified balance or default to 100000
+    const balance = starting_balance && starting_balance >= 1000 ? starting_balance : 100000;
     const { error: demoError } = await supabaseAdmin
       .from('demo_accounts')
       .insert({ user_id: user.id, balance, starting_balance: balance });
