@@ -160,7 +160,7 @@ export default function Nav({ active }: { active?: string }) {
               {[
                 { label: 'X / Twitter', href: 'https://x.com/aureotrack' },
                 { label: 'Telegram', href: 'https://t.me/aureo_track' },
-                { label: 'Facebook', href: 'https://www.facebook.com/share/1LX95LaMVj/' },
+                { label: 'Telegram Group', href: 'https://t.me/Aureotrackofficial' },
               ].map(social => (
                 <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer"
                   className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-xs text-gray-400 hover:text-white transition-colors">
