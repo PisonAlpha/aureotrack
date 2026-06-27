@@ -2,6 +2,45 @@
 
 import Nav from '../components/Nav';
 
+const team = [
+  {
+    name: "Glean Moore",
+    role: "Chief Executive Officer",
+    photo: "/team/glean-moore.jpg",
+    bio: "Glean leads AureoTrack's strategic direction, product vision, and global expansion. She oversees institutional partnerships and ecosystem development, bridging AI, financial markets, and practical learning into a unified platform.",
+  },
+  {
+    name: "Isabella Morgan",
+    role: "Chief Operating Officer",
+    photo: "/team/isabella-morgan.jpg",
+    bio: "Isabella oversees day-to-day operations, coordinating cross-functional teams and optimizing processes to ensure seamless execution of strategic initiatives across product, education, technology, and community.",
+  },
+  {
+    name: "Aarav Sharma",
+    role: "Chief Technology Officer",
+    photo: "/team/aarav-sharma.jpg",
+    bio: "Aarav leads platform architecture, AI integrations, blockchain connectivity, and cybersecurity. He ensures the platform remains secure, scalable, and reliable for users worldwide.",
+  },
+  {
+    name: "Chloe Sterling",
+    role: "Chief Marketing Officer",
+    photo: "/team/chloe-sterling.jpg",
+    bio: "Chloe drives AureoTrack's global brand strategy, user acquisition, and community growth — expanding the platform's reach while building a trusted network of traders, investors, and learners.",
+  },
+  {
+    name: "Dr. Aris Thorne",
+    role: "Head of AI & Financial Intelligence",
+    photo: "/team/aris-thorne.jpg",
+    bio: "Dr. Thorne leads AI research and financial intelligence, overseeing predictive analytics, machine learning systems, and data modelling that transform complex market data into actionable insights.",
+  },
+  {
+    name: "Lee Do-hyun",
+    role: "Head of Finance",
+    photo: "/team/lee-do-hyun.jpg",
+    bio: "Lee oversees treasury management, compliance, budgeting, and strategic financial planning — ensuring responsible governance and sustainable growth across the AureoTrack ecosystem.",
+  },
+];
+
 export default function About() {
   return (
     <div className="min-h-screen bg-[#0d0d0d] text-white">
@@ -65,26 +104,58 @@ export default function About() {
           </div>
         </div>
 
-        {/* Founder */}
+        {/* ── LEADERSHIP TEAM SECTION ── */}
         <div className="mb-16">
-          <h2 className="text-2xl font-bold text-white mb-6">Leadership</h2>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-8 flex flex-col sm:flex-row gap-8 items-center">
-            <div className="w-32 h-32 rounded-2xl overflow-hidden flex-shrink-0">
-              <img src="/academy/photos/staff-stage.jpeg" alt="Glean Moore" className="w-full h-full object-cover object-top" />
-            </div>
-            <div>
-              <p className="text-yellow-500 text-sm font-medium mb-1 uppercase tracking-wide">Founder & CEO</p>
-              <h3 className="text-2xl font-bold text-white mb-3">Glean Moore</h3>
-             <p className="text-gray-400 text-sm leading-relaxed mb-3">Visionary founder of AureoTrack since 2025, with a mission to democratize access to professional trading tools for emerging market traders. Built AureoTrack from the ground up into a 58-feature platform with global reach across Asia and Africa.</p>
-              <p className="text-gray-400 text-sm leading-relaxed">Through live training events, AI-powered lessons, and a growing global community, Glean and the AureoTrack team are building the next generation of informed, confident, and profitable traders.</p>
-              <div className="flex items-center gap-3 mt-4">
-                <a href="https://x.com/aureotrack" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors">
-                  Follow on X →
-                </a>
-              </div>
-            </div>
+          <div className="text-center mb-12">
+            <p className="text-yellow-500 text-sm font-medium mb-3 uppercase tracking-widest">
+              The People Behind AureoTrack
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              Meet Our Leadership Team
+            </h2>
+            <p className="text-gray-400 text-base max-w-2xl mx-auto">
+              A team combining deep expertise in financial intelligence, AI, technology, and
+              education — united by a shared vision to democratise professional-grade trading tools
+              for a global audience.
+            </p>
           </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {team.map((member) => (
+              <div
+                key={member.name}
+                className="group relative bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-yellow-500/40 transition-all duration-300"
+              >
+                {/* Photo */}
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src={member.photo}
+                    alt={member.name}
+                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                </div>
+
+                {/* Info */}
+                <div className="p-5">
+                  <h3 className="text-white text-lg font-bold mb-0.5">{member.name}</h3>
+                  <p className="text-yellow-500 text-xs font-semibold uppercase tracking-wide mb-3">{member.role}</p>
+                  <p className="text-gray-400 text-sm leading-relaxed">{member.bio}</p>
+                </div>
+
+                {/* Gold accent line on hover */}
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-yellow-500 to-yellow-300 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+              </div>
+            ))}
+          </div>
+
+          {/* Team tagline */}
+          <p className="text-gray-600 text-sm text-center mt-10 max-w-3xl mx-auto">
+            Together, our leadership team is committed to making professional-grade financial intelligence
+            and education accessible to a global audience — driving innovation across the evolving financial landscape.
+          </p>
         </div>
+        {/* ── END LEADERSHIP TEAM SECTION ── */}
 
         {/* Global Presence */}
         <div className="mb-16">
@@ -139,9 +210,9 @@ export default function About() {
               Telegram
             </a>
             <a href="https://t.me/Aureotrackofficial" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.088 14.86l-2.95-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.718.726z"/></svg>
-                Telegram Group
-              </a>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.088 14.86l-2.95-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.718.726z"/></svg>
+              Telegram Group
+            </a>
           </div>
         </div>
       </div>
