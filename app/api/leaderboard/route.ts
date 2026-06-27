@@ -7,7 +7,7 @@ export async function GET() {
       .from('demo_accounts')
       .select('user_id, balance, starting_balance, users(full_name)')
       .order('balance', { ascending: false })
-      .limit(50);
+      .limit(100);
 
     if (error) throw error;
 
@@ -31,15 +31,21 @@ export async function GET() {
         return {
           name: acc.users?.full_name || 'Anonymous Trader',
           balance: acc.balance,
-          returnPercent,
+          returnPercent: Math.round(returnPercent * 100) / 100,
           totalTrades: stats.total,
-          winRate,
+          winRate: Math.round(winRate * 100) / 100,
         };
       })
-      .filter(t => t.totalTrades > 0);
+      .filter(t => t.balance > 0);
 
-    const byReturn = [...leaderboard].sort((a, b) => b.returnPercent - a.returnPercent).slice(0, 20);
-    const byWinRate = [...leaderboard].sort((a, b) => b.winRate - a.winRate).slice(0, 20);
+    const byReturn = [...leaderboard]
+      .sort((a, b) => b.returnPercent - a.returnPercent)
+      .slice(0, 20);
+
+    const byWinRate = [...leaderboard]
+      .filter(t => t.totalTrades > 0)
+      .sort((a, b) => b.winRate - a.winRate)
+      .slice(0, 20);
 
     return NextResponse.json({
       success: true,
