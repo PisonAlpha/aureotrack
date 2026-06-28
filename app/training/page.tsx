@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Nav from '../components/Nav';
 
+const USDT_WALLET = '0xC38F5b4FC9381be8a3CBd683aDE6419F577aCAbF';
+
 const PROGRAMS = [
   {
     id: 'forex-mastery',
@@ -11,7 +13,7 @@ const PROGRAMS = [
     duration: '8 Weeks',
     sessions: '3x per week',
     level: 'Beginner to Intermediate',
-    price: '$299',
+    price: '$150',
     badge: '🏆',
     color: 'border-blue-500/30',
     highlights: [
@@ -32,7 +34,7 @@ const PROGRAMS = [
     duration: '6 Weeks',
     sessions: '4x per week',
     level: 'All Levels',
-    price: '$249',
+    price: '$120',
     badge: '₿',
     color: 'border-yellow-500/30',
     highlights: [
@@ -53,7 +55,7 @@ const PROGRAMS = [
     duration: '4 Weeks',
     sessions: '2x per week',
     level: 'Intermediate',
-    price: '$199',
+    price: '$100',
     badge: '📊',
     color: 'border-purple-500/30',
     highlights: [
@@ -74,7 +76,7 @@ const PROGRAMS = [
     duration: '2 Weeks',
     sessions: 'Daily',
     level: 'All Levels',
-    price: '$149',
+    price: '$80',
     badge: '🛡️',
     color: 'border-green-500/30',
     highlights: [
@@ -93,10 +95,11 @@ const PROGRAMS = [
 export default function Training() {
   const [user, setUser] = useState<any>(null);
   const [selected, setSelected] = useState<any>(null);
-  const [step, setStep] = useState<'browse' | 'enroll' | 'success'>('browse');
+  const [step, setStep] = useState<'browse' | 'enroll' | 'payment' | 'success'>('browse');
   const [form, setForm] = useState({ name: '', email: '', phone: '', experience: '', goals: '' });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('aureotrack_user');
@@ -107,7 +110,13 @@ export default function Training() {
     }
   }, []);
 
- const handleEnroll = async () => {
+  const copyWallet = () => {
+    navigator.clipboard.writeText(USDT_WALLET);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleEnroll = async () => {
     if (!form.name || !form.email) { setError('Name and email are required'); return; }
     setSubmitting(true);
     setError(null);
@@ -128,7 +137,7 @@ export default function Training() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      setStep('success');
+      setStep('payment');
     } catch (err: any) {
       setError(err.message || 'Failed to submit enrollment. Please try again.');
     } finally {
@@ -136,23 +145,123 @@ export default function Training() {
     }
   };
 
+  // ── PAYMENT STEP ──
+  if (step === 'payment' && selected) {
+    return (
+      <div className="min-h-screen bg-[#0d0d0d] text-white">
+        <Nav active="AureoAcademy" />
+        <div className="max-w-2xl mx-auto px-4 py-10">
+          <button onClick={() => setStep('enroll')} className="text-sm text-gray-500 hover:text-white mb-6 bg-transparent border-0 cursor-pointer flex items-center gap-2">
+            ← Back to Enrollment Form
+          </button>
+
+          {/* Program summary */}
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6 flex items-center gap-4">
+            <span className="text-3xl">{selected.badge}</span>
+            <div className="flex-1">
+              <h2 className="font-bold text-white">{selected.title}</h2>
+              <p className="text-sm text-gray-400">{selected.duration} · Starts {selected.nextStart}</p>
+            </div>
+            <span className="text-2xl font-bold text-yellow-400">{selected.price}</span>
+          </div>
+
+          {/* Payment instructions */}
+          <div className="bg-white/5 border border-yellow-500/20 rounded-2xl p-6 mb-6">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="text-2xl">💳</span>
+              <div>
+                <h3 className="font-bold text-white">Payment Instructions</h3>
+                <p className="text-sm text-gray-400">Send exactly <span className="text-yellow-400 font-semibold">{selected.price} USDT</span> on the BEP20 network</p>
+              </div>
+            </div>
+
+            {/* Network badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/30 rounded-lg mb-5">
+              <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
+              <span className="text-xs font-semibold text-yellow-400 uppercase tracking-wide">BEP20 Network (BSC) Only</span>
+            </div>
+
+            {/* Wallet address */}
+            <div className="mb-5">
+              <p className="text-xs text-gray-500 mb-2 uppercase tracking-wide">USDT Wallet Address</p>
+              <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-xl p-4">
+                <p className="text-sm text-white font-mono flex-1 break-all">{USDT_WALLET}</p>
+                <button
+                  onClick={copyWallet}
+                  className="flex-shrink-0 px-3 py-1.5 bg-yellow-500 text-black rounded-lg text-xs font-bold hover:bg-yellow-400 transition-colors"
+                >
+                  {copied ? '✓ Copied' : 'Copy'}
+                </button>
+              </div>
+            </div>
+
+            {/* Steps */}
+            <div className="space-y-3">
+              {[
+                'Open your crypto wallet (Trust Wallet, Binance, MetaMask, etc.)',
+                'Select USDT on the BEP20 (BSC) network — do NOT use ERC20 or TRC20',
+                `Send exactly ${selected.price} USDT to the address above`,
+                'Take a screenshot of your transaction receipt',
+                'Email your receipt to contact@aureotrack.com with your full name and program name',
+              ].map((step, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-yellow-500/20 border border-yellow-500/30 text-yellow-400 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                    {i + 1}
+                  </span>
+                  <p className="text-sm text-gray-300">{step}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Warning */}
+          <div className="bg-red-500/5 border border-red-500/20 rounded-2xl p-4 mb-6">
+            <p className="text-xs text-red-400 font-semibold mb-1">⚠️ Important</p>
+            <p className="text-xs text-gray-400">Only send USDT on the <span className="text-white font-semibold">BEP20 (Binance Smart Chain)</span> network. Sending on the wrong network will result in permanent loss of funds. AureoTrack is not responsible for transfers made to incorrect networks.</p>
+          </div>
+
+          {/* Confirm button */}
+          <button
+            onClick={() => setStep('success')}
+            className="w-full py-3.5 bg-yellow-500 text-black rounded-xl text-sm font-bold hover:bg-yellow-400 transition-colors"
+          >
+            I Have Sent Payment →
+          </button>
+          <p className="text-xs text-gray-600 text-center mt-3">Your enrollment will be activated within 24 hours after payment confirmation.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── SUCCESS STEP ──
   if (step === 'success') {
     return (
       <div className="min-h-screen bg-[#0d0d0d] text-white">
         <Nav active="AureoAcademy" />
         <div className="max-w-2xl mx-auto px-4 py-20 text-center">
           <div className="text-6xl mb-6">🎉</div>
-          <h1 className="text-3xl font-bold text-white mb-4">Enrollment Confirmed!</h1>
+          <h1 className="text-3xl font-bold text-white mb-4">Enrollment Submitted!</h1>
           <p className="text-gray-400 mb-2">Thank you, <span className="text-yellow-400">{form.name}</span>!</p>
-          <p className="text-gray-400 mb-8">Your enrollment for <span className="text-white font-semibold">{selected?.title}</span> has been received. Our team will contact you at <span className="text-yellow-400">{form.email}</span> with next steps.</p>
+          <p className="text-gray-400 mb-8">Your enrollment for <span className="text-white font-semibold">{selected?.title}</span> has been received. Once your USDT payment is confirmed, we will activate your access and contact you at <span className="text-yellow-400">{form.email}</span>.</p>
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8 text-left">
             <h3 className="font-semibold text-white mb-3">What happens next?</h3>
             <ul className="space-y-2 text-sm text-gray-400">
-              {['You will receive a confirmation email within 24 hours', 'Our team will send you payment instructions', 'Once payment is confirmed, you get access to the private group', 'Your first live session starts on ' + selected?.nextStart].map((item, i) => (
+              {[
+                'Our team verifies your USDT payment (within 24 hours)',
+                'You receive a confirmation email with access details',
+                'You are added to the private training group',
+                'Your first live session starts on ' + selected?.nextStart,
+              ].map((item, i) => (
                 <li key={i} className="flex items-start gap-2"><span className="text-yellow-500">→</span>{item}</li>
               ))}
             </ul>
           </div>
+          <p className="text-xs text-gray-500 mb-8">
+            Didn't send payment yet?{' '}
+            <button onClick={() => setStep('payment')} className="text-yellow-400 hover:underline bg-transparent border-0 cursor-pointer">
+              Go back to payment instructions
+            </button>
+          </p>
           <div className="flex gap-3 justify-center flex-wrap">
             <button onClick={() => { setStep('browse'); setSelected(null); }} className="px-6 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
               Browse More Programs
@@ -166,6 +275,7 @@ export default function Training() {
     );
   }
 
+  // ── ENROLL FORM STEP ──
   if (step === 'enroll' && selected) {
     return (
       <div className="min-h-screen bg-[#0d0d0d] text-white">
@@ -176,7 +286,7 @@ export default function Training() {
           </button>
 
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-2">
               <span className="text-3xl">{selected.badge}</span>
               <div>
                 <h2 className="font-bold text-white">{selected.title}</h2>
@@ -184,6 +294,7 @@ export default function Training() {
               </div>
               <span className="ml-auto text-2xl font-bold text-yellow-400">{selected.price}</span>
             </div>
+            <p className="text-xs text-gray-500 mt-2 ml-12">Payment via USDT BEP20 · Instructions provided after this form</p>
           </div>
 
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
@@ -220,9 +331,9 @@ export default function Training() {
               </div>
 
               <button onClick={handleEnroll} disabled={submitting} className="w-full py-3.5 bg-yellow-500 text-black rounded-xl text-sm font-bold hover:bg-yellow-400 transition-colors disabled:opacity-50">
-                {submitting ? 'Submitting enrollment...' : 'Confirm Enrollment — ' + selected.price}
+                {submitting ? 'Submitting...' : `Continue to Payment — ${selected.price} USDT`}
               </button>
-              <p className="text-xs text-gray-600 text-center">Our team will contact you within 24 hours with payment instructions. No payment required now.</p>
+              <p className="text-xs text-gray-600 text-center">You will receive USDT payment instructions on the next step.</p>
             </div>
           </div>
         </div>
@@ -230,6 +341,7 @@ export default function Training() {
     );
   }
 
+  // ── BROWSE STEP ──
   return (
     <div className="min-h-screen bg-[#0d0d0d] text-white">
       <Nav active="AureoAcademy" />
@@ -256,6 +368,15 @@ export default function Training() {
           ))}
         </div>
 
+        {/* Payment method notice */}
+        <div className="flex items-center gap-3 bg-yellow-500/5 border border-yellow-500/20 rounded-2xl px-5 py-4 mb-8">
+          <span className="text-xl">💰</span>
+          <div>
+            <p className="text-sm font-semibold text-yellow-400">Payment via USDT BEP20</p>
+            <p className="text-xs text-gray-500">All programs are payable in USDT on the Binance Smart Chain (BEP20) network. Wallet address provided at checkout.</p>
+          </div>
+        </div>
+
         <h2 className="text-xl font-bold text-white mb-6">Available Programs</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
           {PROGRAMS.map(program => (
@@ -264,7 +385,7 @@ export default function Training() {
                 <span className="text-4xl">{program.badge}</span>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-yellow-400">{program.price}</p>
-                  <p className="text-xs text-gray-500">per person</p>
+                  <p className="text-xs text-gray-500">USDT · BEP20</p>
                 </div>
               </div>
               <h3 className="font-bold text-white text-lg mb-1">{program.title}</h3>
@@ -295,7 +416,7 @@ export default function Training() {
                 onClick={() => { setSelected(program); setStep('enroll'); }}
                 className="w-full py-3 bg-yellow-500 text-black rounded-xl text-sm font-bold hover:bg-yellow-400 transition-colors"
               >
-                Enroll Now
+                Enroll Now — {program.price} USDT
               </button>
             </div>
           ))}
@@ -304,7 +425,7 @@ export default function Training() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
           <h3 className="text-xl font-bold text-white mb-2">Corporate & Group Training</h3>
           <p className="text-gray-400 text-sm mb-6 max-w-xl mx-auto">Training your team or organization? We offer custom programs for groups of 10 or more, tailored to your specific needs and schedule.</p>
-          <button onClick={() => window.location.href = 'mailto:enroll@aureotrackacademy.com'} className="px-8 py-3 bg-white text-black rounded-xl text-sm font-bold hover:bg-gray-100 transition-colors">
+          <button onClick={() => window.location.href = 'mailto:contact@aureotrack.com'} className="px-8 py-3 bg-white text-black rounded-xl text-sm font-bold hover:bg-gray-100 transition-colors">
             Contact Us for Group Training
           </button>
         </div>
