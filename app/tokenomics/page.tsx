@@ -12,11 +12,11 @@ const ALLOCATION = [
   { name: 'Ecosystem & Development', percent: 10, tokens: 100000000, color: '#10b981', description: 'Platform infrastructure, APIs, and development' },
   { name: 'Marketing & Growth', percent: 10, tokens: 100000000, color: '#06b6d4', description: 'Global marketing, partnerships, community growth' },
   { name: 'Treasury', percent: 20, tokens: 200000000, color: '#6b7280', description: 'Locked 3 years — strategic reserve, DAO governed after Year 3' },
-  { name: 'Community & Airdrop', percent: 12, tokens: 120000000, color: '#f59e0b', description: '12% initial circulating supply — airdrop, rewards, liquidity' },
+  { name: 'Community & Airdrop', percent: 12, tokens: 120000000, color: '#f59e0b', description: '43.75% unlock at TGE, 36-month linear vesting — airdrop, rewards, liquidity' },
 ];
 
 const VESTING = [
-  { group: 'Community & Airdrop', tokens: '120M', tge: '100%', cliff: 'None', vesting: 'Fully liquid at TGE', y1: '100%', y2: '100%', y3: '100%' },
+  { group: 'Community & Airdrop', tokens: '120M', tge: '43.75%', cliff: 'None', vesting: '36 months linear', y1: '43.75%', y2: '75%', y3: '100%' },
   { group: 'Public Sale', tokens: '150M', tge: '25%', cliff: 'None', vesting: '75% over 6 months', y1: '100%', y2: '100%', y3: '100%' },
   { group: 'Private Sale', tokens: '100M', tge: '10%', cliff: '3 months', vesting: '18 months linear', y1: '75%', y2: '100%', y3: '100%' },
   { group: 'Angel Round', tokens: '50M', tge: '10%', cliff: '3 months', vesting: '18 months linear', y1: '75%', y2: '100%', y3: '100%' },
