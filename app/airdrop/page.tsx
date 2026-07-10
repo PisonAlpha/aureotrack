@@ -61,7 +61,7 @@ export default function Airdrop() {
   ];
 
   const TIMELINE = [
-    { phase: 'Phase 1', title: 'Whitelist Open', desc: 'Join challenges to secure your spot', status: 'active' },
+    { phase: 'Phase 1', title: 'Whitelist Closed', desc: 'Whitelist registration has ended — 593 spots secured', status: 'completed' },
     { phase: 'Phase 2', title: 'Snapshot', desc: 'Final whitelist snapshot taken', status: 'upcoming' },
     { phase: 'Phase 3', title: 'TGE', desc: 'Token Generation Event — ART launches', status: 'upcoming' },
     { phase: 'Phase 4', title: 'Airdrop', desc: 'Tokens distributed to whitelist', status: 'upcoming' },
@@ -79,16 +79,10 @@ export default function Airdrop() {
           </span>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">AureoTrack Token</h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-6">ART — the native token of the AureoTrack ecosystem. Trade, learn, and earn your way to the whitelist before TGE.</p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            {!status?.isWhitelisted ? (
-              <button onClick={() => window.location.href = '/challenges'} className="px-8 py-3 bg-yellow-500 text-black rounded-xl text-sm font-bold hover:bg-yellow-400 transition-colors">
-                Join a Challenge to Qualify →
-              </button>
-            ) : (
-              <div className="px-8 py-3 bg-green-500/10 border border-green-500/30 text-green-400 rounded-xl text-sm font-bold">
-                ✓ You are Whitelisted
-              </div>
-            )}
+       <div className="flex gap-4 justify-center flex-wrap">
+            <div className="px-8 py-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl text-sm font-bold">
+              🔒 Whitelist Closed — 593 Spots Secured
+            </div>
             <button onClick={() => window.location.href = '/trade'} className="px-8 py-3 border border-white/20 text-white rounded-xl text-sm font-semibold hover:bg-white/5 transition-colors">
               Start Demo Trading
             </button>
@@ -101,7 +95,7 @@ export default function Airdrop() {
           {[
             { label: 'Whitelisted', value: loading ? '...' : (status?.totalWhitelisted || 0).toLocaleString() },
             { label: 'Max Supply', value: '1B ART' },
-            { label: 'Airdrop Pool', value: '30M ART (5%)' },
+            { label: 'Airdrop Pool', value: '30M ART (3%)' },
             { label: 'TGE', value: 'Q3 2026' },
           ].map(stat => (
             <div key={stat.label}>
@@ -171,23 +165,22 @@ export default function Airdrop() {
                   <p className="text-xs text-gray-600 mt-2">Supports EVM wallets (MetaMask, Trust Wallet) and Solana wallets (Phantom)</p>
                 </div>
               </div>
-            ) : (
-              <div>
-                <p className="text-gray-400 text-sm mb-4">You are not yet whitelisted. Join any Trading Challenge to automatically qualify for the AureoTrack Token airdrop.</p>
-                <button onClick={() => window.location.href = '/challenges'} className="px-6 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">
-                  View Challenges →
-                </button>
+         ) : (
+              <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-4">
+                <p className="text-red-400 text-sm font-semibold mb-1">🔒 Whitelist Registration Closed</p>
+                <p className="text-gray-400 text-sm">The AureoTrack airdrop whitelist is now closed. 593 spots have been secured. Stay tuned for TGE announcements on our social channels.</p>
               </div>
             )}
           </div>
         )}
 
-        {!user && (
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-10 text-center">
-            <p className="text-gray-400 mb-4">Login to check your whitelist status and add your wallet address</p>
-            <div className="flex gap-3 justify-center">
-              <button onClick={() => window.location.href = '/login'} className="px-6 py-3 bg-yellow-500 text-black rounded-xl text-sm font-semibold hover:bg-yellow-400 transition-colors">Login</button>
-              <button onClick={() => window.location.href = '/register'} className="px-6 py-3 border border-white/20 text-gray-300 rounded-xl text-sm font-semibold hover:bg-white/5 transition-colors">Sign up free</button>
+      {!user && (
+          <div className="bg-red-500/5 border border-red-500/20 rounded-2xl p-6 mb-10 text-center">
+            <p className="text-red-400 font-bold text-lg mb-2">🔒 Whitelist Registration Closed</p>
+            <p className="text-gray-400 mb-4">The AureoTrack airdrop whitelist is now closed with 593 secured spots. Follow our socials for TGE and airdrop distribution announcements.</p>
+            <div className="flex gap-3 justify-center flex-wrap">
+              <a href="https://x.com/aureotrack" target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-white/5 border border-white/10 text-gray-300 rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">Follow @aureotrack</a>
+              <a href="https://t.me/Aureotrackofficial" target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-white/5 border border-white/10 text-gray-300 rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">Join Telegram Group</a>
             </div>
           </div>
         )}
@@ -228,8 +221,9 @@ export default function Airdrop() {
           </div>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 mb-12">
-          <h2 className="text-xl font-bold text-white mb-6">How to Qualify</h2>
+        <div className="bg-red-500/5 border border-red-500/20 rounded-2xl p-8 mb-12">
+          <h2 className="text-xl font-bold text-red-400 mb-2">🔒 Whitelist Registration Closed</h2>
+          <p className="text-gray-400 text-sm mb-6">Registration for the AureoTrack airdrop whitelist has ended. 593 participants have secured their spots. Airdrop distribution will happen at TGE (Q3 2026).</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
               { step: '1', title: 'Create an Account', desc: 'Sign up for free on AureoTrack and access the full platform', action: 'Sign Up', href: '/register' },
