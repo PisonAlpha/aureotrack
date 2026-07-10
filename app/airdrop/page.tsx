@@ -62,7 +62,7 @@ export default function Airdrop() {
 
   const TIMELINE = [
     { phase: 'Phase 1', title: 'Whitelist Closed', desc: 'Whitelist registration has ended — 593 spots secured', status: 'completed' },
-    { phase: 'Phase 2', title: 'Snapshot', desc: 'Final whitelist snapshot taken', status: 'upcoming' },
+    { phase: 'Phase 2', title: 'Snapshot Taken', desc: 'Final whitelist snapshot has been taken', status: 'completed' },
     { phase: 'Phase 3', title: 'TGE', desc: 'Token Generation Event — ART launches', status: 'upcoming' },
     { phase: 'Phase 4', title: 'Airdrop', desc: 'Tokens distributed to whitelist', status: 'upcoming' },
   ];
@@ -205,13 +205,22 @@ export default function Airdrop() {
           <div className="absolute left-4 top-0 bottom-0 w-px bg-white/10 hidden sm:block" />
           <div className="space-y-4">
             {TIMELINE.map((item, i) => (
-              <div key={i} className={"flex gap-4 p-5 rounded-2xl border " + (item.status === 'active' ? 'bg-yellow-500/5 border-yellow-500/20' : 'bg-white/5 border-white/10')}>
-                <div className={"w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 " + (item.status === 'active' ? 'bg-yellow-500 text-black' : 'bg-white/10 text-gray-500')}>
-                  {i + 1}
+              <div key={i} className={"flex gap-4 p-5 rounded-2xl border " + (
+                item.status === 'completed' ? 'bg-green-500/5 border-green-500/20' :
+                item.status === 'active' ? 'bg-yellow-500/5 border-yellow-500/20' :
+                'bg-white/5 border-white/10'
+              )}>
+                <div className={"w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 " + (
+                  item.status === 'completed' ? 'bg-green-500 text-white' :
+                  item.status === 'active' ? 'bg-yellow-500 text-black' :
+                  'bg-white/10 text-gray-500'
+                )}>
+                  {item.status === 'completed' ? '✓' : i + 1}
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="font-semibold text-white text-sm">{item.title}</p>
+                    <p className={"font-semibold text-sm " + (item.status === 'completed' ? 'text-green-400' : 'text-white')}>{item.title}</p>
+                    {item.status === 'completed' && <span className="px-2 py-0.5 bg-green-500/10 text-green-400 rounded-full text-xs border border-green-500/20">✓ Completed</span>}
                     {item.status === 'active' && <span className="px-2 py-0.5 bg-yellow-500/10 text-yellow-400 rounded-full text-xs border border-yellow-500/20">Active Now</span>}
                   </div>
                   <p className="text-xs text-gray-500">{item.phase} · {item.desc}</p>
