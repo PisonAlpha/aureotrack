@@ -182,11 +182,17 @@ export default function About() {
         <div className="mb-16">
           <h2 className="text-2xl font-bold text-white mb-6">Contact Us</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {[
-              { icon: '📧', label: 'General Enquiries', value: 'contact@aureotrack.com', href: 'mailto:contact@aureotrack.com' },
-              { icon: '🎓', label: 'Training & Education', value: 'contact@aureotrack.com', href: 'mailto:contact@aureotrack.com' },
-              { icon: '🤝', label: 'Partnerships & VC', value: 'contact@aureotrack.com', href: 'mailto:contact@aureotrack.com' },
-            ].map(contact => (
+           <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-4">
+            <span className="text-2xl mb-3 block">📍</span>
+            <p className="text-xs text-gray-500 mb-1">International Office</p>
+            <p className="text-sm font-medium text-white">Herengracht 420, 1017 BZ Amsterdam</p>
+            <p className="text-sm text-gray-400">North Holland, The Netherlands</p>
+          </div>
+          {[
+            { icon: '📧', label: 'General Enquiries', value: 'contact@aureotrack.com', href: 'mailto:contact@aureotrack.com' },
+            { icon: '🎓', label: 'Training & Education', value: 'contact@aureotrack.com', href: 'mailto:contact@aureotrack.com' },
+            { icon: '🤝', label: 'Partnerships & VC', value: 'contact@aureotrack.com', href: 'mailto:contact@aureotrack.com' },
+          ].map(contact => (
               <a key={contact.label} href={contact.href} className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-colors block">
                 <span className="text-2xl mb-3 block">{contact.icon}</span>
                 <p className="text-xs text-gray-500 mb-1">{contact.label}</p>
