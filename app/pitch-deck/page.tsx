@@ -242,7 +242,7 @@ function SlideContent({ type }: { type: string }) {
         </PaperSlide>
       );
 
-    case 'tokenomics':
+   case 'tokenomics':
       return (
         <PaperSlide>
           <div className="px-8 pt-6 pb-2">
@@ -252,9 +252,9 @@ function SlideContent({ type }: { type: string }) {
             <div className="grid grid-cols-2 gap-3">
               {[
                 { label: 'Total Supply', value: '1,000,000,000 ART', color: '#f59e0b' },
-                { label: 'Initial Circulating', value: '12% — 120M ART', color: '#3b82f6' },
-                { label: 'Public Sale Price', value: '$0.20 per ART', color: '#10b981' },
-                { label: 'TGE Date', value: 'Q3 2026', color: '#8b5cf6' },
+                { label: 'Initial Circulating', value: '6.91% — 69,077,778 ART', color: '#3b82f6' },
+                { label: 'TGE Date', value: 'Q3 2026', color: '#10b981' },
+                { label: 'Treasury Locked', value: '48.42% — 3 Years', color: '#6b7280' },
               ].map(s => (
                 <div key={s.label} className="rounded-xl p-3" style={{ background: `${s.color}08`, border: `1px solid ${s.color}22` }}>
                   <p className="text-xs" style={{ color: '#6b7280' }}>{s.label}</p>
@@ -267,13 +267,12 @@ function SlideContent({ type }: { type: string }) {
               <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
                 {[
                   ['Community & Airdrop', '12%', '#f59e0b'],
-                  ['Public Sale', '15%', '#3b82f6'],
-                  ['Private Sale', '10%', '#8b5cf6'],
-                  ['Angel Round', '5%', '#ec4899'],
+                  ['Private Sale (sold)', '1.11%', '#8b5cf6'],
+                  ['Angel Round (sold)', '0.47%', '#ec4899'],
                   ['Team & Advisors*', '18%', '#f97316'],
                   ['Ecosystem & Dev', '10%', '#10b981'],
-                  ['Marketing', '10%', '#06b6d4'],
-                  ['Treasury**', '20%', '#6b7280'],
+                  ['Marketing & Growth', '10%', '#06b6d4'],
+                  ['Treasury**', '48.42%', '#6b7280'],
                 ].map(([name, pct, color]) => (
                   <div key={name} className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-1.5">
@@ -284,7 +283,7 @@ function SlideContent({ type }: { type: string }) {
                   </div>
                 ))}
               </div>
-              <p className="text-xs mt-3" style={{ color: '#9ca3af' }}>* Team locked 1 year · ** Treasury locked 3 years (DAO governed after)</p>
+              <p className="text-xs mt-3" style={{ color: '#9ca3af' }}>* Team locked 1 year · ** Treasury locked 3 years — includes unsold tokens (DAO governed after Year 3)</p>
             </div>
           </div>
         </PaperSlide>
