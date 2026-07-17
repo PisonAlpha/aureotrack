@@ -254,7 +254,7 @@ export default function Airdrop() {
         <div className="bg-yellow-500/5 border border-yellow-500/20 rounded-2xl p-6">
           <h3 className="font-semibold text-yellow-400 mb-2">About the AureoTrack Token (ART)</h3>
           <p className="text-sm text-gray-400 leading-relaxed mb-3">ART is the native utility token of the AureoTrack ecosystem. It will power premium features, governance voting, staking rewards, and exclusive access to advanced trading tools and education content.</p>
-          <p className="text-xs text-gray-600">This is not financial advice. Token details are subject to change. Airdrop allocations are estimated and may be adjusted based on total participants.</p>
+          <p className="text-xs text-gray-600">AureoTrack is a legitimate trading intelligence platform founded in 2025 and registered in the Netherlands. This is not financial advice. The ART token airdrop whitelist is now closed. No payment or sensitive information is required to participate. Token details are subject to change.</p>
         </div>
       </div>
     </div>
