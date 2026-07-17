@@ -17,7 +17,25 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "AureoTrack — Macro & Trading Intelligence Platform",
-  description: "Real-time market data, AI-powered analysis, demo trading, portfolio tracking, and world-class trading education.",
+  description: "Real-time market data, AI-powered analysis, demo trading, portfolio tracking, and world-class trading education for global traders.",
+  keywords: "trading platform, crypto trading, forex trading, market intelligence, trading education, demo trading",
+  authors: [{ name: "AureoTrack", url: "https://aureotrack.com" }],
+  creator: "AureoTrack",
+  publisher: "AureoTrack",
+  robots: "index, follow",
+  openGraph: {
+    title: "AureoTrack — Macro & Trading Intelligence Platform",
+    description: "Real-time market data, AI-powered analysis, demo trading, and world-class trading education.",
+    url: "https://aureotrack.com",
+    siteName: "AureoTrack",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AureoTrack — Macro & Trading Intelligence Platform",
+    description: "Real-time market data, AI-powered analysis, demo trading, and world-class trading education.",
+    creator: "@aureotrack",
+  },
 };
 
 export default function RootLayout({
